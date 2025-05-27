@@ -27,7 +27,7 @@ export default function ItemScreen() {
         <ItemImagesCarousel images={selectedItem?.image} />
 
         <View style={styles.iconRow}>
-          <BackButton />
+          <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
           <TouchableOpacity style={styles.favoriteIcon}>
             <Ionicons name="heart-outline" size={24} color="#fff" />
           </TouchableOpacity>
@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: "white",
-    fontWeight: "600",
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
   },
   secondaryButton: {
     marginTop: 10,
@@ -156,6 +157,7 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: Colors.light.primary,
-    fontWeight: "600",
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
   },
 });

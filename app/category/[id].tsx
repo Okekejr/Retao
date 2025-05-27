@@ -29,7 +29,7 @@ export default function CategoryScreen() {
         />
 
         <View style={styles.iconRow}>
-          <BackButton />
+          <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
         </View>
       </View>
 
@@ -48,7 +48,11 @@ export default function CategoryScreen() {
                   key={item.id}
                   from={{ opacity: 0, translateY: 10 }}
                   animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ delay: index * 60, type: "timing" }}
+                  transition={{
+                    delay: 500 + index * 80,
+                    type: "timing",
+                    duration: 500,
+                  }}
                 >
                   <ItemsCard {...item} />
                 </MotiView>

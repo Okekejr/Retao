@@ -1,5 +1,6 @@
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
+import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -51,7 +52,9 @@ export const ItemsCard: FC<ItemsCardProps> = ({
       </View>
 
       <View style={styles.content}>
-        <CustomHeading style={[styles.title]}>{title}</CustomHeading>
+        <CustomHeading numberOfLines={1} style={[styles.title]}>
+          {title}
+        </CustomHeading>
         <CustomText style={styles.description} numberOfLines={1}>
           {description}
         </CustomText>
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: "#666",
+    color: Colors.light.textSecondary,
     marginVertical: 4,
     lineHeight: 18,
   },

@@ -91,6 +91,14 @@ export const mockItems = [
   },
 ];
 
+export interface categoriesT {
+  id: string;
+  title: string;
+  icon: any;
+  description: string;
+}
+[];
+
 export const categories = [
   {
     id: "1",
