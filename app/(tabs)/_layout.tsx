@@ -1,7 +1,6 @@
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { getIconName } from "@/utils";
-import { Ionicons } from "@expo/vector-icons";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
@@ -23,16 +22,11 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarIcon: ({ focused }) => (
           <View style={styles.iconContainer}>
-            <Ionicons
-              name={getIconName(route.name, focused)}
-              size={24}
-              color={focused ? "blue" : "#fff"}
-            />
+            {getIconName(route.name, focused)}
           </View>
         ),
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: "absolute",
           },
           default: {},
@@ -45,13 +39,41 @@ export default function TabLayout() {
           title: "",
         }}
       />
+
+      <Tabs.Screen
+        name="wishlist"
+        options={{
+          title: "",
+        }}
+      />
+
+      <Tabs.Screen
+        name="listings"
+        options={{
+          title: "",
+        }}
+      />
+
+      <Tabs.Screen
+        name="inbox"
+        options={{
+          title: "",
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "",
+        }}
+      />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
   iconContainer: {
-    marginTop: 60,
+    marginTop: 50,
     height: 50,
   },
 });

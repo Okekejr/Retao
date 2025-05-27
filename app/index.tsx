@@ -7,12 +7,12 @@ import * as Animatable from "react-native-animatable";
 export default function IndexScreen() {
   const router = useRouter();
 
-//   useEffect(() => {
-//     const timeout = setTimeout(() => {
-//       router.replace("/home");
-//     }, 3000);
-//     return () => clearTimeout(timeout);
-//   }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      router.replace("/home");
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <View style={styles.container}>
