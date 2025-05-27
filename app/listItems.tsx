@@ -32,7 +32,7 @@ const itemSchema = z.object({
 type ItemForm = z.infer<typeof itemSchema>;
 
 export default function ListItemsScreen() {
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [location, setLocation] = useState<string | null>(null);
 
   const {
@@ -52,12 +52,18 @@ export default function ListItemsScreen() {
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
+      selectionLimit: 3,
+      allowsMultipleSelection: true,
       quality: 0.7,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const selected = result.assets.map((asset) => asset.uri);
+      // Limit to 3 images
+      setImages((prev) => {
+        const combined = [...prev, ...selected].slice(0, 3);
+        return combined;
+      });
     }
   };
 
@@ -75,8 +81,13 @@ export default function ListItemsScreen() {
     setLocation(name);
   };
 
-  const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
+  const onSubmit = (data: ItemForm) => {
+    const payload = {
+      ...data,
+      images,
+      location,
+    };
+    console.log("Form submitted:", payload);
   };
 
   return (
@@ -162,12 +173,20 @@ export default function ListItemsScreen() {
         </View>
 
         {/* Image Picker */}
-        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.imagePreview} />
+        <View style={styles.imagePreviewContainer}>
+          {images.length > 0 ? (
+            images.map((uri, index) => (
+              <Image key={index} source={{ uri }} style={styles.imagePreview} />
+            ))
           ) : (
             <CustomText>Select Image</CustomText>
           )}
+        </View>
+
+        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+          <CustomText>
+            {images.length > 0 ? "Add More" : "Select Images"}
+          </CustomText>
         </TouchableOpacity>
 
         {/* Location Picker */}
@@ -226,10 +245,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
+  imagePreviewContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 10,
+  },
   imagePreview: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
+    width: 80,
+    height: 80,
+    borderRadius: 8,
   },
   locationBox: {
     padding: 12,

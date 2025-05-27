@@ -13,7 +13,7 @@ export default function WishlistScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer>
-        <Header headerTitle="Wishlist" />
+        <Header headerTitle="Wishlist" style={{ marginBottom: 12 }} />
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.grid}>

@@ -8,7 +8,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface ItemsCardProps {
   id: string;
-  image: string;
+  image: any[];
   title: string;
   description: string;
   distance: string;
@@ -40,7 +40,7 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   return (
     <TouchableOpacity onPress={handlePress} style={styles.card}>
       <View style={styles.imageWrapper}>
-        <Image source={image} style={styles.image} contentFit="cover" />
+        <Image source={image[0]} style={styles.image} contentFit="cover" />
         <TouchableOpacity style={styles.favoriteIcon} onPress={toggleFavorite}>
           <Ionicons
             name={favorite ? "heart" : "heart-outline"}

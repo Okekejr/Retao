@@ -15,7 +15,11 @@ export const h3 = {
 export const mockItems = [
   {
     id: "1",
-    image: require("../assets/img/drill.png"),
+    image: [
+      require("../assets/img/drill.png"),
+      require("../assets/img/drill.png"),
+      require("../assets/img/drill.png"),
+    ],
     title: "Cordless Drill",
     description: "Perfect for home repairs and woodworking projects.",
     distance: "2.3 km",
@@ -30,7 +34,11 @@ export const mockItems = [
   },
   {
     id: "2",
-    image: require("../assets/img/lawnmower.png"),
+    image: [
+      require("../assets/img/lawnmower.png"),
+      require("../assets/img/lawnmower.png"),
+      require("../assets/img/lawnmower.png"),
+    ],
     title: "Lawn Mower",
     description: "Electric mower for a quiet and clean cut.",
     distance: "4.1 km",
@@ -45,7 +53,11 @@ export const mockItems = [
   },
   {
     id: "3",
-    image: require("../assets/img/campingtent.png"),
+    image: [
+      require("../assets/img/campingtent.png"),
+      require("../assets/img/campingtent.png"),
+      require("../assets/img/campingtent.png"),
+    ],
     title: "Camping Tent",
     description: "4-person waterproof camping tent for outdoor trips.",
     distance: "1.8 km",
@@ -60,7 +72,11 @@ export const mockItems = [
   },
   {
     id: "4",
-    image: require("../assets/img/projector.png"),
+    image: [
+      require("../assets/img/projector.png"),
+      require("../assets/img/projector.png"),
+      require("../assets/img/projector.png"),
+    ],
     title: "Projector",
     description: "HD projector, great for movie nights or presentations.",
     distance: "3.0 km",

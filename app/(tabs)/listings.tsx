@@ -9,14 +9,12 @@ import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 export default function ListingsScreen() {
   const router = useRouter();
 
-  const handlePress = () => {
-    router.push("/listItems");
-  };
+  const handlePress = () => router.push("/listItems");
 
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer>
-        <Header headerTitle="Listings">
+        <Header headerTitle="Listings" style={{ marginBottom: 12 }}>
           <TouchableOpacity style={styles.icon} onPress={handlePress}>
             <CustomText style={styles.buttonText}>List items</CustomText>
             <Ionicons name="add-outline" size={24} color="#fff" />

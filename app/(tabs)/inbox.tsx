@@ -7,7 +7,7 @@ export default function InboxScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer>
-        <Header headerTitle="Inbox" />
+        <Header headerTitle="Messages" style={{ marginBottom: 12 }} />
       </InnerContainer>
     </SafeAreaView>
   );

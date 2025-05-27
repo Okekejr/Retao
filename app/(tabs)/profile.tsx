@@ -7,7 +7,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer>
-        <Header headerTitle="Profile" />
+        <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
       </InnerContainer>
     </SafeAreaView>
   );

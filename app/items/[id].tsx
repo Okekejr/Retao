@@ -1,3 +1,4 @@
+import { ItemImagesCarousel } from "@/components/core/items/itemImgCarousel";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
@@ -23,11 +24,7 @@ export default function ItemScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={selectedItem?.image}
-          style={styles.image}
-          contentFit="cover"
-        />
+        <ItemImagesCarousel images={selectedItem?.image} />
 
         <View style={styles.iconRow}>
           <BackButton />
