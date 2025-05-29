@@ -1,3 +1,4 @@
+import { ItemStatus } from "@/constants/random";
 import { createContext, FC, useContext, useState } from "react";
 
 interface ListingData {
@@ -6,6 +7,7 @@ interface ListingData {
   location: string;
   title: string;
   description: string;
+  status: ItemStatus;
   availability: string;
   total_steps: number;
   current_step: number;
@@ -18,6 +20,7 @@ const initialState: ListingData = {
   title: "",
   description: "",
   availability: "",
+  status: "listed",
   current_step: 1,
   total_steps: 4,
 };
@@ -25,6 +28,7 @@ const initialState: ListingData = {
 const ListingContext = createContext<{
   formData: ListingData;
   updateFormData: (key: keyof ListingData, value: any) => void;
+  resetFormData: () => void;
 } | null>(null);
 
 interface ListingProviderProps {
@@ -34,6 +38,8 @@ interface ListingProviderProps {
 export const ListingProvider: FC<ListingProviderProps> = ({ children }) => {
   const [formData, setFormData] = useState<ListingData>(initialState);
 
+  const resetFormData = () => setFormData(initialState);
+
   const updateFormData = <K extends keyof ListingData>(
     key: K,
     value: ListingData[K]
@@ -42,7 +48,9 @@ export const ListingProvider: FC<ListingProviderProps> = ({ children }) => {
   };
 
   return (
-    <ListingContext.Provider value={{ formData, updateFormData }}>
+    <ListingContext.Provider
+      value={{ formData, updateFormData, resetFormData }}
+    >
       {children}
     </ListingContext.Provider>
   );

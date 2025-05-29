@@ -12,7 +12,34 @@ export const h3 = {
   color: "#1A1A1A",
 };
 
-export const mockItems = [
+export type UserRole = "owner" | "borrower" | "viewer";
+
+export type ItemStatus = "listed" | "borrowed";
+
+export type mockItemsT = {
+  id: string;
+  image: any[];
+  title: string;
+  description: string;
+  distance: string;
+  availability: string;
+  favorited: boolean;
+  category: string;
+  status?: ItemStatus;
+  owner: {
+    name: string;
+    avatar: any;
+    contact: string;
+  };
+  borrower?: {
+    name: string;
+    contact: string;
+    borrowedOn?: string;
+    dueDate?: string;
+  };
+}[];
+
+export const mockItems: mockItemsT = [
   {
     id: "1",
     image: [
@@ -26,6 +53,13 @@ export const mockItems = [
     availability: "Mon - Fri, 10am - 6pm",
     favorited: true,
     category: "Tools",
+    status: "borrowed",
+    borrower: {
+      name: "Chris N.",
+      contact: "@chrisn",
+      borrowedOn: "2025-05-20",
+      dueDate: "2025-05-30",
+    },
     owner: {
       name: "Alex Garcia",
       avatar: require("../assets/img/avatar.png"),
@@ -45,6 +79,7 @@ export const mockItems = [
     availability: "Weekends only",
     category: "Gardening",
     favorited: false,
+    status: "listed",
     owner: {
       name: "Maria Lopez",
       avatar: require("../assets/img/avatar.png"),
@@ -64,6 +99,7 @@ export const mockItems = [
     availability: "Any day, 9am - 8pm",
     category: "Camping",
     favorited: false,
+    status: "listed",
     owner: {
       name: "David Kim",
       avatar: require("../assets/img/avatar.png"),
@@ -83,6 +119,7 @@ export const mockItems = [
     availability: "Mon - Sat, 12pm - 10pm",
     category: "Tools",
     favorited: true,
+    status: "listed",
     owner: {
       name: "Sarah Lee",
       avatar: require("../assets/img/avatar.png"),

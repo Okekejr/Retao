@@ -23,7 +23,11 @@ export default function WishlistScreen() {
                   key={item.id}
                   from={{ opacity: 0, translateY: 10 }}
                   animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ delay: index * 60, type: "timing" }}
+                  transition={{
+                    delay: 400 + index * 80,
+                    type: "timing",
+                    duration: 400,
+                  }}
                 >
                   <ItemsCard {...item} />
                 </MotiView>

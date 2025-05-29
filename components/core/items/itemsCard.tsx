@@ -67,7 +67,6 @@ export const ItemsCard: FC<ItemsCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     width: 180,
-    borderRadius: 16,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 3 },

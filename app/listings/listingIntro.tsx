@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.light.background,
   },
   iconRow: {
     flexDirection: "row",

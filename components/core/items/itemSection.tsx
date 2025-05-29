@@ -1,25 +1,11 @@
 import CustomHeading from "@/components/ui/customHeading";
-import { h3 } from "@/constants/random";
+import { h3, mockItemsT } from "@/constants/random";
 import { FlatList, StyleSheet, View } from "react-native";
 import { ItemsCard } from "./itemsCard";
 
 interface ItemSectionProps {
   heading: string;
-  data: {
-    id: string;
-    image: any;
-    title: string;
-    description: string;
-    distance: string;
-    availability: string;
-    category: string;
-    favorited: boolean;
-    owner: {
-      name: string;
-      avatar: any;
-      contact: string;
-    };
-  }[];
+  data: mockItemsT;
 }
 
 export const ItemSection = ({ heading, data }: ItemSectionProps) => {

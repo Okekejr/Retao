@@ -1,15 +1,57 @@
+import { ItemsCard } from "@/components/core/items/itemsCard";
 import SelectCategory from "@/components/core/listing/selectCategory";
 import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
+import { h3 } from "@/constants/random";
+import { useListing } from "@/context/listingContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const mockListings = [
+  {
+    id: "1",
+    title: "Power Drill",
+    status: "listed",
+    images: [require("../../assets/img/drill.png")],
+    description: "Hello there",
+    location: "Monterrey",
+  },
+  {
+    id: "2",
+    title: "Camping Tent",
+    status: "borrowed",
+    images: [require("../../assets/img/drill.png")],
+    description: "Hello there",
+    location: "Monterrey",
+  },
+  {
+    id: "3",
+    title: "Screw Drill",
+    status: "listed",
+    images: [require("../../assets/img/drill.png")],
+    description: "Hello there",
+    location: "Monterrey",
+  },
+];
 
 export default function ListingsScreen() {
+  const { formData } = useListing();
   const [modalVisible, setModalVisible] = useState(false);
+
+  const listedItems = mockListings.filter((item) => item.status === "listed");
+  const borrowedItems = mockListings.filter(
+    (item) => item.status === "borrowed"
+  );
 
   const openModal = () => {
     setModalVisible(true);
@@ -19,18 +61,67 @@ export default function ListingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer>
-        <Header headerTitle="Listings" style={{ marginBottom: 12 }} />
+      <InnerContainer style={{ gap: 12 }}>
+        <View>
+          <Header headerTitle="Listings" />
 
-        <TouchableOpacity style={styles.ctaButton} onPress={openModal}>
-          <Ionicons name="cube-outline" size={28} style={styles.ctaIcon} />
+          <TouchableOpacity style={styles.ctaButton} onPress={openModal}>
+            <Ionicons name="cube-outline" size={28} style={styles.ctaIcon} />
+            <View>
+              <CustomText style={styles.ctaTitle}>List an item</CustomText>
+              <CustomText style={styles.ctaSubtitle}>
+                It's fast and easy to get started
+              </CustomText>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {listedItems.length > 0 && (
           <View>
-            <CustomText style={styles.ctaTitle}>List an item</CustomText>
-            <CustomText style={styles.ctaSubtitle}>
-              It's fast and easy to get started
-            </CustomText>
+            <CustomText style={[styles.heading, h3]}>My Listings</CustomText>
+            <FlatList
+              data={listedItems}
+              keyExtractor={(item) => item.title}
+              scrollEnabled
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.listContent}
+              renderItem={({ item }) => (
+                <ItemsCard
+                  id="5"
+                  image={item.images}
+                  title={item.title}
+                  description={item.description}
+                  distance={item.location}
+                  favorited
+                />
+              )}
+            />
           </View>
-        </TouchableOpacity>
+        )}
+
+        {borrowedItems.length > 0 && (
+          <View>
+            <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
+            <FlatList
+              data={borrowedItems}
+              keyExtractor={(item) => item.title}
+              scrollEnabled
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <ItemsCard
+                  id="5"
+                  image={item.images}
+                  title={item.title}
+                  description={item.description}
+                  distance={item.location}
+                  favorited
+                />
+              )}
+            />
+          </View>
+        )}
 
         <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
           <SelectCategory closeModal={closeModal} />
@@ -44,6 +135,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
+  },
+  heading: {
+    fontSize: 24,
+    lineHeight: 30,
+    marginBottom: 20,
   },
   icon: {
     backgroundColor: Colors.light.accent,
@@ -85,5 +181,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#f0f0f0",
     marginTop: 2,
+  },
+  listContent: {
+    gap: 12,
   },
 });

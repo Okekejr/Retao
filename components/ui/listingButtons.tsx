@@ -1,0 +1,63 @@
+import { Colors } from "@/constants/Colors";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import CustomText from "./customText";
+
+interface ListingButtonsProps {
+  handleBack: () => void;
+  handleNext: () => void;
+  disabled?: boolean;
+  nextBtnTitle?: string;
+}
+
+export const ListingButtons = ({
+  handleBack,
+  handleNext,
+  disabled,
+  nextBtnTitle = "Next",
+}: ListingButtonsProps) => {
+  return (
+    <View style={styles.btnContainer}>
+      <TouchableOpacity onPress={handleBack}>
+        <CustomText style={styles.backText}>Back</CustomText>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        disabled={disabled}
+        style={[styles.nextButton, disabled && styles.disabledButton]}
+        onPress={handleNext}
+      >
+        <CustomText style={styles.buttonText}>{nextBtnTitle}</CustomText>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  btnContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 30,
+  },
+  backText: {
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+  },
+  nextButton: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
+  },
+  disabledButton: {
+    backgroundColor: Colors.light.muted,
+  },
+});

@@ -1,0 +1,144 @@
+import CustomText from "@/components/ui/customText";
+import { Colors } from "@/constants/Colors";
+import { h3, ItemStatus, UserRole } from "@/constants/random";
+import { formatDate, formatTime } from "@/utils";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+
+const statusColors = {
+  listed: "#4CAF50",
+  borrowed: "#FF9800",
+};
+
+interface StatusBadgeProps {
+  status: ItemStatus;
+}
+
+interface renderTimelineProps extends StatusBadgeProps {
+  releasedOn: string | undefined;
+  dueDate: string | undefined;
+}
+
+interface renderButtonsProps extends StatusBadgeProps {
+  userRole: UserRole;
+}
+
+export const StatusBadge = ({ status }: StatusBadgeProps) => {
+  return (
+    <View style={[styles.badge, { backgroundColor: statusColors[status] }]}>
+      <CustomText style={[h3, styles.badgeText]}>
+        {status.toUpperCase()}
+      </CustomText>
+    </View>
+  );
+};
+
+export const RenderTimeline = ({
+  status,
+  releasedOn,
+  dueDate,
+}: renderTimelineProps) => {
+  if (status === "borrowed") {
+    return (
+      <View style={styles.timelineContainer}>
+        <CustomText style={styles.timelineText}>
+          {status.toUpperCase()} on{" "}
+          {releasedOn &&
+            `${formatDate(releasedOn)} at ${formatTime(releasedOn)}`}
+        </CustomText>
+        <CustomText style={styles.timelineText}>
+          DUE by {dueDate && `${formatDate(dueDate)} at ${formatTime(dueDate)}`}
+        </CustomText>
+      </View>
+    );
+  }
+  return null;
+};
+
+export const RenderButton = ({ userRole, status }: renderButtonsProps) => {
+  if (userRole === "owner") {
+    if (status === "listed") {
+      return (
+        <TouchableOpacity style={styles.primaryButton}>
+          <CustomText style={styles.primaryButtonText}>Edit Listing</CustomText>
+        </TouchableOpacity>
+      );
+    } else if (status === "borrowed") {
+      return (
+        <TouchableOpacity style={styles.secondaryButton}>
+          <CustomText style={styles.secondaryButtonText}>
+            Mark as Returned
+          </CustomText>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  if (userRole === "borrower") {
+    if (status === "borrowed") {
+      return (
+        <TouchableOpacity style={styles.secondaryButton}>
+          <CustomText style={styles.secondaryButtonText}>
+            Return Item
+          </CustomText>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  if ((userRole === "viewer" && status === "listed") || "borrowed") {
+    return (
+      <>
+        <TouchableOpacity style={styles.primaryButton}>
+          <CustomText style={styles.primaryButtonText}>
+            Request to Borrow
+          </CustomText>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryButton}>
+          <CustomText style={styles.secondaryButtonText}>
+            Message Owner
+          </CustomText>
+        </TouchableOpacity>
+      </>
+    );
+  }
+
+  return null;
+};
+
+const styles = StyleSheet.create({
+  badge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+  },
+  badgeText: { color: "#fff", fontSize: 12 },
+  timelineContainer: { marginVertical: 10 },
+  timelineText: { fontSize: 13, color: "gray" },
+  primaryButton: {
+    marginTop: 16,
+    backgroundColor: Colors.light.primary,
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  primaryButtonText: {
+    color: "white",
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
+  },
+  secondaryButton: {
+    marginTop: 10,
+    borderColor: Colors.light.primary,
+    borderWidth: 1,
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  secondaryButtonText: {
+    color: Colors.light.primary,
+    fontFamily: "Satoshi-Bold",
+    fontSize: 18,
+  },
+});

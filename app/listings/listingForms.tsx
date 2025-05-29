@@ -1,7 +1,9 @@
+import { CustomListingHeader } from "@/components/ui/customListingHeader";
+import { CustomProgressBar } from "@/components/ui/customProgressBar";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
+import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
-import { h2 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
@@ -11,7 +13,6 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -34,12 +35,12 @@ export default function ListingFormsScreen() {
     const newErrors = { title: "", description: "" };
     let isValid = true;
 
-    if (!isMoreThanDashWords({ text: formData.title, wordsNum: 2 })) {
+    if (!isMoreThanDashWords({ text: formData.title, wordsNum: 1 })) {
       newErrors.title = "Title must be more than 2 words";
       isValid = false;
     }
 
-    if (!isMoreThanDashWords({ text: formData.description, wordsNum: 5 })) {
+    if (!isMoreThanDashWords({ text: formData.description, wordsNum: 4 })) {
       newErrors.description = "Description must be more than 5";
       isValid = false;
     }
@@ -49,10 +50,17 @@ export default function ListingFormsScreen() {
   };
 
   const handleBack = () => router.back();
+
   const handleNext = () => {
     if (!validateInputs()) return;
 
-    console.log(formData.title, formData.description);
+    try {
+      console.log(formData.title, formData.description);
+      updateFormData("current_step", formData.current_step + 1);
+      router.push("/listings/listingImgSelect");
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   return (
@@ -60,21 +68,13 @@ export default function ListingFormsScreen() {
       <InnerContainer style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
-            <View style={styles.progressBarContainer}>
-              <View
-                style={[styles.progressFill, { width: progressPercentage }]}
-              />
-            </View>
+            <CustomProgressBar progressPercentage={progressPercentage} />
 
-            <View style={{ marginVertical: 30, gap: 5 }}>
-              <CustomText style={[styles.heading, h2]}>
-                Create Your Listing
-              </CustomText>
-              <CustomText style={styles.subheading}>
-                Add a clear title and a compelling description to attract
-                interest.
-              </CustomText>
-            </View>
+            <CustomListingHeader
+              heading="Create Your Listing"
+              subHeading="Add a clear title and a compelling description to attract
+                interest."
+            />
 
             {/* Title Input */}
             <View>
@@ -109,26 +109,11 @@ export default function ListingFormsScreen() {
             </View>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 30,
-            }}
-          >
-            <TouchableOpacity onPress={handleBack}>
-              <CustomText style={styles.backText}>Back</CustomText>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              disabled={invalid}
-              style={[styles.nextButton, invalid && styles.disabledButton]}
-              onPress={handleNext}
-            >
-              <CustomText style={styles.buttonText}>Next</CustomText>
-            </TouchableOpacity>
-          </View>
+          <ListingButtons
+            handleBack={handleBack}
+            handleNext={handleNext}
+            disabled={invalid}
+          />
         </View>
       </InnerContainer>
     </SafeAreaView>
@@ -140,24 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: "#fff",
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: "#eee",
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: Colors.light.primary,
-  },
-  heading: {
-    fontSize: 24,
-  },
-  subheading: {
-    fontSize: 16,
-    color: Colors.light.textSecondary,
+    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 16,
@@ -176,27 +144,6 @@ const styles = StyleSheet.create({
   textArea: {
     height: 120,
     textAlignVertical: "top",
-  },
-  backText: {
-    fontFamily: "Satoshi-Bold",
-    fontSize: 18,
-    textDecorationLine: "underline",
-    textDecorationStyle: "solid",
-  },
-  nextButton: {
-    backgroundColor: Colors.light.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontFamily: "Satoshi-Bold",
-    fontSize: 18,
-  },
-  disabledButton: {
-    backgroundColor: Colors.light.muted,
   },
   error: {
     color: "red",

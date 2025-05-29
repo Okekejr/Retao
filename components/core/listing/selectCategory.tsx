@@ -40,9 +40,9 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
             from={{ opacity: 0, translateY: 10 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{
-              delay: 500 + index * 80,
+              delay: 400 + index * 80,
               type: "timing",
-              duration: 500,
+              duration: 400,
             }}
           >
             <TouchableOpacity

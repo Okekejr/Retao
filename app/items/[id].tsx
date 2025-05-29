@@ -1,9 +1,14 @@
 import { ItemImagesCarousel } from "@/components/core/items/itemImgCarousel";
+import {
+  RenderButton,
+  RenderTimeline,
+  StatusBadge,
+} from "@/components/core/items/itemsDetails";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
-import { h2, mockItems } from "@/constants/random";
+import { h2, mockItems, UserRole } from "@/constants/random";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
@@ -17,9 +22,20 @@ import {
 
 const { height } = Dimensions.get("window");
 
+const currentUser = {
+  contact: "@Okekejr",
+};
+
 export default function ItemScreen() {
   const { id } = useLocalSearchParams();
   const selectedItem = mockItems.find((item) => item.id === id);
+
+  const userRole: UserRole =
+    currentUser.contact === selectedItem?.owner.contact
+      ? "owner"
+      : currentUser.contact === selectedItem?.borrower?.contact
+      ? "borrower"
+      : "viewer";
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -35,7 +51,10 @@ export default function ItemScreen() {
       </View>
 
       <View style={styles.content}>
-        <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+        <View style={styles.titleRow}>
+          <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+          {selectedItem?.status && <StatusBadge status={selectedItem.status} />}
+        </View>
         <CustomText style={styles.description}>
           {selectedItem?.description}
         </CustomText>
@@ -57,17 +76,17 @@ export default function ItemScreen() {
 
         <CustomText style={styles.availability}>Available now</CustomText>
 
-        <TouchableOpacity style={styles.primaryButton}>
-          <CustomText style={styles.primaryButtonText}>
-            Request to Borrow
-          </CustomText>
-        </TouchableOpacity>
+        {selectedItem?.status && (
+          <RenderTimeline
+            status={selectedItem.status}
+            dueDate={selectedItem.borrower?.dueDate}
+            releasedOn={selectedItem.borrower?.borrowedOn}
+          />
+        )}
 
-        <TouchableOpacity style={styles.secondaryButton}>
-          <CustomText style={styles.secondaryButtonText}>
-            Message Owner
-          </CustomText>
-        </TouchableOpacity>
+        {selectedItem?.status && (
+          <RenderButton status={selectedItem?.status} userRole={userRole} />
+        )}
       </View>
     </ScrollView>
   );
@@ -89,6 +108,11 @@ const styles = StyleSheet.create({
     left: 20,
     top: 60,
     right: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  titleRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
