@@ -82,7 +82,7 @@ export default function SignupFormScreen() {
               />
 
               {/* Name Input */}
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <CustomText style={styles.label}>Name</CustomText>
                 <TextInput
                   style={styles.input}
@@ -96,7 +96,7 @@ export default function SignupFormScreen() {
               </View>
 
               {/* Handle Input */}
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <CustomText style={styles.label}>Handle</CustomText>
                 <TextInput
                   style={styles.input}
@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     fontSize: 16,
-    marginBottom: 20,
     backgroundColor: "#fafafa",
   },
   error: {

@@ -80,7 +80,7 @@ export default function ListingFormsScreen() {
               />
 
               {/* Title Input */}
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <CustomText style={styles.label}>Title</CustomText>
                 <TextInput
                   style={styles.input}
@@ -94,7 +94,7 @@ export default function ListingFormsScreen() {
               </View>
 
               {/* Description Input */}
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <CustomText style={styles.label}>Description</CustomText>
                 <TextInput
                   style={[styles.input, styles.textArea]}
