@@ -51,6 +51,10 @@ export default function ListingIntroScreen() {
                       type: "timing",
                       duration: 500,
                     }}
+                    style={{
+                      backgroundColor: Colors.light.surfaceArea,
+                      borderRadius: 16,
+                    }}
                   >
                     <IntroCardListing
                       title={item.title}
@@ -92,34 +96,7 @@ const styles = StyleSheet.create({
   },
   stepsContainer: {
     marginTop: 30,
-  },
-  stepCard: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    backgroundColor: "#F9FAFB",
-    padding: 16,
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  icon: {
-    marginRight: 14,
-    marginTop: 4,
-  },
-  textGroup: {
-    flex: 1,
-  },
-  stepTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 4,
-  },
-  stepDesc: {
-    fontSize: 14,
-    color: "#6B7280",
+    backgroundColor: "transparent",
   },
   button: {
     backgroundColor: Colors.light.primary,

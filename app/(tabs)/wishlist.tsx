@@ -3,17 +3,17 @@ import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { mockItems } from "@/constants/random";
+import { mockUserProfile } from "@/constants/random";
 import { MotiView } from "moti";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function WishlistScreen() {
-  const favorited = mockItems.filter((item) => item.favorited === true);
+  const favorited = mockUserProfile.favorites;
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer>
-        <Header headerTitle="Wishlist" style={{ marginBottom: 12 }} />
+      <InnerContainer style={{ gap: 12 }}>
+        <Header headerTitle="Wishlist" />
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.grid}>

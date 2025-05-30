@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 3, // Android shadow
-    marginVertical: 12,
   },
   icon: {
     marginRight: 8,

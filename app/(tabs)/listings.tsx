@@ -1,60 +1,27 @@
 import { ItemsCard } from "@/components/core/items/itemsCard";
+import { ListAnItemBtn } from "@/components/core/listing/listAnItemBtn";
 import SelectCategory from "@/components/core/listing/selectCategory";
 import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { h3 } from "@/constants/random";
+import { h3, mockUserProfile } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-const mockListings = [
-  {
-    id: "1",
-    title: "Power Drill",
-    status: "listed",
-    images: [require("../../assets/img/drill.png")],
-    description: "Hello there",
-    location: "Monterrey",
-  },
-  {
-    id: "2",
-    title: "Camping Tent",
-    status: "borrowed",
-    images: [require("../../assets/img/drill.png")],
-    description: "Hello there",
-    location: "Monterrey",
-  },
-  {
-    id: "3",
-    title: "Screw Drill",
-    status: "listed",
-    images: [require("../../assets/img/drill.png")],
-    description: "Hello there",
-    location: "Monterrey",
-  },
-];
+import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ListingsScreen() {
   const { formData } = useListing();
   const [modalVisible, setModalVisible] = useState(false);
+  const [content, setContent] = useState("");
 
-  const listedItems = mockListings.filter((item) => item.status === "listed");
-  const borrowedItems = mockListings.filter(
-    (item) => item.status === "borrowed"
-  );
+  const listedItems = mockUserProfile.listings;
+  const borrowedItems = mockUserProfile.borrowedItems;
 
-  const openModal = () => {
+  const openModal = (content: string) => {
     setModalVisible(true);
+    setContent(content);
   };
 
   const closeModal = () => setModalVisible(false);
@@ -65,15 +32,13 @@ export default function ListingsScreen() {
         <View>
           <Header headerTitle="Listings" />
 
-          <TouchableOpacity style={styles.ctaButton} onPress={openModal}>
-            <Ionicons name="cube-outline" size={28} style={styles.ctaIcon} />
-            <View>
-              <CustomText style={styles.ctaTitle}>List an item</CustomText>
-              <CustomText style={styles.ctaSubtitle}>
-                It's fast and easy to get started
-              </CustomText>
-            </View>
-          </TouchableOpacity>
+          <ListAnItemBtn openModal={() => openModal("createListing")} />
+
+          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+            {content === "createListing" && (
+              <SelectCategory closeModal={closeModal} />
+            )}
+          </CustomModal>
         </View>
 
         {listedItems.length > 0 && (
@@ -88,12 +53,11 @@ export default function ListingsScreen() {
               contentContainerStyle={styles.listContent}
               renderItem={({ item }) => (
                 <ItemsCard
-                  id="5"
-                  image={item.images}
+                  id={item.id}
+                  image={item.image}
                   title={item.title}
                   description={item.description}
-                  distance={item.location}
-                  favorited
+                  distance={item.distance}
                 />
               )}
             />
@@ -111,21 +75,17 @@ export default function ListingsScreen() {
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <ItemsCard
-                  id="5"
-                  image={item.images}
+                  id={item.id}
+                  image={item.image}
                   title={item.title}
                   description={item.description}
-                  distance={item.location}
+                  distance={item.distance}
                   favorited
                 />
               )}
             />
           </View>
         )}
-
-        <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-          <SelectCategory closeModal={closeModal} />
-        </CustomModal>
       </InnerContainer>
     </SafeAreaView>
   );
@@ -153,34 +113,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "600",
-  },
-  ctaButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.light.primary,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    elevation: 4,
-    margin: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  ctaIcon: {
-    marginRight: 12,
-    color: "#fff",
-  },
-  ctaTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  ctaSubtitle: {
-    fontSize: 13,
-    color: "#f0f0f0",
-    marginTop: 2,
   },
   listContent: {
     gap: 12,

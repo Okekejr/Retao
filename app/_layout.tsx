@@ -1,4 +1,5 @@
 import { ListingProvider } from "@/context/listingContext";
+import { UserProvider } from "@/context/userContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   DarkTheme,
@@ -40,10 +41,14 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <ListingProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
+          <UserProvider>
+            <Stack
+              screenOptions={{ headerShown: false, gestureEnabled: false }}
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </UserProvider>
         </ListingProvider>
         <StatusBar style="dark" />
       </ThemeProvider>

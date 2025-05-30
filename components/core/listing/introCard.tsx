@@ -34,15 +34,14 @@ export const IntroCardListing = ({
 const styles = StyleSheet.create({
   stepCard: {
     flexDirection: "row",
+    borderRadius: 16,
     justifyContent: "space-between",
     gap: 10,
-    backgroundColor: "#F9FAFB",
-    padding: 16,
-    borderRadius: 16,
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowRadius: 5,
     elevation: 2,
+    padding: 16,
   },
   textGroup: {
     flex: 1,

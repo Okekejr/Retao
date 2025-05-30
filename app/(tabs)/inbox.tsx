@@ -6,7 +6,7 @@ import { SafeAreaView, StyleSheet } from "react-native";
 export default function InboxScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer>
+      <InnerContainer style={{ gap: 12 }}>
         <Header headerTitle="Messages" style={{ marginBottom: 12 }} />
       </InnerContainer>
     </SafeAreaView>

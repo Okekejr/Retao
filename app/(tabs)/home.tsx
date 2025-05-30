@@ -17,7 +17,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer>
+      <InnerContainer style={{ gap: 12 }}>
         <Header headerTitle="Home" />
         <SearchBar
           onSearch={handleSearch}

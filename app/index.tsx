@@ -9,7 +9,7 @@ export default function IndexScreen() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      router.replace("/home");
+      router.push("/signup/intro");
     }, 2000);
     return () => clearTimeout(timeout);
   }, []);

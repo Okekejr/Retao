@@ -4,7 +4,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
-import { useListing } from "@/context/listingContext";
+import { useUserData } from "@/context/userContext";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -18,32 +18,35 @@ import {
   View,
 } from "react-native";
 
-export default function ListingFormsScreen() {
+export default function SignupFormScreen() {
   const router = useRouter();
-  const { formData, updateFormData } = useListing();
+  const { userData, updateUserForm } = useUserData();
   const [invalid, setInvalid] = useState(false);
-  const [errors, setErrors] = useState({ title: "", description: "" });
+  const [errors, setErrors] = useState({ name: "", handle: "" });
 
   const progressPercentage: DimensionValue = `${
-    (formData.current_step / formData.total_steps) * 100
+    (userData.current_step / userData.total_steps) * 100
   }%`;
 
   useEffect(() => {
-    const invalidInput = !formData.title || !formData.description;
+    const invalidInput = !userData.name || !userData.handle;
     setInvalid(invalidInput);
-  }, [formData.title, formData.description]);
+  }, [userData.name, userData.handle]);
 
   const validateInputs = () => {
-    const newErrors = { title: "", description: "" };
+    const newErrors = { name: "", handle: "" };
     let isValid = true;
 
-    if (!isMoreThanDashWords({ text: formData.title, wordsNum: 1 })) {
-      newErrors.title = "Title must be more than 2 words";
+    // Validate name: must be at least two words
+    if (!isMoreThanDashWords({ text: userData.name, wordsNum: 1 })) {
+      newErrors.name = "Please enter your full name (e.g. John Doe)";
       isValid = false;
     }
 
-    if (!isMoreThanDashWords({ text: formData.description, wordsNum: 4 })) {
-      newErrors.description = "Description must be more than 5";
+    // Validate handle: must start with "@" and be one word
+    const handle = userData.handle.trim();
+    if (!/^@[a-zA-Z0-9_]+$/.test(handle)) {
+      newErrors.handle = "Handle must start with @ and contain no spaces";
       isValid = false;
     }
 
@@ -57,9 +60,9 @@ export default function ListingFormsScreen() {
     if (!validateInputs()) return;
 
     try {
-      console.log(formData.title, formData.description);
-      updateFormData("current_step", formData.current_step + 1);
-      router.push("/listings/listingImgSelect");
+      console.log(userData.name, userData.handle);
+      updateUserForm("current_step", userData.current_step + 1);
+      router.push("/signup/signupAvatar");
     } catch (error) {
       console.log("Error", error);
     }
@@ -74,40 +77,35 @@ export default function ListingFormsScreen() {
               <CustomProgressBar progressPercentage={progressPercentage} />
 
               <CustomListingHeader
-                heading="Create Your Listing"
-                subHeading="Add a clear title and a compelling description to attract
-                interest."
+                heading="Your Name & Handle"
+                subHeading="We’ll use this to personalize your profile and make it easier for others to find you."
               />
 
-              {/* Title Input */}
+              {/* Name Input */}
               <View>
-                <CustomText style={styles.label}>Title</CustomText>
+                <CustomText style={styles.label}>Name</CustomText>
                 <TextInput
                   style={styles.input}
-                  placeholder="E.g. Camping Tent for 2 People"
-                  value={formData.title}
-                  onChangeText={(text) => updateFormData("title", text)}
+                  placeholder="E.g. John Doe"
+                  value={userData.name}
+                  onChangeText={(text) => updateUserForm("name", text)}
                 />
-                {errors.title !== "" && (
-                  <CustomText style={styles.error}>{errors.title}</CustomText>
+                {errors.name !== "" && (
+                  <CustomText style={styles.error}>{errors.name}</CustomText>
                 )}
               </View>
 
-              {/* Description Input */}
+              {/* Handle Input */}
               <View>
-                <CustomText style={styles.label}>Description</CustomText>
+                <CustomText style={styles.label}>Handle</CustomText>
                 <TextInput
-                  style={[styles.input, styles.textArea]}
-                  placeholder="Provide details: condition, brand, usage, etc."
-                  multiline
-                  numberOfLines={5}
-                  value={formData.description}
-                  onChangeText={(text) => updateFormData("description", text)}
+                  style={styles.input}
+                  placeholder="E.g. @JohnDoe"
+                  value={userData.handle}
+                  onChangeText={(text) => updateUserForm("handle", text)}
                 />
-                {errors.description !== "" && (
-                  <CustomText style={styles.error}>
-                    {errors.description}
-                  </CustomText>
+                {errors.handle !== "" && (
+                  <CustomText style={styles.error}>{errors.handle}</CustomText>
                 )}
               </View>
             </View>
@@ -144,10 +142,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
     backgroundColor: "#fafafa",
-  },
-  textArea: {
-    height: 120,
-    textAlignVertical: "top",
   },
   error: {
     color: "red",

@@ -11,11 +11,13 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   DimensionValue,
+  Keyboard,
   SafeAreaView,
   StyleSheet,
   Switch,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -34,10 +36,12 @@ export default function ListingSelect() {
   useEffect(() => {
     const isAvailableNow = formData.availability === "Available Now";
     const scheduleText = formData.availability;
-    const location = formData.location;
+    const loc = formData.location;
 
     const shouldDisable =
-      (!isAvailableNow && scheduleText.trim() === "") || location.trim() === "";
+      (!isAvailableNow && scheduleText.trim() === "") ||
+      !location ||
+      loc.trim() === "";
 
     setDisabled(shouldDisable);
   }, [formData.availability, formData.location]);
@@ -95,68 +99,72 @@ export default function ListingSelect() {
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer style={{ flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <View>
-            <CustomProgressBar progressPercentage={progressPercentage} />
-
-            <CustomListingHeader
-              heading="When and Where is Your Item Available?"
-              subHeading="Let others know when they can borrow it and where to find it. Set a schedule or mark it as available now, and add a pickup location."
-            />
-
-            <View style={{ marginBottom: 20 }}>
-              <CustomText style={styles.label}>Availability</CustomText>
-              <View style={styles.row}>
-                <CustomText style={styles.text}>Available Now</CustomText>
-                <Switch
-                  value={availableNow}
-                  onValueChange={handleAvailabilityToggle}
-                />
-              </View>
-
-              {!availableNow && (
-                <View style={{ marginTop: 10 }}>
-                  <TouchableOpacity
-                    onPress={() => setShowDatePicker(true)}
-                    style={styles.scheduleButton}
-                  >
-                    <CustomText>{scheduleText || "Select Schedule"}</CustomText>
-                  </TouchableOpacity>
-                  {showDatePicker && (
-                    <DateTimePicker
-                      mode="datetime"
-                      value={selectedDateTime || new Date()}
-                      onChange={handleDateChange}
-                    />
-                  )}
-                </View>
-              )}
-            </View>
-
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1, justifyContent: "space-between" }}>
             <View>
-              <CustomText style={styles.label}>Location</CustomText>
+              <CustomProgressBar progressPercentage={progressPercentage} />
 
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your city"
-                value={location}
-                onChangeText={handleLocationChange}
+              <CustomListingHeader
+                heading="When and Where is Your Item Available?"
+                subHeading="Let others know when they can borrow it and where to find it. Set a schedule or mark it as available now, and add a pickup location."
               />
 
-              <TouchableOpacity onPress={detectLocation}>
-                <CustomText style={styles.locationText}>
-                  Use Current Location
-                </CustomText>
-              </TouchableOpacity>
-            </View>
-          </View>
+              <View style={{ marginBottom: 20 }}>
+                <CustomText style={styles.label}>Availability</CustomText>
+                <View style={styles.row}>
+                  <CustomText style={styles.text}>Available Now</CustomText>
+                  <Switch
+                    value={availableNow}
+                    onValueChange={handleAvailabilityToggle}
+                  />
+                </View>
 
-          <ListingButtons
-            handleBack={handleBack}
-            handleNext={handleNext}
-            disabled={disabled}
-          />
-        </View>
+                {!availableNow && (
+                  <View style={{ marginTop: 10 }}>
+                    <TouchableOpacity
+                      onPress={() => setShowDatePicker(true)}
+                      style={styles.scheduleButton}
+                    >
+                      <CustomText>
+                        {scheduleText || "Select Schedule"}
+                      </CustomText>
+                    </TouchableOpacity>
+                    {showDatePicker && (
+                      <DateTimePicker
+                        mode="datetime"
+                        value={selectedDateTime || new Date()}
+                        onChange={handleDateChange}
+                      />
+                    )}
+                  </View>
+                )}
+              </View>
+
+              <View>
+                <CustomText style={styles.label}>Location</CustomText>
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your city"
+                  value={location}
+                  onChangeText={handleLocationChange}
+                />
+
+                <TouchableOpacity onPress={detectLocation}>
+                  <CustomText style={styles.locationText}>
+                    Use Current Location
+                  </CustomText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <ListingButtons
+              handleBack={handleBack}
+              handleNext={handleNext}
+              disabled={disabled}
+            />
+          </View>
+        </TouchableWithoutFeedback>
       </InnerContainer>
     </SafeAreaView>
   );

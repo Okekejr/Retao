@@ -10,6 +10,7 @@ export const Colors = {
   light: {
     text: "#1A1A1A",
     textSecondary: "#666",
+    textTertiery: "#444",
     accent: "#5A9CFF",
     accentAlt: "#6DD3C5",
     background: "#FAFAF7",

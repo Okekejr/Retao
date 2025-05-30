@@ -1,31 +1,28 @@
+import { Colors } from "@/constants/Colors";
 import {
   Dimensions,
   Modal,
+  StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 
 interface CustomModalProps {
   children: React.ReactNode;
   modalVisible: boolean;
   closeModal: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 const { width } = Dimensions.get("window");
-
-//   const [modalVisible, setModalVisible] = useState(false);
-
-// const openModal = (content?: string) => {
-//   setModalVisible(true);
-// };
-
-// const closeModal = () => setModalVisible(false);
 
 export const CustomModal = ({
   children,
   modalVisible,
   closeModal,
+  style,
 }: CustomModalProps) => {
   return (
     <Modal
@@ -40,7 +37,7 @@ export const CustomModal = ({
         onPress={closeModal}
       >
         <View
-          style={styles.modalContent}
+          style={[styles.modalContent, style]}
           onStartShouldSetResponder={() => true}
         >
           {children}
@@ -61,7 +58,7 @@ const styles = StyleSheet.create({
     width: width, // Take up the full width
     height: "auto", // Take up 80% of the height from the bottom
     paddingVertical: 20,
-    backgroundColor: "white",
+    backgroundColor: Colors.light.background,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },

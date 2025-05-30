@@ -74,7 +74,9 @@ export default function ItemScreen() {
           </CustomText>
         </View>
 
-        <CustomText style={styles.availability}>Available now</CustomText>
+        <CustomText style={styles.availability}>
+          {selectedItem?.availability}
+        </CustomText>
 
         {selectedItem?.status && (
           <RenderTimeline
