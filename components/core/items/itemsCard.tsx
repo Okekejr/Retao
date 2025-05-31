@@ -32,6 +32,7 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   };
 
   const handlePress = () => {
+    if (!id) return;
     router.push({
       pathname: `/items/[id]`,
       params: { id: id },

@@ -6,18 +6,24 @@ import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { h3, mockUserProfile } from "@/constants/random";
-import { useListing } from "@/context/listingContext";
+import { h3 } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
+import { useGetListings } from "@/hooks/useGetListings";
 import { useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ListingsScreen() {
-  const { formData } = useListing();
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
+  const { userData } = useUserData();
+  const { data: listings = [] } = useGetListings(undefined, userData?.id);
 
-  const listedItems = mockUserProfile.listings;
-  const borrowedItems = mockUserProfile.borrowedItems;
+  const listedItems =
+    listings?.filter((item) => item.owner?.id === userData.id) ?? [];
+
+  const borrowedItems = listings.filter(
+    (item) => item.borrower?.id === userData.id
+  );
 
   const openModal = (content: string) => {
     setModalVisible(true);
@@ -28,7 +34,7 @@ export default function ListingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer style={{ gap: 12 }}>
+      <InnerContainer style={{ gap: 16 }}>
         <View>
           <Header headerTitle="Listings" />
 
@@ -41,9 +47,9 @@ export default function ListingsScreen() {
           </CustomModal>
         </View>
 
-        {listedItems.length > 0 && (
-          <View>
-            <CustomText style={[styles.heading, h3]}>My Listings</CustomText>
+        <View>
+          <CustomText style={[styles.heading, h3]}>My Listings</CustomText>
+          {listedItems.length > 0 ? (
             <FlatList
               data={listedItems}
               keyExtractor={(item) => item.title}
@@ -61,12 +67,14 @@ export default function ListingsScreen() {
                 />
               )}
             />
-          </View>
-        )}
+          ) : (
+            <CustomText>No listed items yet</CustomText>
+          )}
+        </View>
 
-        {borrowedItems.length > 0 && (
-          <View>
-            <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
+        <View>
+          <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
+          {borrowedItems.length > 0 ? (
             <FlatList
               data={borrowedItems}
               keyExtractor={(item) => item.title}
@@ -84,8 +92,10 @@ export default function ListingsScreen() {
                 />
               )}
             />
-          </View>
-        )}
+          ) : (
+            <CustomText>No borrowed items yet</CustomText>
+          )}
+        </View>
       </InnerContainer>
     </SafeAreaView>
   );

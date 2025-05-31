@@ -20,7 +20,7 @@ import {
 
 export default function ListingReview() {
   const router = useRouter();
-  const { formData, updateFormData, resetFormData } = useListing();
+  const { formData, updateFormData } = useListing();
 
   const progressPercentage: DimensionValue = `${
     (formData.current_step / formData.total_steps) * 100

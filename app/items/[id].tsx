@@ -8,7 +8,9 @@ import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
-import { h2, mockItems, UserRole } from "@/constants/random";
+import { h2, UserRole } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
+import { useGetListingById } from "@/hooks/useGetListingByID";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
@@ -19,23 +21,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { avatars } from "../signup/signupAvatar";
 
 const { height } = Dimensions.get("window");
 
-const currentUser = {
-  contact: "@Okekejr",
-};
-
 export default function ItemScreen() {
   const { id } = useLocalSearchParams();
-  const selectedItem = mockItems.find((item) => item.id === id);
+  const { userData } = useUserData();
+  const { data: selectedItem, isLoading } = useGetListingById(id as string);
+
+  if (isLoading || !selectedItem) return;
 
   const userRole: UserRole =
-    currentUser.contact === selectedItem?.owner.contact
+    userData.id === selectedItem.owner.id
       ? "owner"
-      : currentUser.contact === selectedItem?.borrower?.contact
+      : userData.id === selectedItem.borrower?.id
       ? "borrower"
       : "viewer";
+
+  const avatar = avatars.find((a) => a.id === selectedItem.owner.avatar);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -65,7 +69,7 @@ export default function ItemScreen() {
 
         <View style={styles.ownerSection}>
           <Image
-            source={selectedItem?.owner.avatar}
+            source={avatar?.src}
             style={styles.avatar}
             contentFit="cover"
           />

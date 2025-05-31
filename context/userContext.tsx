@@ -9,6 +9,28 @@ export interface userProfile {
   bio: string;
   location: string;
   join_date: string;
+  stats: {
+    listed: any;
+    borrowed: any;
+    rating: number;
+    reviewsCount: any;
+  };
+  listings: {
+    id: any;
+    title: any;
+    description: any;
+    distance: any;
+    image: any;
+    favorited: boolean;
+  }[];
+  borrowedItems: {
+    id: any;
+    title: any;
+    description: any;
+    distance: any;
+    image: any;
+    favorited: boolean;
+  }[];
   total_steps: number;
   current_step: number;
 }
@@ -24,6 +46,14 @@ const initialState: userProfile = {
   join_date: "",
   current_step: 1,
   total_steps: 4,
+  stats: {
+    listed: 0,
+    borrowed: 0,
+    rating: 0.0,
+    reviewsCount: 0,
+  },
+  listings: [],
+  borrowedItems: [],
 };
 
 interface userContext {

@@ -91,14 +91,25 @@ export default function LoginScreen() {
 
     if (res.ok) {
       const fields: (keyof userProfile)[] = [
-        "avatar",
-        "email",
-        "bio",
-        "handle",
         "id",
+        "email",
+        "name",
+        "handle",
+        "avatar",
+        "bio",
         "location",
+        "join_date",
+        "stats",
+        "listings",
+        "borrowedItems",
+        "current_step",
+        "total_steps",
       ];
-      fields.forEach((key) => updateUserForm(key, data[key]));
+      fields.forEach((key) => {
+        if (data[key] !== undefined) {
+          updateUserForm(key, data[key]);
+        }
+      });
       router.replace("/home");
     } else {
       console.error("Failed to fetch user profile:", data.error);

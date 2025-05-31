@@ -19,7 +19,7 @@ export default function ListingSuccess() {
 
   const handleFinish = () => {
     try {
-      // resetFormData();
+      resetFormData();
       router.push("/listings");
     } catch (error) {
       console.log("Error:", error);
