@@ -4,6 +4,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
+import { BASE_URL } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
@@ -22,6 +23,7 @@ export default function SignupFormScreen() {
   const router = useRouter();
   const { userData, updateUserForm } = useUserData();
   const [invalid, setInvalid] = useState(false);
+  const [isHandleUnique, setHandleUnique] = useState(true);
   const [errors, setErrors] = useState({ name: "", handle: "" });
 
   const progressPercentage: DimensionValue = `${
@@ -29,9 +31,30 @@ export default function SignupFormScreen() {
   }%`;
 
   useEffect(() => {
-    const invalidInput = !userData.name || !userData.handle;
+    const invalidInput = !(userData.name && userData.handle && isHandleUnique);
     setInvalid(invalidInput);
   }, [userData.name, userData.handle]);
+
+  const checkHandleExists = async (handle: string) => {
+    if (!handle.trim()) return;
+
+    try {
+      const res = await fetch(`${BASE_URL}users/checkHandle?handle=${handle}`);
+      const data = await res.json();
+
+      if (data.status === "OK") {
+        setHandleUnique(!data.exists);
+        setErrors((prev) => ({
+          ...prev,
+          handle: data.exists ? "This handle is already taken." : "",
+        }));
+      } else {
+        throw new Error("Failed to validate handle.");
+      }
+    } catch (error) {
+      console.error("Error checking handle uniqueness:", error);
+    }
+  };
 
   const validateInputs = () => {
     const newErrors = { name: "", handle: "" };
@@ -102,6 +125,7 @@ export default function SignupFormScreen() {
                   style={styles.input}
                   placeholder="E.g. @JohnDoe"
                   value={userData.handle}
+                  onBlur={() => checkHandleExists(userData.handle)}
                   onChangeText={(text) => updateUserForm("handle", text)}
                 />
                 {errors.handle !== "" && (

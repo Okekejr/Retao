@@ -1,8 +1,8 @@
+import { avatars } from "@/app/signup/signupAvatar";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
-import { CustomStats } from "./stats";
 
 interface IdentityCardProps {
   user: {
@@ -10,20 +10,16 @@ interface IdentityCardProps {
     handle: string;
     avatar: any;
     bio: string;
-    joinDate: string;
-    stats: {
-      listed: number;
-      borrowed: number;
-      rating: number;
-      reviewsCount: number;
-    };
+    join_date: string;
   };
 }
 
 export const IdentityCard = ({ user }: IdentityCardProps) => {
+  const avatar = avatars.find((a) => a.id === user.avatar);
+
   return (
     <View style={styles.card}>
-      <Image source={user.avatar} style={styles.avatar} />
+      <Image source={avatar?.src} style={styles.avatar} />
       <View style={styles.textSection}>
         <CustomText style={styles.name}>{user.name}</CustomText>
         <CustomText style={styles.handle}>{user.handle}</CustomText>
@@ -31,16 +27,16 @@ export const IdentityCard = ({ user }: IdentityCardProps) => {
           {user.bio}
         </CustomText>
         <CustomText style={styles.joined}>
-          Joined {new Date(user.joinDate).toLocaleDateString()}
+          Joined {new Date(user.join_date).toLocaleDateString()}
         </CustomText>
-        <View style={styles.statsRow}>
+        {/* <View style={styles.statsRow}>
           <CustomStats label="Listed" value={user.stats.listed} />
           <CustomStats label="Borrowed" value={user.stats.borrowed} />
           <CustomStats
             label="Rating"
             value={`${user.stats.rating} ⭐ (${user.stats.reviewsCount})`}
           />
-        </View>
+        </View> */}
       </View>
     </View>
   );

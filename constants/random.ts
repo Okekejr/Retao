@@ -12,6 +12,10 @@ export const h3 = {
   color: "#1A1A1A",
 };
 
+export const machineIP = process.env.EXPO_PUBLIC_MACHINE_IP;
+
+export const BASE_URL = `http://${machineIP}:3000/api/`;
+
 export const AppName = "Rezñuf";
 
 export type UserRole = "owner" | "borrower" | "viewer";

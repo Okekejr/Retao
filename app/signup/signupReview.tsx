@@ -4,9 +4,11 @@ import { CustomProgressBar } from "@/components/ui/customProgressBar";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
-import { useUserData } from "@/context/userContext";
+import { BASE_URL } from "@/constants/random";
+import { userProfile, useUserData } from "@/context/userContext";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import {
   DimensionValue,
   SafeAreaView,
@@ -18,7 +20,7 @@ import { avatars } from "./signupAvatar";
 
 export default function SignupReviewScreen() {
   const router = useRouter();
-  const { userData, updateUserForm, resetUserData } = useUserData();
+  const { userData, updateUserForm } = useUserData();
 
   const avatar = avatars.find((a) => a.id === userData.avatar);
 
@@ -31,12 +33,57 @@ export default function SignupReviewScreen() {
     router.back();
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     try {
       // make API CALL to save data here, if successful send to success screen
+      const res = await fetch(`${BASE_URL}users/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: userData.id,
+          name: userData.name,
+          handle: userData.handle,
+          avatar: userData.avatar,
+          bio: userData.bio,
+          location: userData.location,
+        }),
+      });
 
-      resetUserData();
-      router.push("/signup/loadingScreen");
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Failed to save profile");
+
+      try {
+        const token = await SecureStore.getItemAsync("token");
+
+        const auth = await fetch(`${BASE_URL}auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await auth.json();
+
+        if (auth.ok) {
+          const fields: (keyof userProfile)[] = [
+            "avatar",
+            "email",
+            "bio",
+            "handle",
+            "id",
+            "location",
+            "join_date",
+            "name",
+          ];
+          fields.forEach((key) => updateUserForm(key, data[key]));
+        } else {
+          console.error("Failed to fetch user profile:", data.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to authenticate user:", error.message);
+      }
+
+      router.replace("/signup/loadingScreen");
     } catch (error) {
       console.log("Error", error);
     }

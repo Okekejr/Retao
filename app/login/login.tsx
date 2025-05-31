@@ -3,8 +3,12 @@ import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { AppName } from "@/constants/random";
+import { AppName, BASE_URL } from "@/constants/random";
+import { userProfile, useUserData } from "@/context/userContext";
+import { checkEmailExists, LoginFunc, validateEmail } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -17,8 +21,11 @@ import {
 } from "react-native";
 
 export default function LoginScreen() {
+  const router = useRouter();
+  const { updateUserForm } = useUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailExist, setEmailExist] = useState(true);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   const emailInputRef = useRef<TextInput>(null);
@@ -26,16 +33,23 @@ export default function LoginScreen() {
   const [errors, setErrors] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
+    login: "",
   });
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
   useEffect(() => {
     // Enable button only if both fields are filled
-    setButtonDisabled(!(email && password));
-  }, [email, password]);
+    setButtonDisabled(!(email && password && emailExist));
+  }, [email, password, emailExist]);
 
   const validateInputs = () => {
-    const newErrors = { email: "", password: "" };
+    const newErrors = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      login: "",
+    };
     let isValid = true;
 
     if (!email) {
@@ -51,9 +65,45 @@ export default function LoginScreen() {
     return isValid;
   };
 
-  const checkIfUserExists = () => {};
+  const handleLogin = async () => {
+    if ((!validateInputs() && !email) || !password) return;
+    if (!validateEmail(email)) return;
 
-  const handleLogin = () => {};
+    const { success, error } = await LoginFunc(email, password);
+
+    console.log(success, error, email);
+
+    if (!success) {
+      setErrors((prev) => ({
+        ...prev,
+        login: error,
+      }));
+      return;
+    }
+
+    const token = await SecureStore.getItemAsync("token");
+
+    const res = await fetch(`${BASE_URL}auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      const fields: (keyof userProfile)[] = [
+        "avatar",
+        "email",
+        "bio",
+        "handle",
+        "id",
+        "location",
+      ];
+      fields.forEach((key) => updateUserForm(key, data[key]));
+      router.replace("/home");
+    } else {
+      console.error("Failed to fetch user profile:", data.error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,12 +121,20 @@ export default function LoginScreen() {
                 style={[styles.input, errors.email ? styles.errorInput : null]}
                 placeholder="Email Address"
                 placeholderTextColor="#c7c7c7"
-                value={email}
-                onChangeText={(text) => setEmail(text.trim())}
-                onSubmitEditing={() => passwordInputRef.current?.focus()}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                value={email}
+                onChangeText={(text) => setEmail(text.trim())}
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
+                onBlur={() =>
+                  checkEmailExists({
+                    email: email,
+                    setEmailUnique: setEmailExist,
+                    setErrors: setErrors,
+                    login: true,
+                  })
+                }
               />
               {errors.email ? (
                 <CustomText style={styles.error}>{errors.email}</CustomText>
@@ -108,6 +166,9 @@ export default function LoginScreen() {
                   />
                 </TouchableOpacity>
               </View>
+              {errors.login ? (
+                <CustomText style={styles.error}>{errors.login}</CustomText>
+              ) : null}
             </View>
 
             {/* Log in Button */}
@@ -124,7 +185,10 @@ export default function LoginScreen() {
 
             <CustomDivider text="OR" />
 
-            <TouchableOpacity style={[styles.nextButton, styles.otherButton]}>
+            <TouchableOpacity
+              style={[styles.nextButton, styles.otherButton]}
+              onPress={() => router.push("/signup/signup")}
+            >
               <CustomText style={styles.buttonText}>
                 Dont have an account? Sign up
               </CustomText>
@@ -174,7 +238,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "red",
-    marginBottom: 8,
+    marginTop: 8,
   },
   errorInput: {
     borderColor: "red",
@@ -187,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   otherButton: {
-    backgroundColor: Colors.light.muted,
+    backgroundColor: Colors.light.textTertiery,
   },
   buttonText: {
     color: "#fff",

@@ -5,9 +5,11 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
+import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import {
   DimensionValue,
   SafeAreaView,
@@ -29,8 +31,45 @@ export default function ListingReview() {
     router.back();
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     try {
+      const token = await SecureStore.getItemAsync("token");
+      if (!token) throw new Error("No token found");
+
+      const formDataPayload = new FormData();
+
+      formDataPayload.append("title", formData.title);
+      formDataPayload.append("description", formData.description);
+      formDataPayload.append("category", formData.category);
+      formDataPayload.append("location", formData.location);
+      formDataPayload.append("availability", formData.availability);
+      formDataPayload.append("status", formData.status);
+
+      formData.images.forEach((image: any, index: number) => {
+        formDataPayload.append("images", {
+          uri: image,
+          name: `listing-image-${index}.jpg`,
+          type: "image/jpeg",
+        } as any);
+      });
+
+      const response = await fetch(`${BASE_URL}listings/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formDataPayload,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create listing");
+      }
+
+      console.log("Listing created:", data.listingId);
+
       router.push("/listings/listingSuccess");
     } catch (error) {
       console.log("Error", error);

@@ -3,9 +3,12 @@ import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { validateEmail, validatePassword } from "@/utils";
+import { BASE_URL } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
+import { checkEmailExists, validateEmail, validatePassword } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -18,6 +21,7 @@ import {
 } from "react-native";
 
 export default function SignupScreen() {
+  const { updateUserForm } = useUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -32,6 +36,7 @@ export default function SignupScreen() {
     email: "",
     password: "",
     confirmPassword: "",
+    login: "",
   });
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
@@ -41,17 +46,7 @@ export default function SignupScreen() {
     setButtonDisabled(!(email && passwordsMatch && isEmailUnique));
   }, [email, password, confirmPassword, isEmailUnique]);
 
-  const checkEmailExists = async (email: string) => {
-    if (!validateEmail(email)) return;
-
-    try {
-      // check email uniqueness
-    } catch (error) {
-      console.error("Error checking email uniqueness:", error);
-    }
-  };
-
-  const handleSignup = () => {
+  const handleSignup = async () => {
     const emailError = validateEmail(email) ? "" : "Invalid email format.";
     const passwordError = validatePassword(password)
       ? ""
@@ -64,13 +59,32 @@ export default function SignupScreen() {
         email: emailError,
         password: passwordError,
         confirmPassword: confirmError,
+        login: "",
       });
       return;
     }
 
-    console.log(email, password, confirmPassword);
-
     try {
+      const res = await fetch(`${BASE_URL}users/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Registration failed");
+
+      await SecureStore.setItemAsync("token", data.token);
+      await SecureStore.setItemAsync("id", data.token);
+      await SecureStore.setItemAsync("email", data.token);
+
+      updateUserForm("id", data.user.id);
+      updateUserForm("email", data.user.email);
+
+      router.replace("/signup/intro");
     } catch (error) {
       console.error("Error", error);
     }
@@ -92,15 +106,20 @@ export default function SignupScreen() {
                 style={[styles.input, errors.email ? styles.errorInput : null]}
                 placeholder="Email Address"
                 placeholderTextColor="#c7c7c7"
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  //   checkEmailExists(text);
-                }}
-                onSubmitEditing={() => passwordInputRef.current?.focus()}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                onBlur={() =>
+                  checkEmailExists({
+                    email: email,
+                    setEmailUnique: setEmailUnique,
+                    setErrors: setErrors,
+                    login: false,
+                  })
+                }
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
               />
               {errors.email ? (
                 <CustomText style={styles.error}>{errors.email}</CustomText>
@@ -252,7 +271,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   otherButton: {
-    backgroundColor: Colors.light.muted,
+    backgroundColor: Colors.light.textTertiery,
   },
   buttonText: {
     color: "#fff",

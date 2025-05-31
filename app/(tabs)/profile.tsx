@@ -7,7 +7,7 @@ import { CustomModal } from "@/components/ui/customModal";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { mockUserProfile } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
 import { profileItems } from "@/utils";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -15,6 +15,7 @@ import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { userData } = useUserData();
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
 
@@ -31,7 +32,7 @@ export default function ProfileScreen() {
         <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
 
         <ScrollView>
-          <IdentityCard user={mockUserProfile} />
+          <IdentityCard user={userData} />
 
           <ListAnItemBtn openModal={() => openModal("createListing")} />
 

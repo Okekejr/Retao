@@ -1,17 +1,65 @@
 import { Colors } from "@/constants/Colors";
+import { BASE_URL } from "@/constants/random";
+import { userProfile, useUserData } from "@/context/userContext";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 
+const ANIMATION_DURATION = 1200;
+
 export default function IndexScreen() {
   const router = useRouter();
+  const { updateUserForm } = useUserData();
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      router.push("/login/login");
-    }, 2000);
-    return () => clearTimeout(timeout);
+    const checkAuth = async () => {
+      // ⏳ Wait for animation to complete
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const token = await SecureStore.getItemAsync("token");
+
+      if (!token) {
+        router.replace("/login/login");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          const fields: (keyof userProfile)[] = [
+            "avatar",
+            "email",
+            "bio",
+            "handle",
+            "id",
+            "location",
+            "join_date",
+            "name",
+          ];
+          fields.forEach((key) => updateUserForm(key, data[key]));
+          // Token is valid, navigate to home
+          router.replace("/home");
+        } else {
+          // Token is invalid or expired
+          await SecureStore.deleteItemAsync("token");
+          router.replace("/login/login");
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        router.replace("/login/login");
+      }
+    };
+
+    checkAuth();
   }, []);
 
   return (
@@ -25,7 +73,7 @@ export default function IndexScreen() {
 
       <Animatable.Image
         animation="fadeInDown"
-        duration={1200}
+        duration={ANIMATION_DURATION}
         style={styles.logo}
         source={require("../assets/images/icon.png")}
         resizeMode="contain"

@@ -1,21 +1,27 @@
 import { createContext, FC, useContext, useState } from "react";
 
-interface userProfile {
+export interface userProfile {
+  id: string;
+  email: string;
   name: string;
   handle: string;
   avatar: any;
   bio: string;
   location: string;
+  join_date: string;
   total_steps: number;
   current_step: number;
 }
 
 const initialState: userProfile = {
+  id: "",
+  email: "",
   name: "",
   handle: "",
   avatar: "",
   bio: "",
   location: "",
+  join_date: "",
   current_step: 1,
   total_steps: 4,
 };
