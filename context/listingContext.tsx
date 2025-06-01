@@ -3,6 +3,7 @@ import { createContext, FC, useContext, useState } from "react";
 
 interface ListingData {
   category: string;
+  category_id: string;
   images: string[];
   location: string;
   title: string;
@@ -15,6 +16,7 @@ interface ListingData {
 
 const initialState: ListingData = {
   category: "",
+  category_id: "",
   images: [],
   location: "",
   title: "",

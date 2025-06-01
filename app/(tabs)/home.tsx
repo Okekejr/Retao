@@ -6,11 +6,14 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { mockItems } from "@/constants/random";
 import { useGetCategories } from "@/hooks/useGetCategories";
+import { useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
+  const { data: Listings } = useGetListings();
   const { data: location } = useGetLocation();
+  const { data: ListingByLoc } = useGetListings(location);
   const { data: Categories } = useGetCategories();
 
   const handleSearch = (query: string) => {
@@ -30,7 +33,9 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <ItemSection heading="Popular Near You" data={mockItems} />
+          {Listings && (
+            <ItemSection heading="Popular Near You" data={Listings} />
+          )}
 
           <ItemSection
             heading={`Available in ${location ?? "your area"}`}

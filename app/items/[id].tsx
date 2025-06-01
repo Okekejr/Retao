@@ -10,7 +10,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { h2, UserRole } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
-import { useGetListingById } from "@/hooks/useGetListingByID";
+import { useGetListingById } from "@/hooks/useGetListings";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
@@ -64,7 +64,7 @@ export default function ItemScreen() {
         </CustomText>
 
         <CustomText style={styles.metaText}>
-          {selectedItem?.distance} away
+          {selectedItem?.distance}
         </CustomText>
 
         <View style={styles.ownerSection}>

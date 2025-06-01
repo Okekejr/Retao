@@ -1,8 +1,10 @@
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { categories, categoriesT, h3 } from "@/constants/random";
+import { categoriesIcon, h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
+import { useGetCategories } from "@/hooks/useGetCategories";
+import { Category } from "@/types";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { MotiView } from "moti";
@@ -15,7 +17,8 @@ interface SelectCategoryProps {
 
 export default function SelectCategory({ closeModal }: SelectCategoryProps) {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<categoriesT | null>(
+  const { data: Categories } = useGetCategories();
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
 
@@ -23,6 +26,7 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
 
   const handleNext = () => {
     updateFormData("category", selectedCategory?.title);
+    updateFormData("category_id", selectedCategory?.id);
     router.push("/listings/listingIntro");
     closeModal();
   };
@@ -34,37 +38,42 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
       </View>
 
       <ScrollView contentContainerStyle={styles.cardList}>
-        {categories.map((cat, index) => (
-          <MotiView
-            key={cat.id}
-            from={{ opacity: 0, translateY: 10 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              delay: 400 + index * 80,
-              type: "timing",
-              duration: 400,
-            }}
-          >
-            <TouchableOpacity
-              style={[
-                styles.categoryCard,
-                selectedCategory?.id === cat.id && styles.categoryCardSelected,
-              ]}
-              onPress={() => setSelectedCategory(cat)}
-            >
-              <View>
-                <CustomText style={styles.categoryTitle}>
-                  {cat.title}
-                </CustomText>
-              </View>
-              <Image
-                source={cat.icon}
-                style={styles.categoryImage}
-                contentFit="cover"
-              />
-            </TouchableOpacity>
-          </MotiView>
-        ))}
+        {Categories &&
+          Categories.map((cat, index) => {
+            const iconObj = categoriesIcon.find((i) => i.id === cat.icon);
+            return (
+              <MotiView
+                key={cat.id}
+                from={{ opacity: 0, translateY: 10 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{
+                  delay: 400 + index * 80,
+                  type: "timing",
+                  duration: 400,
+                }}
+              >
+                <TouchableOpacity
+                  style={[
+                    styles.categoryCard,
+                    selectedCategory?.id === cat.id &&
+                      styles.categoryCardSelected,
+                  ]}
+                  onPress={() => setSelectedCategory(cat)}
+                >
+                  <View>
+                    <CustomText style={styles.categoryTitle}>
+                      {cat.title}
+                    </CustomText>
+                  </View>
+                  <Image
+                    source={iconObj?.icon}
+                    style={styles.categoryImage}
+                    contentFit="cover"
+                  />
+                </TouchableOpacity>
+              </MotiView>
+            );
+          })}
       </ScrollView>
 
       <TouchableOpacity

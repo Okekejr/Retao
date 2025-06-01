@@ -33,11 +33,13 @@ export type mockItemsT = {
   category: string;
   status?: ItemStatus;
   owner: {
+    id: string;
     name: string;
     avatar: any;
     contact: string;
   };
   borrower?: {
+    id: string;
     name: string;
     contact: string;
     borrowedOn?: string;
@@ -61,12 +63,14 @@ export const mockItems: mockItemsT = [
     category: "Tools",
     status: "borrowed",
     borrower: {
+      id: "",
       name: "Chris N.",
       contact: "@chrisn",
       borrowedOn: "2025-05-20",
       dueDate: "2025-05-30",
     },
     owner: {
+      id: "",
       name: "Alex Garcia",
       avatar: require("../assets/img/avatar.png"),
       contact: "@alexg",
@@ -87,6 +91,7 @@ export const mockItems: mockItemsT = [
     favorited: false,
     status: "listed",
     owner: {
+      id: "",
       name: "Emmanuel Okeke",
       avatar: require("../assets/img/avatar.png"),
       contact: "@Okekejr",
@@ -107,11 +112,13 @@ export const mockItems: mockItemsT = [
     favorited: false,
     status: "borrowed",
     owner: {
+      id: "",
       name: "Chidera Okeke",
       avatar: require("../assets/img/avatar.png"),
       contact: "@Chidera",
     },
     borrower: {
+      id: "",
       name: "Emmanuel Okeke",
       contact: "@Okekejr",
       borrowedOn: "2025-05-20",
@@ -133,6 +140,7 @@ export const mockItems: mockItemsT = [
     favorited: true,
     status: "listed",
     owner: {
+      id: "",
       name: "Sarah Lee",
       avatar: require("../assets/img/avatar.png"),
       contact: "@slee_media",

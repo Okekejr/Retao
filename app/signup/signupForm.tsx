@@ -33,7 +33,7 @@ export default function SignupFormScreen() {
   useEffect(() => {
     const invalidInput = !(userData.name && userData.handle && isHandleUnique);
     setInvalid(invalidInput);
-  }, [userData.name, userData.handle]);
+  }, [userData.name, userData.handle, isHandleUnique]);
 
   const checkHandleExists = async (handle: string) => {
     if (!handle.trim()) return;

@@ -1,5 +1,5 @@
 import { BASE_URL } from "@/constants/random";
-import { ListingsT } from "@/types";
+import { Listing, ListingsT } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetListings = (location?: string, userId?: string) => {
@@ -28,7 +28,28 @@ export const useGetListings = (location?: string, userId?: string) => {
         return [];
       }
     },
-    staleTime: 1000 * 60 * 60 * 2,
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useGetListingById = (id: string) => {
+  return useQuery<Listing, Error>({
+    queryKey: ["listing", id],
+    queryFn: async () => {
+      try {
+        const url = new URL(`${BASE_URL}listings/${id}`);
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error("Failed to fetch listings");
+        }
+        const data = await res.json();
+        return data ?? null;
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    },
+    staleTime: 1000 * 60 * 60 * 2,
   });
 };

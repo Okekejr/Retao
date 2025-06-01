@@ -36,6 +36,8 @@ export default function ListingReview() {
       const token = await SecureStore.getItemAsync("token");
       if (!token) throw new Error("No token found");
 
+      console.log(formData.category_id);
+
       const formDataPayload = new FormData();
 
       formDataPayload.append("title", formData.title);
@@ -44,6 +46,7 @@ export default function ListingReview() {
       formDataPayload.append("location", formData.location);
       formDataPayload.append("availability", formData.availability);
       formDataPayload.append("status", formData.status);
+      formDataPayload.append("category_id", formData.category_id);
 
       formData.images.forEach((image: any, index: number) => {
         formDataPayload.append("images", {
