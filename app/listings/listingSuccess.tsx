@@ -2,6 +2,7 @@ import { CustomListingHeader } from "@/components/ui/customListingHeader";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
+import { useGetUserData } from "@/hooks/useGetUserData";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import {
@@ -16,10 +17,12 @@ import * as Animatable from "react-native-animatable";
 export default function ListingSuccess() {
   const router = useRouter();
   const { resetFormData } = useListing();
+  const { refreshData } = useGetUserData();
 
   const handleFinish = () => {
     try {
       resetFormData();
+      refreshData();
       router.push("/listings");
     } catch (error) {
       console.log("Error:", error);

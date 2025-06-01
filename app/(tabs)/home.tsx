@@ -4,12 +4,14 @@ import { SearchBar } from "@/components/core/searchBar";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { categories, mockItems } from "@/constants/random";
+import { mockItems } from "@/constants/random";
+import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
   const { data: location } = useGetLocation();
+  const { data: Categories } = useGetCategories();
 
   const handleSearch = (query: string) => {
     console.log("Searching for:", query);
@@ -35,7 +37,9 @@ export default function HomeScreen() {
             data={mockItems}
           />
 
-          <CategoriesSection title="Categories" data={categories} />
+          {Categories && (
+            <CategoriesSection title="Categories" data={Categories} />
+          )}
         </ScrollView>
       </InnerContainer>
     </SafeAreaView>

@@ -140,45 +140,31 @@ export const mockItems: mockItemsT = [
   },
 ];
 
-export interface categoriesT {
+export type categoriesT = {
   id: string;
-  title: string;
   icon: any;
-  description: string;
-}
-[];
+}[];
 
-export const categories = [
+export const categoriesIcon: categoriesT = [
   {
-    id: "1",
-    title: "Tools",
+    id: "tools",
     icon: require("../assets/img/cat/tools.png"),
-    description: "Power tools, drills, and gear for DIY or professional work.",
   },
   {
-    id: "2",
-    title: "Camping",
+    id: "camping",
     icon: require("../assets/img/cat/camping.png"),
-    description:
-      "Find tents, stoves, and gear for your next outdoor adventure.",
   },
   {
-    id: "3",
-    title: "Photography",
+    id: "camera",
     icon: require("../assets/img/cat/photograph.png"),
-    description: "Cameras, lenses, tripods, and other creative equipment.",
   },
   {
-    id: "4",
-    title: "Gardening",
+    id: "gardening",
     icon: require("../assets/img/cat/gardening.png"),
-    description: "Everything from lawn mowers to watering cans and shears.",
   },
   {
-    id: "5",
-    title: "Furniture",
+    id: "furniture",
     icon: require("../assets/img/cat/furniture.png"),
-    description: "Chairs, tables, shelves and other home essentials.",
   },
 ];
 

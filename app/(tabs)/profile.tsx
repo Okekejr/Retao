@@ -8,6 +8,7 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
+import { useLogout } from "@/hooks/useLogout";
 import { profileItems } from "@/utils";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -16,6 +17,7 @@ import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 export default function ProfileScreen() {
   const router = useRouter();
   const { userData } = useUserData();
+  const { logout } = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
 
@@ -48,6 +50,7 @@ export default function ProfileScreen() {
                 onPress={() => {
                   item.hrefLink && router.push(item.hrefLink);
                   item.content && openModal(item.content);
+                  item.func && logout();
                 }}
               />
             )}

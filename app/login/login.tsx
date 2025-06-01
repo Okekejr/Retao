@@ -3,12 +3,11 @@ import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { AppName, BASE_URL } from "@/constants/random";
-import { userProfile, useUserData } from "@/context/userContext";
+import { AppName } from "@/constants/random";
+import { useGetUserData } from "@/hooks/useGetUserData";
 import { checkEmailExists, LoginFunc, validateEmail } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -22,7 +21,7 @@ import {
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { updateUserForm } = useUserData();
+  const { refreshData } = useGetUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailExist, setEmailExist] = useState(true);
@@ -81,38 +80,11 @@ export default function LoginScreen() {
       return;
     }
 
-    const token = await SecureStore.getItemAsync("token");
-
-    const res = await fetch(`${BASE_URL}auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      const fields: (keyof userProfile)[] = [
-        "id",
-        "email",
-        "name",
-        "handle",
-        "avatar",
-        "bio",
-        "location",
-        "join_date",
-        "stats",
-        "listings",
-        "borrowedItems",
-        "current_step",
-        "total_steps",
-      ];
-      fields.forEach((key) => {
-        if (data[key] !== undefined) {
-          updateUserForm(key, data[key]);
-        }
-      });
+    try {
+      await refreshData();
       router.replace("/home");
-    } else {
-      console.error("Failed to fetch user profile:", data.error);
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error);
     }
   };
 

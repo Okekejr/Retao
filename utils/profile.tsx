@@ -5,6 +5,7 @@ export type profileItemsT = {
   icon: keyof typeof Ionicons.glyphMap;
   content?: string;
   hrefLink?: any;
+  func?: boolean;
 }[];
 
 export const profileItems: profileItemsT = [
@@ -28,6 +29,7 @@ export const profileItems: profileItemsT = [
   {
     label: "Log Out",
     icon: "log-out-outline",
+    func: true,
   },
 ];
 

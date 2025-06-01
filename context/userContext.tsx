@@ -10,10 +10,10 @@ export interface userProfile {
   location: string;
   join_date: string;
   stats: {
-    listed: any;
-    borrowed: any;
+    listed: number;
+    borrowed: number;
     rating: number;
-    reviewsCount: any;
+    reviewsCount: number;
   };
   listings: {
     id: any;
@@ -49,7 +49,7 @@ const initialState: userProfile = {
   stats: {
     listed: 0,
     borrowed: 0,
-    rating: 0.0,
+    rating: 0,
     reviewsCount: 0,
   },
   listings: [],

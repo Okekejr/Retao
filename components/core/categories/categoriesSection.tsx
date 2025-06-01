@@ -1,16 +1,12 @@
 import CustomHeading from "@/components/ui/customHeading";
 import { h3 } from "@/constants/random";
+import { Categories } from "@/types";
 import { StyleSheet, View } from "react-native";
 import { CategoryCard } from "./categoryCard";
 
 interface CategoriesSectionProps {
   title: string;
-  data: {
-    id: string;
-    title: string;
-    icon: any;
-    description: string;
-  }[];
+  data: Categories;
 }
 
 export const CategoriesSection = ({ title, data }: CategoriesSectionProps) => {

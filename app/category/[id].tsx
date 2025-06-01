@@ -3,7 +3,11 @@ import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { categories, h3, mockItems } from "@/constants/random";
+import { categoriesIcon, h3 } from "@/constants/random";
+import {
+  useGetCategoryById,
+  useGetListingsByCategory,
+} from "@/hooks/useGetCategories";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { MotiView } from "moti";
@@ -13,20 +17,17 @@ const { height } = Dimensions.get("window");
 
 export default function CategoryScreen() {
   const { id } = useLocalSearchParams();
+  const { data: category } = useGetCategoryById(id as string);
+  const { data: listings, isLoading } = useGetListingsByCategory(id as string);
 
-  const category = categories.find((cat) => cat.id === id);
-  const filteredItems = mockItems.filter(
-    (item) => item.category === category?.title
-  );
+  if (isLoading || !listings || !category) return;
+
+  const iconObj = categoriesIcon.find((i) => i.id === category.icon);
 
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={category?.icon}
-          style={styles.image}
-          contentFit="cover"
-        />
+        <Image source={iconObj?.icon} style={styles.image} contentFit="cover" />
 
         <View style={styles.iconRow}>
           <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
@@ -42,8 +43,8 @@ export default function CategoryScreen() {
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.grid}>
-            {filteredItems.length > 0 ? (
-              filteredItems.map((item, index) => (
+            {listings.length > 0 ? (
+              listings.map((item, index) => (
                 <MotiView
                   key={item.id}
                   from={{ opacity: 0, translateY: 10 }}

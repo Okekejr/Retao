@@ -1,6 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { BASE_URL } from "@/constants/random";
-import { userProfile, useUserData } from "@/context/userContext";
+import { useGetUserData } from "@/hooks/useGetUserData";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
@@ -11,7 +10,7 @@ const ANIMATION_DURATION = 1200;
 
 export default function IndexScreen() {
   const router = useRouter();
-  const { updateUserForm } = useUserData();
+  const { refreshData } = useGetUserData();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,35 +25,12 @@ export default function IndexScreen() {
       }
 
       try {
-        const res = await fetch(`${BASE_URL}auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await refreshData();
 
-        const data = await res.json();
-
-        if (res.ok) {
-          const fields: (keyof userProfile)[] = [
-            "avatar",
-            "email",
-            "bio",
-            "handle",
-            "id",
-            "location",
-            "join_date",
-            "name",
-          ];
-          fields.forEach((key) => updateUserForm(key, data[key]));
-          // Token is valid, navigate to home
-          router.replace("/home");
-        } else {
-          // Token is invalid or expired
-          await SecureStore.deleteItemAsync("token");
-          router.replace("/login/login");
-        }
+        router.replace("/home");
       } catch (error) {
         console.error("Auth check failed:", error);
+        await SecureStore.deleteItemAsync("token");
         router.replace("/login/login");
       }
     };

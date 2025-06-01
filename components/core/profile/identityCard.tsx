@@ -3,6 +3,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
+import { CustomStats } from "./stats";
 
 interface IdentityCardProps {
   user: {
@@ -11,6 +12,12 @@ interface IdentityCardProps {
     avatar: any;
     bio: string;
     join_date: string;
+    stats: {
+      listed: number;
+      borrowed: number;
+      rating: number;
+      reviewsCount: any;
+    };
   };
 }
 
@@ -29,14 +36,14 @@ export const IdentityCard = ({ user }: IdentityCardProps) => {
         <CustomText style={styles.joined}>
           Joined {new Date(user.join_date).toLocaleDateString()}
         </CustomText>
-        {/* <View style={styles.statsRow}>
+        <View style={styles.statsRow}>
           <CustomStats label="Listed" value={user.stats.listed} />
           <CustomStats label="Borrowed" value={user.stats.borrowed} />
           <CustomStats
             label="Rating"
             value={`${user.stats.rating} ⭐ (${user.stats.reviewsCount})`}
           />
-        </View> */}
+        </View>
       </View>
     </View>
   );
