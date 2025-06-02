@@ -4,16 +4,15 @@ import { SearchBar } from "@/components/core/searchBar";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { mockItems } from "@/constants/random";
 import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
-  const { data: Listings } = useGetListings();
+  const { data: Listings } = useGetListings(undefined, undefined, "6");
   const { data: location } = useGetLocation();
-  const { data: ListingByLoc } = useGetListings(location);
+  const { data: ListingByLoc } = useGetListings(location, undefined, "6");
   const { data: Categories } = useGetCategories();
 
   const handleSearch = (query: string) => {
@@ -34,13 +33,16 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         >
           {Listings && (
-            <ItemSection heading="Popular Near You" data={Listings} />
+            <ItemSection heading="Recently Listed Near You" data={Listings} />
           )}
 
-          <ItemSection
-            heading={`Available in ${location ?? "your area"}`}
-            data={mockItems}
-          />
+          {ListingByLoc && (
+            <ItemSection
+              heading={`Listed in ${location ?? "your area"}`}
+              data={ListingByLoc}
+              loc={location}
+            />
+          )}
 
           {Categories && (
             <CategoriesSection title="Categories" data={Categories} />

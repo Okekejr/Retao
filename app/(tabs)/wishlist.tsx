@@ -3,42 +3,48 @@ import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { mockUserProfile } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
+import { useFavorites } from "@/hooks/useFavorite";
 import { MotiView } from "moti";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function WishlistScreen() {
-  const favorited = mockUserProfile.favorites;
+  const { userData } = useUserData();
+  const { data: favorited = [], isLoading } = useFavorites(userData.id);
 
   return (
     <SafeAreaView style={styles.container}>
       <InnerContainer style={{ gap: 12 }}>
         <Header headerTitle="Wishlist" />
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.grid}>
-            {favorited.length > 0 ? (
-              favorited.map((item, index) => (
-                <MotiView
-                  key={item.id}
-                  from={{ opacity: 0, translateY: 10 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{
-                    delay: 400 + index * 80,
-                    type: "timing",
-                    duration: 400,
-                  }}
-                >
-                  <ItemsCard {...item} />
-                </MotiView>
-              ))
-            ) : (
-              <CustomText style={styles.emptyText}>
-                No favorited items available yet.
-              </CustomText>
-            )}
-          </View>
-        </ScrollView>
+        {isLoading ? (
+          <CustomText style={styles.emptyText}>Loading favorites...</CustomText>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.grid}>
+              {favorited.length > 0 ? (
+                favorited.map((item, index) => (
+                  <MotiView
+                    key={item.id}
+                    from={{ opacity: 0, translateY: 10 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{
+                      delay: 400 + index * 80,
+                      type: "timing",
+                      duration: 400,
+                    }}
+                  >
+                    <ItemsCard {...item} />
+                  </MotiView>
+                ))
+              ) : (
+                <CustomText style={styles.emptyText}>
+                  No favorited items available yet.
+                </CustomText>
+              )}
+            </View>
+          </ScrollView>
+        )}
       </InnerContainer>
     </SafeAreaView>
   );

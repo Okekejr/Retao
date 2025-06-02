@@ -20,7 +20,7 @@ export const ProfileSection = ({
       style={({ pressed }) => [pressed && { opacity: 0.7 }]}
     >
       <View style={styles.card}>
-        <Ionicons name={icon} size={22} color="#444" />
+        <Ionicons name={icon} size={24} color="#444" />
         <CustomText style={styles.label}>{label}</CustomText>
         <Ionicons name="chevron-forward" size={20} color="#aaa" />
       </View>
@@ -31,6 +31,7 @@ export const ProfileSection = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderRadius: 16,
     backgroundColor: Colors.light.surfaceArea,
@@ -44,6 +45,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
     fontSize: 16,
-    color: "#222",
+    color: Colors.light.text,
   },
 });

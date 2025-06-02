@@ -7,7 +7,7 @@ export const h2 = {
 
 export const h3 = {
   fontFamily: "Satoshi-Bold",
-  fontSize: 20,
+  fontSize: 18,
   letterSpacing: 0.3,
   color: "#1A1A1A",
 };

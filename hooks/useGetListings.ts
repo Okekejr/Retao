@@ -2,9 +2,13 @@ import { BASE_URL } from "@/constants/random";
 import { Listing, ListingsT } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetListings = (location?: string, userId?: string) => {
+export const useGetListings = (
+  location?: string,
+  userId?: string,
+  limit?: string
+) => {
   return useQuery<ListingsT, Error>({
-    queryKey: ["listings", location, userId],
+    queryKey: ["listings", location, userId, limit],
     queryFn: async () => {
       const url = new URL(`${BASE_URL}listings`);
 
@@ -13,6 +17,9 @@ export const useGetListings = (location?: string, userId?: string) => {
       }
       if (userId) {
         url.searchParams.append("userId", userId);
+      }
+      if (limit) {
+        url.searchParams.append("limit", limit);
       }
 
       try {
@@ -50,6 +57,6 @@ export const useGetListingById = (id: string) => {
         return null;
       }
     },
-    staleTime: 1000 * 60 * 60 * 2,
+    refetchOnWindowFocus: true,
   });
 };

@@ -93,12 +93,11 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.light.text,
     marginTop: 12,
-    marginBottom: 6,
+    marginBottom: 5,
   },
   description: {
     color: Colors.light.text,
-    marginTop: 5,
-    gap: 12,
+    marginBottom: 12,
   },
   image: {
     width: "100%",

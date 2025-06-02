@@ -64,6 +64,7 @@ export default function ListingsScreen() {
                   title={item.title}
                   description={item.description}
                   distance={item.distance}
+                  owner={item.owner}
                 />
               )}
             />
@@ -88,7 +89,7 @@ export default function ListingsScreen() {
                   title={item.title}
                   description={item.description}
                   distance={item.distance}
-                  favorited
+                  owner={item.owner}
                 />
               )}
             />
