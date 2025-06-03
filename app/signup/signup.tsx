@@ -203,7 +203,10 @@ export default function SignupScreen() {
 
             <CustomDivider text="OR" />
 
-            <TouchableOpacity style={[styles.nextButton, styles.otherButton]}>
+            <TouchableOpacity
+              style={[styles.nextButton, styles.otherButton]}
+              onPress={() => router.push("/login/login")}
+            >
               <CustomText style={styles.buttonText}>
                 Have an account? Log in
               </CustomText>

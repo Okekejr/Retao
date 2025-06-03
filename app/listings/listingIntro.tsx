@@ -29,6 +29,7 @@ export default function ListingIntroScreen() {
               <BackButton
                 iconName="close"
                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                func
               />
             </View>
 

@@ -57,15 +57,15 @@ export const FanImageCard = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: screenWidth,
-    height: 140,
+    width: 120,
+    height: 120,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
   },
   image: {
-    width: 110,
-    height: 140,
+    width: 80,
+    height: 110,
     borderRadius: 12,
     position: "absolute",
   },

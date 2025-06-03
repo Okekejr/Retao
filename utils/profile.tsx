@@ -37,10 +37,12 @@ export const AccountSettings: profileItemsT = [
   {
     label: "Personal information",
     icon: "person-outline",
+    hrefLink: "/settings/personalInfo",
   },
   {
     label: "Login & Security",
     icon: "shield-outline",
+    hrefLink: "/settings/loginSecurity",
   },
   {
     label: "Notifications",

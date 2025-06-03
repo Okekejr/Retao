@@ -7,7 +7,11 @@ import { FC } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { ProfileSection } from "./profileSection";
 
-export const Settings: FC = () => {
+interface SettingsProps {
+  closeModal: () => void;
+}
+
+export const Settings: FC<SettingsProps> = ({ closeModal }) => {
   const router = useRouter();
 
   return (
@@ -26,7 +30,7 @@ export const Settings: FC = () => {
             icon={item.icon}
             label={item.label}
             onPress={() => {
-              item.hrefLink && router.push(item.hrefLink);
+              item.hrefLink && closeModal(), router.push(item.hrefLink);
             }}
           />
         )}

@@ -15,7 +15,7 @@ const screen = Dimensions.get("window");
 export default function SectionListedScreen() {
   const { heading, location } = useLocalSearchParams();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["10%", "52%", "85%"], []);
+  const snapPoints = useMemo(() => ["10%", "52%", "88%"], []);
   const [coords, setCoords] = useState<{ lat: number; lon: number }>();
 
   const { data: ListingByLoc } = useGetListings(

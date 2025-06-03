@@ -33,7 +33,7 @@ export default function ProfileScreen() {
       <InnerContainer style={{ gap: 12 }}>
         <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
 
-        <ScrollView>
+        <ScrollView style={{ gap: 12 }}>
           <IdentityCard user={userData} />
 
           <ListAnItemBtn openModal={() => openModal("createListing")} />
@@ -61,7 +61,7 @@ export default function ProfileScreen() {
               <SelectCategory closeModal={closeModal} />
             )}
 
-            {content === "settings" && <Settings />}
+            {content === "settings" && <Settings closeModal={closeModal} />}
           </CustomModal>
         </ScrollView>
       </InnerContainer>
