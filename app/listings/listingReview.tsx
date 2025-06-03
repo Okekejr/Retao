@@ -10,6 +10,7 @@ import { useListing } from "@/context/listingContext";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { useState } from "react";
 import {
   DimensionValue,
   SafeAreaView,
@@ -21,6 +22,7 @@ import {
 export default function ListingReview() {
   const router = useRouter();
   const { formData, updateFormData } = useListing();
+  const [loading, setLoading] = useState(false);
 
   const progressPercentage: DimensionValue = `${
     (formData.current_step / formData.total_steps) * 100
@@ -32,6 +34,7 @@ export default function ListingReview() {
   };
 
   const handleNext = async () => {
+    setLoading(true);
     try {
       const token = await SecureStore.getItemAsync("token");
       if (!token) throw new Error("No token found");
@@ -71,6 +74,7 @@ export default function ListingReview() {
         throw new Error(data.error || "Failed to create listing");
       }
 
+      setLoading(false);
       console.log("Listing created:", data.listingId);
 
       router.push("/listings/listingSuccess");
@@ -121,7 +125,7 @@ export default function ListingReview() {
           <ListingButtons
             handleBack={handleBack}
             handleNext={handleNext}
-            nextBtnTitle="Submit"
+            nextBtnTitle={loading ? "Listing..." : "Submit"}
           />
         </View>
       </InnerContainer>

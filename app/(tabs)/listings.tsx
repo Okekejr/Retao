@@ -19,11 +19,11 @@ export default function ListingsScreen() {
   const { data: listings = [] } = useGetListings(undefined, userData?.id);
 
   const listedItems =
-    listings?.filter((item) => item.owner?.id === userData.id).slice(0, 4) ??
+    listings?.filter((item) => item.owner?.id === userData.id).slice(0, 5) ??
     [];
 
   const borrowedItems =
-    listings.filter((item) => item.borrower?.id === userData.id).slice(0, 4) ??
+    listings.filter((item) => item.borrower?.id === userData.id).slice(0, 5) ??
     [];
 
   const openModal = (content: string) => {

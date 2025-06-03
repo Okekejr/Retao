@@ -93,9 +93,12 @@ export default function LoginScreen() {
       <InnerContainer style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <CustomHeading style={{ marginBottom: 20 }}>
-              Log in to {AppName}
-            </CustomHeading>
+            <View style={{ marginBottom: 25, gap: 8 }}>
+              <CustomHeading>Log in to {AppName}</CustomHeading>
+              <CustomText style={styles.subheading}>
+                Tools and services, shared by the community.
+              </CustomText>
+            </View>
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={styles.label}>Email</CustomText>
@@ -189,6 +192,10 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     backgroundColor: Colors.light.background,
+  },
+  subheading: {
+    fontSize: 16,
+    color: Colors.light.textTertiery,
   },
   label: {
     fontSize: 16,

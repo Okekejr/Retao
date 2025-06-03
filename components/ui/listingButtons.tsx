@@ -7,6 +7,7 @@ interface ListingButtonsProps {
   handleNext: () => void;
   disabled?: boolean;
   nextBtnTitle?: string;
+  backBtnTitle?: string;
 }
 
 export const ListingButtons = ({
@@ -14,11 +15,12 @@ export const ListingButtons = ({
   handleNext,
   disabled,
   nextBtnTitle = "Next",
+  backBtnTitle = "Back",
 }: ListingButtonsProps) => {
   return (
     <View style={styles.btnContainer}>
       <TouchableOpacity onPress={handleBack}>
-        <CustomText style={styles.backText}>Back</CustomText>
+        <CustomText style={styles.backText}>{backBtnTitle}</CustomText>
       </TouchableOpacity>
 
       <TouchableOpacity

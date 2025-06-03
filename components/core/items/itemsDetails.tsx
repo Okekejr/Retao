@@ -19,7 +19,12 @@ interface renderTimelineProps extends StatusBadgeProps {
 }
 
 interface renderButtonsProps extends StatusBadgeProps {
+  itemId: string;
   userRole: UserRole;
+  func: {
+    handleEditListing: (itemId: string) => void;
+    handleMarkAsReturned: () => void;
+  };
 }
 
 export const StatusBadge = ({ status }: StatusBadgeProps) => {
@@ -54,15 +59,26 @@ export const RenderTimeline = ({
   return null;
 };
 
-export const RenderButton = ({ userRole, status }: renderButtonsProps) => {
+export const RenderButton = ({
+  itemId,
+  userRole,
+  status,
+  func,
+}: renderButtonsProps) => {
+  const isListed = status === "listed";
+  const isBorrowed = status === "borrowed";
+
   if (userRole === "owner") {
-    if (status === "listed") {
+    if (isListed) {
       return (
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => func.handleEditListing(itemId)}
+        >
           <CustomText style={styles.primaryButtonText}>Edit Listing</CustomText>
         </TouchableOpacity>
       );
-    } else if (status === "borrowed") {
+    } else if (isBorrowed) {
       return (
         <TouchableOpacity style={styles.secondaryButton}>
           <CustomText style={styles.secondaryButtonText}>
@@ -73,32 +89,31 @@ export const RenderButton = ({ userRole, status }: renderButtonsProps) => {
     }
   }
 
-  if (userRole === "borrower") {
-    if (status === "borrowed") {
-      return (
-        <TouchableOpacity style={styles.secondaryButton}>
-          <CustomText style={styles.secondaryButtonText}>
-            Return Item
-          </CustomText>
-        </TouchableOpacity>
-      );
-    }
+  if (userRole === "borrower" && isBorrowed) {
+    return (
+      <TouchableOpacity style={styles.secondaryButton}>
+        <CustomText style={styles.secondaryButtonText}>Return Item</CustomText>
+      </TouchableOpacity>
+    );
   }
 
-  if ((userRole === "viewer" && status === "listed") || "borrowed") {
+  if (userRole === "viewer") {
     return (
       <>
-        <TouchableOpacity style={styles.primaryButton}>
-          <CustomText style={styles.primaryButtonText}>
-            Request to Borrow
-          </CustomText>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryButton}>
-          <CustomText style={styles.secondaryButtonText}>
-            Message Owner
-          </CustomText>
-        </TouchableOpacity>
+        {isListed && (
+          <TouchableOpacity style={styles.primaryButton}>
+            <CustomText style={styles.primaryButtonText}>
+              Request to Borrow
+            </CustomText>
+          </TouchableOpacity>
+        )}
+        {(isListed || isBorrowed) && (
+          <TouchableOpacity style={styles.secondaryButton}>
+            <CustomText style={styles.secondaryButtonText}>
+              Message Owner
+            </CustomText>
+          </TouchableOpacity>
+        )}
       </>
     );
   }

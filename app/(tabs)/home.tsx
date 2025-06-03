@@ -10,9 +10,9 @@ import { useGetLocation } from "@/hooks/useGetLocation";
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
-  const { data: Listings } = useGetListings(undefined, undefined, "6");
+  const { data: Listings } = useGetListings();
   const { data: location } = useGetLocation();
-  const { data: ListingByLoc } = useGetListings(location, undefined, "6");
+  const { data: ListingByLoc } = useGetListings();
   const { data: Categories } = useGetCategories();
 
   const handleSearch = (query: string) => {

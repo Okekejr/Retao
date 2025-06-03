@@ -13,7 +13,7 @@ import { useUserData } from "@/context/userContext";
 import { useGetListingById } from "@/hooks/useGetListings";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Dimensions,
   ScrollView,
@@ -27,6 +27,7 @@ const { height } = Dimensions.get("window");
 
 export default function ItemScreen() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const { userData } = useUserData();
   const { data: selectedItem, isLoading } = useGetListingById(id as string);
 
@@ -40,6 +41,14 @@ export default function ItemScreen() {
       : "viewer";
 
   const avatar = avatars.find((a) => a.id === selectedItem.owner.avatar);
+
+  const handleEditListing = (itemId: string) => {
+    router.push({ pathname: "/listings/editListings", params: { id: itemId } });
+  };
+  const handleMarkAsReturned = () => {};
+  const handleReturnItem = () => {};
+  const handleRequestToBorrow = () => {};
+  const handleMessageOwner = () => {};
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -91,7 +100,12 @@ export default function ItemScreen() {
         )}
 
         {selectedItem?.status && (
-          <RenderButton status={selectedItem?.status} userRole={userRole} />
+          <RenderButton
+            itemId={selectedItem.id}
+            status={selectedItem?.status}
+            userRole={userRole}
+            func={{ handleEditListing, handleMarkAsReturned }}
+          />
         )}
       </View>
     </ScrollView>

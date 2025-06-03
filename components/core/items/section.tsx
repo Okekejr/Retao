@@ -2,8 +2,8 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { h3 } from "@/constants/random";
 import { ListingsT } from "@/types";
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SectionCard } from "./sectionCard";
 
 interface SectionProps {
@@ -12,47 +12,19 @@ interface SectionProps {
 }
 
 export const Section = ({ heading, data }: SectionProps) => {
-  const [listings, setListings] = useState<ListingsT>([]);
-  const [offset, setOffset] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(4);
   const [loadingMore, setLoadingMore] = useState(false);
-  const LIMIT = 6;
 
-  useEffect(() => {
-    if (!data) return;
-
-    // Only reset listings if data actually changed (by length or content)
-    const initialSlice = data.slice(0, LIMIT);
-    const initialIds = initialSlice.map((item) => item.id).join(",");
-    const currentIds = listings
-      .slice(0, LIMIT)
-      .map((item) => item.id)
-      .join(",");
-
-    if (initialIds !== currentIds) {
-      setListings(initialSlice);
-      setOffset(LIMIT);
-    }
-  }, [data]);
+  const visibleListings = data.slice(0, visibleCount);
+  const hasMore = visibleCount < data.length;
 
   const loadMore = () => {
-    if (!data || loadingMore || offset >= data.length) return;
-
+    if (!hasMore) return;
     setLoadingMore(true);
     setTimeout(() => {
-      const newItems = data.slice(offset, offset + LIMIT);
-
-      // Prevent duplicates
-      setListings((prev) => {
-        const combined = [...prev, ...newItems];
-        const unique = Array.from(
-          new Map(combined.map((item) => [item.id, item])).values()
-        );
-        return unique;
-      });
-
-      setOffset((prev) => prev + LIMIT);
+      setVisibleCount((prev) => prev + 4);
       setLoadingMore(false);
-    }, 300);
+    }, 500); // simulate async delay, remove if not needed
   };
 
   return (
@@ -63,7 +35,7 @@ export const Section = ({ heading, data }: SectionProps) => {
       </View>
 
       <FlatList
-        data={listings}
+        data={visibleListings}
         renderItem={({ item }) => <SectionCard {...item} />}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         contentContainerStyle={{ paddingBottom: 200, gap: 30 }}
@@ -72,7 +44,11 @@ export const Section = ({ heading, data }: SectionProps) => {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
           loadingMore ? (
-            <CustomText style={{ textAlign: "center" }}>Loading...</CustomText>
+            <TouchableOpacity onPress={loadMore}>
+              <CustomText>
+                {loadingMore ? "Loading..." : "Load more"}
+              </CustomText>
+            </TouchableOpacity>
           ) : null
         }
       />

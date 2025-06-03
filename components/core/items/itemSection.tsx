@@ -17,7 +17,10 @@ interface ItemSectionProps {
 export const ItemSection: FC<ItemSectionProps> = ({ heading, data, loc }) => {
   const { userData } = useUserData();
   const router = useRouter();
-  const filterUser = data.filter((item) => item.owner.id !== userData.id);
+  const filterUser = data
+    .filter((item) => item.owner.id !== userData.id)
+    .sort(() => Math.random() - 0.5) // shuffle
+    .slice(0, 5);
 
   const handlePress = () => {
     loc
@@ -71,6 +74,6 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   listContent: {
-    gap: 12,
+    gap: 6,
   },
 });
