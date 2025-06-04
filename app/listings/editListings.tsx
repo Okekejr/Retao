@@ -246,7 +246,7 @@ export default function EditListingsScreen() {
     <SafeAreaView style={styles.container}>
       <InnerContainer style={{ flex: 1 }}>
         <ScrollView
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator
           contentContainerStyle={{
             paddingBottom: 32,
           }}

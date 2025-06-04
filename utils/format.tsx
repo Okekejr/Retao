@@ -1,6 +1,3 @@
-import { avatars } from "@/app/signup/signupAvatar";
-import { userProfile } from "@/context/userContext";
-
 interface WordsT {
   text: string;
   wordsNum: number;
@@ -15,8 +12,14 @@ export const formatDate = (item: string) => new Date(item).toLocaleDateString();
 export const formatTime = (item: string) =>
   new Date(item).toLocaleTimeString("en-US");
 
-export const findAvatar = (userData: userProfile) => {
-  const ava = avatars.find((a) => a.id === userData.avatar);
+export const formatTimeChat = (isoDate: string) => {
+  const date = new Date(isoDate);
+  const now = new Date();
+  const diff = Math.floor((+now - +date) / 1000 / 60); // minutes
 
-  return ava;
+  if (diff < 1) return "Now";
+  if (diff < 60) return `${diff}m ago`;
+  const hours = Math.floor(diff / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 };

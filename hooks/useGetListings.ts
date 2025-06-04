@@ -35,7 +35,7 @@ export const useGetListings = (
         return [];
       }
     },
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -57,6 +57,6 @@ export const useGetListingById = (id: string) => {
         return null;
       }
     },
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 };

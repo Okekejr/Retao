@@ -6,6 +6,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { userProfile, useUserData } from "@/context/userContext";
+import { avatarsT } from "@/types";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -16,7 +17,11 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { avatars } from "./signupAvatar";
+
+const avatars: avatarsT = [
+  { id: "avatar1", src: require("../../assets/img/avatar.png") },
+  { id: "avatar2", src: require("../../assets/img/avatar2.png") },
+];
 
 export default function SignupReviewScreen() {
   const router = useRouter();

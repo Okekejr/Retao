@@ -4,7 +4,7 @@ import { useUserData } from "@/context/userContext";
 import { ListingsT } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { ItemsCard } from "./itemsCard";
 
@@ -15,12 +15,20 @@ interface ItemSectionProps {
 }
 
 export const ItemSection: FC<ItemSectionProps> = ({ heading, data, loc }) => {
+  const [finalList, setFinalList] = useState<ListingsT>([]);
   const { userData } = useUserData();
   const router = useRouter();
-  const filterUser = data
-    .filter((item) => item.owner.id !== userData.id)
-    .sort(() => Math.random() - 0.5) // shuffle
-    .slice(0, 5);
+
+  useEffect(() => {
+    if (data) {
+      setFinalList(
+        data
+          .filter((item) => item.owner.id !== userData.id)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 5)
+      );
+    }
+  }, [data]);
 
   const handlePress = () => {
     loc
@@ -42,7 +50,7 @@ export const ItemSection: FC<ItemSectionProps> = ({ heading, data, loc }) => {
       </Pressable>
 
       <FlatList
-        data={filterUser}
+        data={finalList}
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}

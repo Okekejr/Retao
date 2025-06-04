@@ -25,7 +25,7 @@ type avatar = {
   src: any;
 };
 
-export const avatars: avatarsT = [
+const avatars: avatarsT = [
   { id: "avatar1", src: require("../../assets/img/avatar.png") },
   { id: "avatar2", src: require("../../assets/img/avatar2.png") },
 ];

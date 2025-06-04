@@ -1,4 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
+
+export const getToken = async (): Promise<string | null> => {
+  try {
+    return await SecureStore.getItemAsync("token");
+  } catch (error) {
+    console.log("Error getting token:", error);
+    return null;
+  }
+};
 
 export type profileItemsT = {
   label: string;

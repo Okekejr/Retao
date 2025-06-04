@@ -1,6 +1,6 @@
-import { avatars } from "@/app/signup/signupAvatar";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { avatarsT } from "@/types";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 import { CustomStats } from "./stats";
@@ -20,6 +20,11 @@ interface IdentityCardProps {
     };
   };
 }
+
+const avatars: avatarsT = [
+  { id: "avatar1", src: require("../../../assets/img/avatar.png") },
+  { id: "avatar2", src: require("../../../assets/img/avatar2.png") },
+];
 
 export const IdentityCard = ({ user }: IdentityCardProps) => {
   const avatar = avatars.find((a) => a.id === user.avatar);

@@ -24,6 +24,7 @@ interface renderButtonsProps extends StatusBadgeProps {
   func: {
     handleEditListing: (itemId: string) => void;
     handleMarkAsReturned: () => void;
+    handleMessageOwner: () => void;
   };
 }
 
@@ -108,7 +109,10 @@ export const RenderButton = ({
           </TouchableOpacity>
         )}
         {(isListed || isBorrowed) && (
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => func.handleMessageOwner()}
+          >
             <CustomText style={styles.secondaryButtonText}>
               Message Owner
             </CustomText>

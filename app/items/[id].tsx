@@ -11,6 +11,7 @@ import { Colors } from "@/constants/Colors";
 import { h2, UserRole } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { useGetListingById } from "@/hooks/useGetListings";
+import { avatarsT } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -21,9 +22,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { avatars } from "../signup/signupAvatar";
 
 const { height } = Dimensions.get("window");
+
+const avatars: avatarsT = [
+  { id: "avatar1", src: require("../../assets/img/avatar.png") },
+  { id: "avatar2", src: require("../../assets/img/avatar2.png") },
+];
 
 export default function ItemScreen() {
   const { id } = useLocalSearchParams();
@@ -46,9 +51,16 @@ export default function ItemScreen() {
     router.push({ pathname: "/listings/editListings", params: { id: itemId } });
   };
   const handleMarkAsReturned = () => {};
+  const handleMessageOwner = async () => {
+    router.push({
+      pathname: "/inbox/chatScreen",
+      params: {
+        recipientId: selectedItem.owner.id,
+      },
+    });
+  };
   const handleReturnItem = () => {};
   const handleRequestToBorrow = () => {};
-  const handleMessageOwner = () => {};
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -104,7 +116,11 @@ export default function ItemScreen() {
             itemId={selectedItem.id}
             status={selectedItem?.status}
             userRole={userRole}
-            func={{ handleEditListing, handleMarkAsReturned }}
+            func={{
+              handleEditListing,
+              handleMarkAsReturned,
+              handleMessageOwner,
+            }}
           />
         )}
       </View>

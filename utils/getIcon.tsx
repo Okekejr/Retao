@@ -36,7 +36,7 @@ export const getIconName = (
           resizeMode="contain"
         />
       );
-    case "inbox":
+    case "messages":
       return (
         <Image
           source={require("../assets/icons/Message.png")}

@@ -1,5 +1,6 @@
 import { BASE_URL } from "@/constants/random";
 import { userProfile, useUserData } from "@/context/userContext";
+import { useQuery } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 
 export const useGetUserData = () => {
@@ -44,4 +45,16 @@ export const useGetUserData = () => {
   };
 
   return { refreshData };
+};
+
+export const useRecipientProfile = (recipientId: string) => {
+  return useQuery({
+    queryKey: ["recipientProfile", recipientId],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}users/${recipientId}`);
+      if (!res.ok) throw new Error("Failed to fetch recipient profile");
+      return res.json();
+    },
+    enabled: !!recipientId,
+  });
 };
