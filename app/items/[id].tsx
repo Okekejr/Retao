@@ -10,6 +10,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { h2, UserRole } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
+import { useRequestToBorrow } from "@/hooks/useBorrowRequests";
 import { useGetListingById } from "@/hooks/useGetListings";
 import { avatarsT } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -35,6 +36,7 @@ export default function ItemScreen() {
   const router = useRouter();
   const { userData } = useUserData();
   const { data: selectedItem, isLoading } = useGetListingById(id as string);
+  const { mutate: requestToBorrow } = useRequestToBorrow();
 
   if (isLoading || !selectedItem) return;
 
@@ -50,17 +52,19 @@ export default function ItemScreen() {
   const handleEditListing = (itemId: string) => {
     router.push({ pathname: "/listings/editListings", params: { id: itemId } });
   };
-  const handleMarkAsReturned = () => {};
   const handleMessageOwner = async () => {
     router.push({
-      pathname: "/inbox/chatScreen",
+      pathname: "/message/chatScreen",
       params: {
         recipientId: selectedItem.owner.id,
       },
     });
   };
+  const handleRequestToBorrow = () => {
+    requestToBorrow({ itemId: id as string });
+  };
+  const handleMarkAsReturned = () => {};
   const handleReturnItem = () => {};
-  const handleRequestToBorrow = () => {};
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -120,6 +124,7 @@ export default function ItemScreen() {
               handleEditListing,
               handleMarkAsReturned,
               handleMessageOwner,
+              handleRequestToBorrow,
             }}
           />
         )}

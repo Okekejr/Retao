@@ -13,6 +13,7 @@ export const formatTime = (item: string) =>
   new Date(item).toLocaleTimeString("en-US");
 
 export const formatTimeChat = (isoDate: string) => {
+  if (isoDate === null) return;
   const date = new Date(isoDate);
   const now = new Date();
   const diff = Math.floor((+now - +date) / 1000 / 60); // minutes

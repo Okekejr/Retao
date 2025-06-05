@@ -62,3 +62,15 @@ export const getIconName = (
       );
   }
 };
+
+export const getStatusStyle = (status: string) => {
+  switch (status) {
+    case "accepted":
+      return { color: "#4CAF50" }; // green
+    case "rejected":
+      return { color: "#F44336" }; // red
+    case "pending":
+    default:
+      return { color: "#FFA000" }; // amber/orange
+  }
+};

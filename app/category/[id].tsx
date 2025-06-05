@@ -34,14 +34,18 @@ export default function CategoryScreen() {
         </View>
       </View>
 
-      <InnerContainer>
+      <InnerContainer style={{ flex: 1 }}>
         <CustomText style={[h3, styles.title]}>{category?.title}</CustomText>
         <CustomText style={styles.description}>
           {category?.description ||
             "Explore and borrow items shared by your neighbors."}
         </CustomText>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator
+          contentContainerStyle={{ paddingBottom: 60 }}
+          style={{ flex: 1 }}
+        >
           <View style={styles.grid}>
             {listings.length > 0 ? (
               listings.map((item, index) => (
@@ -110,6 +114,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginTop: 10,
+    gap: 20,
   },
   emptyText: {
     color: Colors.light.textSecondary,

@@ -25,6 +25,7 @@ interface renderButtonsProps extends StatusBadgeProps {
     handleEditListing: (itemId: string) => void;
     handleMarkAsReturned: () => void;
     handleMessageOwner: () => void;
+    handleRequestToBorrow: () => void;
   };
 }
 
@@ -102,7 +103,10 @@ export const RenderButton = ({
     return (
       <>
         {isListed && (
-          <TouchableOpacity style={styles.primaryButton}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={func.handleRequestToBorrow}
+          >
             <CustomText style={styles.primaryButtonText}>
               Request to Borrow
             </CustomText>

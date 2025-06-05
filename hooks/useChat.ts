@@ -21,6 +21,7 @@ export const useConversations = () => {
       if (!res.ok) throw new Error("Failed to fetch conversations");
       return res.json();
     },
+    refetchInterval: 60000,
   });
 };
 
@@ -43,6 +44,7 @@ export const useMessages = (conversationId: string) =>
       return res.json();
     },
     enabled: !!conversationId,
+    refetchInterval: 60000,
   });
 
 export const useSendMessage = () => {

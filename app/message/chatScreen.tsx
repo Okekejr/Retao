@@ -2,6 +2,7 @@ import { ChatHeader } from "@/components/core/chat/chatHeader";
 import { MessageBubble } from "@/components/core/chat/messageBubble";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { useMessages } from "@/hooks/useChat";
 import { useRecipientProfile } from "@/hooks/useGetUserData";
 import { useWebSocket } from "@/hooks/useWebsocket";
@@ -9,6 +10,7 @@ import { Message } from "@/types";
 import { checkOrCreateConversation } from "@/utils/api/createConversation";
 import { markMessagesAsRead } from "@/utils/api/sendMessage";
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +30,7 @@ import {
 
 export default function ChatScreen() {
   const { recipientId } = useLocalSearchParams();
+  const { userData } = useUserData();
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [typingUserId, setTypingUserId] = useState<string | null>(null);
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<
@@ -44,6 +47,7 @@ export default function ChatScreen() {
   const [message, setMessage] = useState("");
   const [disableSend, setDisableSend] = useState(false);
   const { data: recipient } = useRecipientProfile(recipientId as string);
+  const isFocused = useIsFocused();
 
   const handleTyping = () => {
     if (typingTimeout) {
@@ -69,13 +73,8 @@ export default function ChatScreen() {
     if (message.trim() === "") return;
 
     try {
-      let convId = conversationId as string;
-
-      if (!convId) {
-        const result = await checkOrCreateConversation(recipientId as string);
-        convId = result.id;
-        setConversationId(convId);
-      }
+      const result = await checkOrCreateConversation(recipientId as string);
+      setConversationId(result.id);
 
       // Send over WebSocket
       sendWSMessage({
@@ -88,6 +87,11 @@ export default function ChatScreen() {
 
       // Clear input locally
       setMessage("");
+
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          ["messages", "conversations"].includes(query.queryKey[0] as string),
+      });
     } catch (err) {
       console.log("Send error:", err);
     }
@@ -145,10 +149,10 @@ export default function ChatScreen() {
   }, [latestMessage, conversationId]);
 
   useEffect(() => {
-    if (!messages || !conversationId) return;
+    if (!isFocused || !messages || !conversationId) return;
 
     const unread = (messages as Message[])
-      .filter((msg) => !msg.read && msg.sender_id !== recipientId)
+      .filter((msg) => !msg.read && msg.sender_id !== userData.id)
       .map((msg) => msg.id);
 
     if (unread.length > 0) {
@@ -167,7 +171,7 @@ export default function ChatScreen() {
         messageIds: unread,
       });
     }
-  }, [messages]);
+  }, [messages, isFocused]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -204,9 +208,6 @@ export default function ChatScreen() {
               scrollEnabled
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={styles.chatContainer}
-              onContentSizeChange={() =>
-                flatListRef.current?.scrollToEnd({ animated: true })
-              }
             />
 
             {typingUserId && (
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    paddingBottom: 10, // add a bit of bottom padding
+    paddingBottom: 10,
   },
   inputContainer: {
     flexDirection: "row",
@@ -294,9 +295,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sendButtonEnabled: {
-    backgroundColor: "#007AFF",
+    backgroundColor: Colors.light.primary,
   },
   sendButtonDisabled: {
-    backgroundColor: "#ccc",
+    backgroundColor: Colors.light.muted,
   },
 });

@@ -26,13 +26,19 @@ export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
 
   const handleMessageOwner = () =>
     router.push({
-      pathname: "/inbox/chatScreen",
+      pathname: "/message/chatScreen",
       params: { conversationId: item.id, recipientId: item.otherUserId },
     });
 
   return (
     <Animated.View entering={FadeInRight.springify()}>
-      <TouchableOpacity style={styles.card} onPress={handleMessageOwner}>
+      <TouchableOpacity
+        style={[
+          styles.card,
+          { backgroundColor: item.unread ? "#F0F8FF" : "#fff" },
+        ]}
+        onPress={handleMessageOwner}
+      >
         <View style={styles.avatarContainer}>
           <Image source={otherUser?.src} style={styles.avatar} />
           <Image
@@ -40,7 +46,6 @@ export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
             style={[styles.avatar, styles.overlap]}
           />
         </View>
-
         <View style={styles.content}>
           <CustomText style={styles.name}>{item.otherUserName}</CustomText>
           <CustomText style={styles.message} numberOfLines={1}>
@@ -48,9 +53,13 @@ export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
           </CustomText>
         </View>
 
-        <CustomText style={styles.timestamp}>
-          {formatTimeChat(item.updatedAt)}
-        </CustomText>
+        {item.unread && <View style={styles.unreadDot} />}
+
+        {item.updatedAt && (
+          <CustomText style={styles.timestamp}>
+            {formatTimeChat(item.updatedAt)}
+          </CustomText>
+        )}
       </TouchableOpacity>
     </Animated.View>
   );
@@ -62,7 +71,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 12,
-    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 12,
     shadowColor: "#000",
@@ -102,6 +110,13 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 12,
     color: "#888",
+    marginLeft: 8,
+  },
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FF3B30",
     marginLeft: 8,
   },
 });

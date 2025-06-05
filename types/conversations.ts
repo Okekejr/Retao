@@ -5,6 +5,7 @@ export type Conversations = {
   otherUserAvatar: string;
   lastMessage: string;
   updatedAt: string;
+  unread: boolean;
 }[];
 
 export interface Conversation {
@@ -14,6 +15,7 @@ export interface Conversation {
   otherUserAvatar: string;
   lastMessage: string;
   updatedAt: string;
+  unread: boolean;
 }
 
 export interface Message {

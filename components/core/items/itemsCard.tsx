@@ -114,11 +114,7 @@ export const ItemsCard: FC<ItemsCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     width: 180,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
-    elevation: 4,
+    elevation: 1,
     overflow: "hidden",
     marginRight: 5,
   },

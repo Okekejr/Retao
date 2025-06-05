@@ -4,10 +4,20 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useConversations } from "@/hooks/useChat";
+import { useQueryClient } from "@tanstack/react-query";
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function MessagesScreen() {
   const { data: conversations, isLoading, error } = useConversations();
+  const queryClient = useQueryClient();
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    }, [queryClient])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -22,7 +32,7 @@ export default function MessagesScreen() {
             renderItem={({ item }) => <PreviewCard item={item} />}
             contentContainerStyle={{ paddingVertical: 16 }}
             ListEmptyComponent={
-              !isLoading ? (
+              !isLoading && (!conversations || conversations.length === 0) ? (
                 <View style={styles.emptyState}>
                   <CustomText style={styles.emptyText}>
                     No conversations yet
