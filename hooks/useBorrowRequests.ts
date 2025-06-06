@@ -1,5 +1,6 @@
 import { BASE_URL } from "@/constants/random";
-import { BorrowRequestsResponse } from "@/types";
+import { BorrowRequestByItem, BorrowRequestsResponse } from "@/types";
+import { showToast } from "@/utils/showToast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 
@@ -43,6 +44,11 @@ export const useRequestToBorrow = () => {
       return res.json();
     },
     onSuccess: () => {
+      showToast({
+        type: "success",
+        text1: "Request to borrow",
+        message: "Request sent to owner!",
+      });
       queryClient.invalidateQueries({
         predicate: (query) =>
           [
@@ -50,6 +56,7 @@ export const useRequestToBorrow = () => {
             "listings",
             "listing",
             "borrowerRequests",
+            "borrowerHistory",
           ].includes(query.queryKey[0] as string),
       });
     },
@@ -66,7 +73,7 @@ export const useUpdateBorrowRequest = () => {
       dueDate,
     }: {
       requestId: string;
-      status: "accepted" | "rejected";
+      status: "accepted" | "rejected" | "returned";
       dueDate?: string;
     }) => {
       const headers = await getAuthHeaders();
@@ -81,7 +88,20 @@ export const useUpdateBorrowRequest = () => {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      const { status } = variables;
+      const statusToMessage = {
+        accepted: "Request accepted",
+        rejected: "Request rejected",
+        returned: "Item marked as returned",
+      };
+
+      showToast({
+        type: "success",
+        text1: status,
+        message: statusToMessage[status],
+      });
+
       queryClient.invalidateQueries({
         predicate: (query) =>
           [
@@ -89,8 +109,12 @@ export const useUpdateBorrowRequest = () => {
             "listings",
             "listing",
             "borrowerRequests",
+            "borrowerHistory",
           ].includes(query.queryKey[0] as string),
       });
+    },
+    onError: (error: Error) => {
+      showToast({ type: "error", text1: "Error", message: error.message });
     },
   });
 };
@@ -109,3 +133,15 @@ export const useBorrowerPendingRequests = () => {
     },
   });
 };
+
+export const useBorrowRequestByItem = (itemId: string) =>
+  useQuery<BorrowRequestByItem>({
+    queryKey: ["borrowRequestByItem", itemId],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}borrowRequests/item/${itemId}`);
+      if (!res.ok) throw new Error("Failed to fetch borrow request");
+      const data = await res.json();
+      return data;
+    },
+    enabled: !!itemId,
+  });

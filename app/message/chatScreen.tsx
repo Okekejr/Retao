@@ -188,7 +188,11 @@ export default function ChatScreen() {
           paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
         }}
       >
-        <ChatHeader {...recipient} />
+        <ChatHeader
+          id={recipient?.id}
+          name={recipient?.name}
+          avatar={recipient?.avatar}
+        />
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAvoidingView

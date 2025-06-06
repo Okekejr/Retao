@@ -21,6 +21,7 @@ interface renderTimelineProps extends StatusBadgeProps {
 interface renderButtonsProps extends StatusBadgeProps {
   itemId: string;
   userRole: UserRole;
+  isPending: boolean;
   func: {
     handleEditListing: (itemId: string) => void;
     handleMarkAsReturned: () => void;
@@ -65,6 +66,7 @@ export const RenderButton = ({
   itemId,
   userRole,
   status,
+  isPending,
   func,
 }: renderButtonsProps) => {
   const isListed = status === "listed";
@@ -82,21 +84,17 @@ export const RenderButton = ({
       );
     } else if (isBorrowed) {
       return (
-        <TouchableOpacity style={styles.secondaryButton}>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          disabled={isPending}
+          onPress={func.handleMarkAsReturned}
+        >
           <CustomText style={styles.secondaryButtonText}>
             Mark as Returned
           </CustomText>
         </TouchableOpacity>
       );
     }
-  }
-
-  if (userRole === "borrower" && isBorrowed) {
-    return (
-      <TouchableOpacity style={styles.secondaryButton}>
-        <CustomText style={styles.secondaryButtonText}>Return Item</CustomText>
-      </TouchableOpacity>
-    );
   }
 
   if (userRole === "viewer") {

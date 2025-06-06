@@ -1,6 +1,7 @@
 import { ListingProvider } from "@/context/listingContext";
 import { UserProvider } from "@/context/userContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { toastConfig } from "@/utils/toastConfig";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,6 +13,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import Toast from "react-native-toast-message";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -52,6 +54,7 @@ export default function RootLayout() {
         </ListingProvider>
         <StatusBar style="dark" />
       </ThemeProvider>
+      <Toast config={toastConfig} />
     </QueryClientProvider>
   );
 }

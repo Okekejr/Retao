@@ -4,11 +4,12 @@ import { avatarsT } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 interface ChatHeaderProps {
-  name: string;
-  avatar: string | null;
+  id: string | undefined;
+  name: string | undefined;
+  avatar: string | undefined;
 }
 
 const avatars: avatarsT = [
@@ -16,12 +17,20 @@ const avatars: avatarsT = [
   { id: "avatar2", src: require("../../../assets/img/avatar2.png") },
 ];
 
-export const ChatHeader = ({ name, avatar }: ChatHeaderProps) => {
+export const ChatHeader = ({ id, name, avatar }: ChatHeaderProps) => {
   const avatarimg = avatars.find((a) => a.id === avatar);
   const router = useRouter();
 
   return (
-    <View style={styles.headerCard}>
+    <Pressable
+      style={styles.headerCard}
+      onPress={() =>
+        router.push({
+          pathname: "/userProfile/userProfileCard",
+          params: { userId: id },
+        })
+      }
+    >
       <TouchableOpacity
         onPress={() => router.back()}
         style={{ marginRight: 32 }}
@@ -37,7 +46,7 @@ export const ChatHeader = ({ name, avatar }: ChatHeaderProps) => {
       />
 
       <CustomText style={styles.text}>{name}</CustomText>
-    </View>
+    </Pressable>
   );
 };
 

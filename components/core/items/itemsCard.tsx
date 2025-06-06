@@ -25,11 +25,12 @@ interface ItemsCardProps {
   description: string;
   distance: string;
   owner?: {
-    id: string;
-    name: string;
-    avatar: any;
-    contact: string;
+    id?: string;
+    name?: string;
+    avatar?: any;
+    contact?: string;
   };
+  ownerId?: string;
 }
 
 export const ItemsCard: FC<ItemsCardProps> = ({
@@ -39,10 +40,11 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   description,
   distance,
   owner,
+  ownerId,
 }) => {
   const { userData } = useUserData();
   const router = useRouter();
-  const hideFavorite = userData.id === owner?.id;
+  const hideFavorite = userData.id === owner?.id || ownerId;
 
   const { data: isFavorited, isLoading: isLoadingFavorite } = useIsFavorited(
     userData.id,

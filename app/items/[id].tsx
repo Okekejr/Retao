@@ -4,20 +4,27 @@ import {
   RenderTimeline,
   StatusBadge,
 } from "@/components/core/items/itemsDetails";
+import { BorrowersCard } from "@/components/core/profile/borrowerCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
-import { h2, UserRole } from "@/constants/random";
+import { h2, h3, UserRole } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
-import { useRequestToBorrow } from "@/hooks/useBorrowRequests";
+import {
+  useBorrowRequestByItem,
+  useRequestToBorrow,
+  useUpdateBorrowRequest,
+} from "@/hooks/useBorrowRequests";
 import { useGetListingById } from "@/hooks/useGetListings";
+import { useBorrowerHistory } from "@/hooks/useGetUserData";
 import { avatarsT } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   Dimensions,
+  FlatList,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -36,7 +43,10 @@ export default function ItemScreen() {
   const router = useRouter();
   const { userData } = useUserData();
   const { data: selectedItem, isLoading } = useGetListingById(id as string);
+  const { data: borrowRequestData } = useBorrowRequestByItem(id as string);
   const { mutate: requestToBorrow } = useRequestToBorrow();
+  const { mutate, isPending } = useUpdateBorrowRequest();
+  const { data: borrwerHistory } = useBorrowerHistory(id as string);
 
   if (isLoading || !selectedItem) return;
 
@@ -63,8 +73,10 @@ export default function ItemScreen() {
   const handleRequestToBorrow = () => {
     requestToBorrow({ itemId: id as string });
   };
-  const handleMarkAsReturned = () => {};
-  const handleReturnItem = () => {};
+  const handleMarkAsReturned = () => {
+    if (!borrowRequestData?.id) return;
+    mutate({ requestId: borrowRequestData.id, status: "returned" });
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -120,6 +132,7 @@ export default function ItemScreen() {
             itemId={selectedItem.id}
             status={selectedItem?.status}
             userRole={userRole}
+            isPending={isPending}
             func={{
               handleEditListing,
               handleMarkAsReturned,
@@ -128,6 +141,33 @@ export default function ItemScreen() {
             }}
           />
         )}
+
+        <View style={{ marginTop: 20 }}>
+          <CustomText style={[styles.heading, h3]}>
+            Borrowers History
+          </CustomText>
+          {borrwerHistory && borrwerHistory.length > 0 ? (
+            <FlatList
+              data={borrwerHistory}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={false}
+              contentContainerStyle={styles.listContent}
+              renderItem={({ item }) => (
+                <BorrowersCard
+                  user={item}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/userProfile/userProfileCard",
+                      params: { userId: item.id },
+                    })
+                  }
+                />
+              )}
+            />
+          ) : (
+            <CustomText>No borrowers yet.</CustomText>
+          )}
+        </View>
       </View>
     </ScrollView>
   );
@@ -200,29 +240,12 @@ const styles = StyleSheet.create({
     color: Colors.light.success,
     fontWeight: "500",
   },
-  primaryButton: {
-    marginTop: 16,
-    backgroundColor: Colors.light.primary,
-    padding: 14,
-    borderRadius: 10,
-    alignItems: "center",
+  heading: {
+    fontSize: 24,
+    lineHeight: 30,
+    marginBottom: 20,
   },
-  primaryButtonText: {
-    color: "white",
-    fontFamily: "Satoshi-Bold",
-    fontSize: 18,
-  },
-  secondaryButton: {
-    marginTop: 10,
-    borderColor: Colors.light.primary,
-    borderWidth: 1,
-    padding: 14,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  secondaryButtonText: {
-    color: Colors.light.primary,
-    fontFamily: "Satoshi-Bold",
-    fontSize: 18,
+  listContent: {
+    gap: 12,
   },
 });

@@ -83,7 +83,7 @@ export default function ListingsScreen() {
 
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 80 }]}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
       >
         <InnerContainer style={{ gap: 16, flex: 1 }}>
           <View>
@@ -121,6 +121,7 @@ export default function ListingsScreen() {
                 scrollEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item }) => (
                   <ItemsCard
                     id={item.id}
@@ -146,6 +147,7 @@ export default function ListingsScreen() {
                 scrollEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item }) => (
                   <RequestCard {...item} mode="owner" />
                 )}
@@ -166,6 +168,7 @@ export default function ListingsScreen() {
                 scrollEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item }) => (
                   <RequestCard {...item} mode="borrower" />
                 )}
@@ -188,7 +191,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     lineHeight: 30,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   icon: {
     backgroundColor: Colors.light.accent,
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   listContent: {
-    gap: 12,
+    gap: 6,
   },
   scrollContent: {
     paddingTop: 20,

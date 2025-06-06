@@ -2,7 +2,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { useUpdateBorrowRequest } from "@/hooks/useBorrowRequests";
 import { Decision } from "@/types";
-import { getStatusStyle } from "@/utils";
+import { getStatusStyle, toLocalISOString } from "@/utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import { FC, useState } from "react";
@@ -70,18 +70,21 @@ export const RequestCard: FC<RequestCardProps> = ({
     updateRequest({
       requestId: id,
       status: "accepted",
-      dueDate: selectedDate.toISOString().split("T")[0],
+      dueDate: toLocalISOString(selectedDate),
     });
   };
 
   return (
     <Pressable style={styles.card} onPress={handlePress}>
-      <CustomText style={styles.itemTitle}>{item_title}</CustomText>
+      <CustomText style={styles.itemTitle} numberOfLines={1}>
+        {item_title}
+      </CustomText>
       <CustomText
         style={[
           styles.borrowerName,
           mode === "borrower" && getStatusStyle(status),
         ]}
+        numberOfLines={1}
       >
         {mode === "owner"
           ? `Requested by: ${borrower_name}`
@@ -123,6 +126,20 @@ export const RequestCard: FC<RequestCardProps> = ({
                 onChange={onDateChange}
               />
 
+              <DateTimePicker
+                value={selectedDate}
+                mode="time"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                onChange={(event, time) => {
+                  if (time) {
+                    const updated = new Date(selectedDate);
+                    updated.setHours(time.getHours());
+                    updated.setMinutes(time.getMinutes());
+                    setSelectedDate(updated);
+                  }
+                }}
+              />
+
               <View style={styles.modalButtons}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
                   <CustomText style={styles.cancelText}>Cancel</CustomText>
@@ -146,6 +163,7 @@ export const RequestCard: FC<RequestCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
+    width: 220,
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,

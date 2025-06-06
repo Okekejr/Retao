@@ -7,10 +7,30 @@ export const isMoreThanDashWords = ({ text, wordsNum }: WordsT) => {
   return text.trim().split(/\s+/).length > wordsNum;
 };
 
-export const formatDate = (item: string) => new Date(item).toLocaleDateString();
+export const formatDate = (item: string) =>
+  new Date(item).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
 export const formatTime = (item: string) =>
-  new Date(item).toLocaleTimeString("en-US");
+  new Date(item).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+export const toLocalISOString = (date: Date) => {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate()
+    )} ` +
+    `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+      date.getSeconds()
+    )}`
+  );
+};
 
 export const formatTimeChat = (isoDate: string) => {
   if (isoDate === null) return;
