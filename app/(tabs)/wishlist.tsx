@@ -14,7 +14,7 @@ export default function WishlistScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer style={{ gap: 12 }}>
+      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
         <Header headerTitle="Wishlist" />
 
         {isLoading ? (

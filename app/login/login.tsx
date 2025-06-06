@@ -6,7 +6,6 @@ import { Colors } from "@/constants/Colors";
 import { AppName } from "@/constants/random";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { checkEmailExists, LoginFunc, validateEmail } from "@/utils";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -26,6 +25,9 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [emailExist, setEmailExist] = useState(true);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<null | "email" | "password">(
+    null
+  );
 
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
@@ -104,23 +106,30 @@ export default function LoginScreen() {
               <CustomText style={styles.label}>Email</CustomText>
               <TextInput
                 ref={emailInputRef}
-                style={[styles.input, errors.email ? styles.errorInput : null]}
+                style={[
+                  styles.input,
+                  focusedInput === "email" && styles.focusedInput,
+                  errors.email && styles.errorInput,
+                ]}
                 placeholder="Email Address"
                 placeholderTextColor="#c7c7c7"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                selectionColor="#000"
                 autoCorrect={false}
                 value={email}
                 onChangeText={(text) => setEmail(text.trim())}
+                onFocus={() => setFocusedInput("email")}
                 onSubmitEditing={() => passwordInputRef.current?.focus()}
-                onBlur={() =>
-                  checkEmailExists({
-                    email: email,
-                    setEmailUnique: setEmailExist,
-                    setErrors: setErrors,
-                    login: true,
-                  })
-                }
+                onBlur={() => {
+                  setFocusedInput(null),
+                    checkEmailExists({
+                      email: email,
+                      setEmailUnique: setEmailExist,
+                      setErrors: setErrors,
+                      login: true,
+                    });
+                }}
               />
               {errors.email ? (
                 <CustomText style={styles.error}>{errors.email}</CustomText>
@@ -129,27 +138,32 @@ export default function LoginScreen() {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={styles.label}>Password</CustomText>
-              <View style={styles.passwordInputContainer}>
+              <View
+                style={[
+                  styles.passwordInputContainer,
+                  focusedInput === "password" && styles.focusedInput,
+                ]}
+              >
                 <TextInput
                   ref={passwordInputRef}
                   style={styles.passwordInput}
                   placeholder="Password"
                   placeholderTextColor="#c7c7c7"
+                  selectionColor="#000"
                   secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={(text) => setPassword(text)}
+                  onFocus={() => setFocusedInput("password")}
                   onSubmitEditing={handleLogin}
+                  onBlur={() => setFocusedInput(null)}
                 />
                 {/* Eye icon inside input */}
                 <TouchableOpacity
                   onPress={() => setPasswordVisible(!isPasswordVisible)}
                 >
-                  <Ionicons
-                    name={isPasswordVisible ? "eye" : "eye-off"}
-                    size={24}
-                    color="gray"
-                    style={styles.eyeIcon}
-                  />
+                  <CustomText style={styles.btnText}>
+                    {!isPasswordVisible ? "Show" : "Hide"}
+                  </CustomText>
                 </TouchableOpacity>
               </View>
               {errors.login ? (
@@ -205,23 +219,30 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: Colors.light.textSecondary,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 12,
     fontSize: 16,
     backgroundColor: "#fafafa",
+    height: 45.5,
+  },
+  focusedInput: {
+    borderColor: "#000",
+    borderWidth: 2,
   },
   passwordInputContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderColor: Colors.light.textSecondary,
     borderWidth: 1,
-    borderRadius: 10,
-    height: 50,
+    borderRadius: 5,
+    height: 45.5,
+    backgroundColor: "#fafafa",
     paddingHorizontal: 10,
   },
   passwordInput: {
     flex: 1,
     color: "#000",
+    height: 45.5,
   },
   eyeIcon: {
     marginLeft: 10,
@@ -250,5 +271,11 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: Colors.light.muted,
+  },
+  btnText: {
+    fontSize: 16,
+    fontFamily: "Satoshi-Bold",
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
   },
 });

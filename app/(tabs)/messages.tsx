@@ -21,7 +21,7 @@ export default function MessagesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer style={{ gap: 12 }}>
+      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
         <Header headerTitle="Messages" style={{ marginBottom: 12 }} />
 
         <View>

@@ -49,3 +49,15 @@ export type Listing = {
     dueDate?: string;
   };
 };
+
+export type SearchListing = {
+  id: string;
+  title: string;
+  description: string;
+  distance: string;
+  images: string[];
+};
+
+export type SearchListingsResponse = {
+  data: SearchListing[];
+};

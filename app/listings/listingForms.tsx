@@ -4,6 +4,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
+import { h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
@@ -23,6 +24,9 @@ export default function ListingFormsScreen() {
   const { formData, updateFormData } = useListing();
   const [invalid, setInvalid] = useState(false);
   const [errors, setErrors] = useState({ title: "", description: "" });
+  const [focusedInput, setFocusedInput] = useState<
+    null | "title" | "description"
+  >(null);
 
   const progressPercentage: DimensionValue = `${
     (formData.current_step / formData.total_steps) * 100
@@ -81,12 +85,18 @@ export default function ListingFormsScreen() {
 
               {/* Title Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={styles.label}>Title</CustomText>
+                <CustomText style={[styles.label, h3]}>Title</CustomText>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    focusedInput === "title" && styles.focusedInput,
+                  ]}
                   placeholder="E.g. Camping Tent for 2 People"
                   value={formData.title}
                   onChangeText={(text) => updateFormData("title", text)}
+                  selectionColor="#000"
+                  onFocus={() => setFocusedInput("title")}
+                  onBlur={() => setFocusedInput(null)}
                 />
                 {errors.title !== "" && (
                   <CustomText style={styles.error}>{errors.title}</CustomText>
@@ -95,14 +105,21 @@ export default function ListingFormsScreen() {
 
               {/* Description Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={styles.label}>Description</CustomText>
+                <CustomText style={[styles.label, h3]}>Description</CustomText>
                 <TextInput
-                  style={[styles.input, styles.textArea]}
+                  style={[
+                    styles.input,
+                    focusedInput === "description" && styles.focusedInput,
+                    styles.textArea,
+                  ]}
                   placeholder="Provide details: condition, brand, usage, etc."
                   multiline
                   numberOfLines={5}
                   value={formData.description}
                   onChangeText={(text) => updateFormData("description", text)}
+                  selectionColor="#000"
+                  onFocus={() => setFocusedInput("description")}
+                  onBlur={() => setFocusedInput(null)}
                 />
                 {errors.description !== "" && (
                   <CustomText style={styles.error}>
@@ -139,7 +156,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 12,
     fontSize: 16,
     marginBottom: 20,
@@ -148,9 +165,14 @@ const styles = StyleSheet.create({
   textArea: {
     height: 120,
     textAlignVertical: "top",
+    borderRadius: 5,
   },
   error: {
     color: "red",
     marginBottom: 8,
+  },
+  focusedInput: {
+    borderColor: "#000",
+    borderWidth: 2,
   },
 });

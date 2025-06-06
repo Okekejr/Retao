@@ -69,7 +69,7 @@ export default function ListingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InnerContainer>
+      <InnerContainer style={{ marginTop: 20 }}>
         <Header headerTitle="Listings" />
 
         <ListAnItemBtn openModal={() => openModal("createListing")} />

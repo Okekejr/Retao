@@ -1,25 +1,12 @@
 import { Feather } from "@expo/vector-icons";
-import { FC, useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { FC } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 
 interface SearchBarProps {
-  onSearch?: (query: string) => void;
   placeholder?: string;
 }
 
-export const SearchBar: FC<SearchBarProps> = ({ onSearch, placeholder }) => {
-  const [query, setQuery] = useState("");
-
-  const handleClear = () => {
-    setQuery("");
-    onSearch && onSearch("");
-  };
-
-  const handleChange = (text: string) => {
-    setQuery(text);
-    onSearch && onSearch(text);
-  };
-
+export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
   return (
     <View style={styles.container}>
       <Feather name="search" size={20} color="#888" style={styles.icon} />
@@ -27,20 +14,10 @@ export const SearchBar: FC<SearchBarProps> = ({ onSearch, placeholder }) => {
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        value={query}
-        onChangeText={handleChange}
-        returnKeyType="search"
-        clearButtonMode="never"
-        autoCorrect={false}
-        autoCapitalize="none"
         placeholderTextColor="#888"
+        editable={false}
+        pointerEvents="none"
       />
-
-      {query.length > 0 && (
-        <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
-          <Feather name="x" size={18} color="#888" />
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
@@ -48,10 +25,10 @@ export const SearchBar: FC<SearchBarProps> = ({ onSearch, placeholder }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#FAFAF5",
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#c7c7c7",
-    height: 50,
+    height: 45.5,
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -70,8 +47,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#1A1A1A",
     fontFamily: "Inter-Regular",
-  },
-  clearButton: {
-    padding: 4,
   },
 });

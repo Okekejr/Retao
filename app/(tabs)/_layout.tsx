@@ -1,10 +1,9 @@
-import { HapticTab } from "@/components/HapticTab";
-import TabBarBackground from "@/components/ui/TabBarBackground";
+import { Colors } from "@/constants/Colors";
 import { getIconName } from "@/utils";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function TabLayout() {
   return (
@@ -16,19 +15,12 @@ export default function TabLayout() {
         route: RouteProp<ParamListBase, string>;
       }) => ({
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarIcon: ({ focused }) => (
           <View style={styles.iconContainer}>
             {getIconName(route.name, focused)}
           </View>
         ),
-        tabBarStyle: Platform.select({
-          ios: {
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarStyle: { backgroundColor: Colors.light.background },
       })}
     >
       <Tabs.Screen

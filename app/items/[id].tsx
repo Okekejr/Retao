@@ -19,7 +19,6 @@ import {
 import { useGetListingById } from "@/hooks/useGetListings";
 import { useBorrowerHistory } from "@/hooks/useGetUserData";
 import { avatarsT } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
@@ -27,7 +26,6 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -85,9 +83,6 @@ export default function ItemScreen() {
 
         <View style={styles.iconRow}>
           <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
-          <TouchableOpacity style={styles.favoriteIcon}>
-            <Ionicons name="heart-outline" size={24} color="#fff" />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -96,13 +91,15 @@ export default function ItemScreen() {
           <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
           {selectedItem?.status && <StatusBadge status={selectedItem.status} />}
         </View>
-        <CustomText style={styles.description}>
-          {selectedItem?.description}
-        </CustomText>
+        <View>
+          <CustomText style={styles.description}>
+            {selectedItem?.description}
+          </CustomText>
 
-        <CustomText style={styles.metaText}>
-          {selectedItem?.distance}
-        </CustomText>
+          <CustomText style={styles.metaText}>
+            {selectedItem?.distance}
+          </CustomText>
+        </View>
 
         <View style={styles.ownerSection}>
           <Image
@@ -243,7 +240,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     lineHeight: 30,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   listContent: {
     gap: 12,

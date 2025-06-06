@@ -1,6 +1,5 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 interface UpdatePasswordCompProps {
@@ -13,6 +12,10 @@ interface UpdatePasswordCompProps {
   setNewPassword: React.Dispatch<React.SetStateAction<string>>;
   setNewConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
   handleUpdate: () => Promise<void>;
+  setFocusedInput: React.Dispatch<
+    React.SetStateAction<"password" | "newPassword" | "confirmPassword" | null>
+  >;
+  focusedInput: "password" | "newPassword" | "confirmPassword" | null;
   newConfirmNewPassword: string;
   password: string;
   newPassword: string;
@@ -35,6 +38,7 @@ export const UpdatePasswordComp = ({
   isdisabled,
   updateError,
   newConfirmNewPassword,
+  focusedInput,
   newPassword,
   password,
   errors,
@@ -43,6 +47,7 @@ export const UpdatePasswordComp = ({
   setNewPassword,
   setNewConfirmNewPassword,
   handleUpdate,
+  setFocusedInput,
 }: UpdatePasswordCompProps) => {
   return (
     <View>
@@ -50,12 +55,19 @@ export const UpdatePasswordComp = ({
         <CustomText style={styles.label}>Current password</CustomText>
         <TextInput
           ref={passwordInputRef}
-          style={[styles.input, errors.password ? styles.errorInput : null]}
+          style={[
+            styles.input,
+            focusedInput === "password" && styles.focusedInput,
+            errors.password && styles.errorInput,
+          ]}
           secureTextEntry={true}
           autoCapitalize="none"
+          selectionColor="#000"
           autoCorrect={false}
           value={password}
           onChangeText={(text) => setPassword(text)}
+          onFocus={() => setFocusedInput("password")}
+          onBlur={() => setFocusedInput(null)}
           onSubmitEditing={() => passwordInputRef.current?.focus()}
         />
         {errors.password ? (
@@ -65,49 +77,52 @@ export const UpdatePasswordComp = ({
 
       <View style={{ marginBottom: 20 }}>
         <CustomText style={styles.label}>New password</CustomText>
-        <View style={styles.passwordInputContainer}>
-          <TextInput
-            ref={newPasswordInputRef}
-            style={styles.passwordInput}
-            secureTextEntry={!isPasswordVisible}
-            value={newPassword}
-            onChangeText={(text) => setNewPassword(text)}
-            onSubmitEditing={() => newConfirmPasswordInputRef.current?.focus()}
-          />
-          {/* Eye icon inside input */}
-          <TouchableOpacity
-            onPress={() => setPasswordVisible(!isPasswordVisible)}
-          >
-            <Ionicons
-              name={isPasswordVisible ? "eye" : "eye-off"}
-              size={24}
-              color="gray"
-              style={styles.eyeIcon}
-            />
-          </TouchableOpacity>
-        </View>
+
+        <TextInput
+          ref={newPasswordInputRef}
+          style={[
+            styles.input,
+            focusedInput === "newPassword" && styles.focusedInput,
+          ]}
+          selectionColor="#000"
+          autoCapitalize="none"
+          autoCorrect={false}
+          secureTextEntry={!isPasswordVisible}
+          value={newPassword}
+          onChangeText={(text) => setNewPassword(text)}
+          onFocus={() => setFocusedInput("newPassword")}
+          onBlur={() => setFocusedInput(null)}
+          onSubmitEditing={() => newConfirmPasswordInputRef.current?.focus()}
+        />
       </View>
 
       <View style={{ marginBottom: 20 }}>
         <CustomText style={styles.label}>Confirm New Password</CustomText>
-        <View style={styles.passwordInputContainer}>
+        <View
+          style={[
+            styles.passwordInputContainer,
+            focusedInput === "confirmPassword" && styles.focusedInput,
+          ]}
+        >
           <TextInput
             ref={newConfirmPasswordInputRef}
             style={styles.passwordInput}
             secureTextEntry={!isPasswordVisible}
             value={newConfirmNewPassword}
+            selectionColor="#000"
+            autoCapitalize="none"
+            autoCorrect={false}
             onChangeText={(text) => setNewConfirmNewPassword(text)}
+            onFocus={() => setFocusedInput("confirmPassword")}
+            onBlur={() => setFocusedInput(null)}
             onSubmitEditing={handleUpdate}
           />
           <TouchableOpacity
             onPress={() => setPasswordVisible(!isPasswordVisible)}
           >
-            <Ionicons
-              name={isPasswordVisible ? "eye" : "eye-off"}
-              size={24}
-              color="gray"
-              style={styles.eyeIcon}
-            />
+            <CustomText style={styles.btnText}>
+              {!isPasswordVisible ? "Show" : "Hide"}
+            </CustomText>
           </TouchableOpacity>
         </View>
         {errors.confirmNewPassword ? (
@@ -156,9 +171,10 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: Colors.light.textSecondary,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 12,
     fontSize: 16,
+    height: 45.5,
     backgroundColor: "#fafafa",
   },
   passwordInputContainer: {
@@ -166,13 +182,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: Colors.light.textSecondary,
     borderWidth: 1,
-    borderRadius: 10,
-    height: 50,
+    borderRadius: 5,
+    height: 45.5,
     paddingHorizontal: 10,
   },
   passwordInput: {
     flex: 1,
     color: "#000",
+    height: 45.5,
   },
   error: {
     color: "red",
@@ -207,5 +224,15 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: Colors.light.muted,
+  },
+  btnText: {
+    fontSize: 16,
+    fontFamily: "Satoshi-Bold",
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+  },
+  focusedInput: {
+    borderColor: "#000",
+    borderWidth: 2,
   },
 });

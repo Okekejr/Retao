@@ -1,5 +1,5 @@
 import { BASE_URL } from "@/constants/random";
-import { Listing, ListingsT } from "@/types";
+import { Listing, ListingsT, SearchListingsResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetListings = (
@@ -57,6 +57,22 @@ export const useGetListingById = (id: string) => {
         return null;
       }
     },
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useSearchListings = (query: string) => {
+  return useQuery<SearchListingsResponse["data"]>({
+    queryKey: ["searchListings", query],
+    queryFn: async () => {
+      const res = await fetch(
+        `${BASE_URL}listings/search?query=${encodeURIComponent(query)}`
+      );
+      if (!res.ok) throw new Error("Failed to search listings");
+      const data = await res.json();
+      return data.data;
+    },
+    enabled: !!query,
     refetchOnWindowFocus: false,
   });
 };

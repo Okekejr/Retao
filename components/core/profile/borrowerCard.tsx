@@ -1,4 +1,5 @@
 import CustomText from "@/components/ui/customText";
+import { Colors } from "@/constants/Colors";
 import { avatarsT, profileT } from "@/types";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet } from "react-native";
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 6,
     marginHorizontal: 12,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.light.background,
     borderRadius: 16,
     shadowColor: "#000",
     shadowOpacity: 0.05,

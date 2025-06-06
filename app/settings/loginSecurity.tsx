@@ -25,6 +25,9 @@ export default function LoginSecurityScreen() {
     newPassword: "",
     confirmNewPassword: "",
   });
+  const [focusedInput, setFocusedInput] = useState<
+    null | "password" | "newPassword" | "confirmPassword"
+  >(null);
   const passwordInputRef = useRef<TextInput>(null);
   const newPasswordInputRef = useRef<TextInput>(null);
   const newConfirmPasswordInputRef = useRef<TextInput>(null);
@@ -113,6 +116,8 @@ export default function LoginSecurityScreen() {
               setNewPassword={setNewPassword}
               setNewConfirmNewPassword={setNewConfirmNewPassword}
               handleUpdate={handleUpdate}
+              setFocusedInput={setFocusedInput}
+              focusedInput={focusedInput}
               newConfirmNewPassword={newConfirmNewPassword}
               password={password}
               newPassword={newPassword}
