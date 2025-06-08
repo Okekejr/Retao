@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     lineHeight: 30,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   scrollContent: {
     paddingTop: 20,
