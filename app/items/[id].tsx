@@ -21,7 +21,9 @@ import { useBorrowerHistory } from "@/hooks/useGetUserData";
 import { avatarsT } from "@/types";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   FlatList,
   ScrollView,
@@ -29,7 +31,7 @@ import {
   View,
 } from "react-native";
 
-const { height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 const avatars: avatarsT = [
   { id: "avatar1", src: require("../../assets/img/avatar.png") },
@@ -45,6 +47,16 @@ export default function ItemScreen() {
   const { mutate: requestToBorrow } = useRequestToBorrow();
   const { mutate, isPending } = useUpdateBorrowRequest();
   const { data: borrwerHistory } = useBorrowerHistory(id as string);
+  const slideAnim = useRef(new Animated.Value(height)).current;
+
+  useEffect(() => {
+    // Slide up animation
+    Animated.timing(slideAnim, {
+      toValue: height / 1.13, // Final position
+      duration: 1000,
+      useNativeDriver: false, // Use false for layout-related animations
+    }).start();
+  }, [slideAnim]);
 
   if (isLoading || !selectedItem) return;
 
@@ -60,6 +72,7 @@ export default function ItemScreen() {
   const handleEditListing = (itemId: string) => {
     router.push({ pathname: "/listings/editListings", params: { id: itemId } });
   };
+
   const handleMessageOwner = async () => {
     router.push({
       pathname: "/message/chatScreen",
@@ -68,62 +81,108 @@ export default function ItemScreen() {
       },
     });
   };
+
   const handleRequestToBorrow = () => {
     requestToBorrow({ itemId: id as string });
   };
+
   const handleMarkAsReturned = () => {
     if (!borrowRequestData?.id) return;
     mutate({ requestId: borrowRequestData.id, status: "returned" });
   };
 
+  const handleViewOwnerProfile = () => {
+    if (!selectedItem.owner.id) return;
+    router.push({
+      pathname: "/userProfile/userProfileCard",
+      params: { userId: selectedItem.owner.id },
+    });
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.imageContainer}>
-        <ItemImagesCarousel images={selectedItem?.image} />
+    <>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.imageContainer}>
+          <ItemImagesCarousel images={selectedItem?.image} />
 
-        <View style={styles.iconRow}>
-          <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+          <View style={styles.iconRow}>
+            <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.content}>
-        <View style={styles.titleRow}>
-          <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
-          {selectedItem?.status && <StatusBadge status={selectedItem.status} />}
-        </View>
-        <View>
-          <CustomText style={styles.description}>
-            {selectedItem?.description}
+        <View style={styles.content}>
+          <View style={styles.titleRow}>
+            <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+            {selectedItem?.status && (
+              <StatusBadge status={selectedItem.status} />
+            )}
+          </View>
+          <View>
+            <CustomText style={styles.description}>
+              {selectedItem?.description}
+            </CustomText>
+
+            <CustomText style={styles.metaText}>
+              {selectedItem?.distance}
+            </CustomText>
+          </View>
+
+          <View style={styles.ownerSection}>
+            <Image
+              source={avatar?.src}
+              style={styles.avatar}
+              contentFit="cover"
+            />
+            <CustomText
+              style={styles.ownerName}
+              onPress={handleViewOwnerProfile}
+            >
+              Shared by {selectedItem?.owner.name}
+            </CustomText>
+          </View>
+
+          <CustomText style={styles.availability}>
+            {selectedItem?.availability}
           </CustomText>
 
-          <CustomText style={styles.metaText}>
-            {selectedItem?.distance}
-          </CustomText>
+          {selectedItem?.status && (
+            <RenderTimeline
+              status={selectedItem.status}
+              dueDate={selectedItem.borrower?.dueDate}
+              releasedOn={selectedItem.borrower?.borrowedOn}
+            />
+          )}
+
+          <View style={{ marginTop: 20 }}>
+            <CustomText style={[styles.heading, h3]}>
+              Borrowers History
+            </CustomText>
+            {borrwerHistory && borrwerHistory.length > 0 ? (
+              <FlatList
+                data={borrwerHistory}
+                keyExtractor={(item) => item.id}
+                scrollEnabled={false}
+                contentContainerStyle={styles.listContent}
+                renderItem={({ item }) => (
+                  <BorrowersCard
+                    user={item}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/userProfile/userProfileCard",
+                        params: { userId: item.id },
+                      })
+                    }
+                  />
+                )}
+              />
+            ) : (
+              <CustomText>No borrowers yet.</CustomText>
+            )}
+          </View>
         </View>
+      </ScrollView>
 
-        <View style={styles.ownerSection}>
-          <Image
-            source={avatar?.src}
-            style={styles.avatar}
-            contentFit="cover"
-          />
-          <CustomText style={styles.ownerName}>
-            Shared by {selectedItem?.owner.name}
-          </CustomText>
-        </View>
-
-        <CustomText style={styles.availability}>
-          {selectedItem?.availability}
-        </CustomText>
-
-        {selectedItem?.status && (
-          <RenderTimeline
-            status={selectedItem.status}
-            dueDate={selectedItem.borrower?.dueDate}
-            releasedOn={selectedItem.borrower?.borrowedOn}
-          />
-        )}
-
+      <Animated.View style={[styles.hoverButton, { top: slideAnim }]}>
         {selectedItem?.status && (
           <RenderButton
             itemId={selectedItem.id}
@@ -138,35 +197,8 @@ export default function ItemScreen() {
             }}
           />
         )}
-
-        <View style={{ marginTop: 20 }}>
-          <CustomText style={[styles.heading, h3]}>
-            Borrowers History
-          </CustomText>
-          {borrwerHistory && borrwerHistory.length > 0 ? (
-            <FlatList
-              data={borrwerHistory}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-              contentContainerStyle={styles.listContent}
-              renderItem={({ item }) => (
-                <BorrowersCard
-                  user={item}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/userProfile/userProfileCard",
-                      params: { userId: item.id },
-                    })
-                  }
-                />
-              )}
-            />
-          ) : (
-            <CustomText>No borrowers yet.</CustomText>
-          )}
-        </View>
-      </View>
-    </ScrollView>
+      </Animated.View>
+    </>
   );
 }
 
@@ -215,7 +247,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
-    color: Colors.light.muted,
+    color: Colors.light.textSecondary,
   },
   ownerSection: {
     flexDirection: "row",
@@ -234,7 +266,7 @@ const styles = StyleSheet.create({
   },
   availability: {
     fontSize: 14,
-    color: Colors.light.success,
+    color: Colors.light.primary,
     fontWeight: "500",
   },
   heading: {
@@ -244,5 +276,22 @@ const styles = StyleSheet.create({
   },
   listContent: {
     gap: 12,
+  },
+  hoverButton: {
+    position: "absolute", // Make the tab bar float
+    width: width * 1,
+    paddingTop: 0,
+    marginTop: 0,
+    height: 65, // Set the height
+    borderRadius: 65 / 2, // Half of height to make it fully rounded
+    paddingHorizontal: 20, // Add padding inside the pill
+    borderTopWidth: 0,
+    borderTopColor: "none",
+    backgroundColor: "transparent",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 10,
   },
 });

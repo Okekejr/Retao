@@ -18,6 +18,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   SafeAreaView,
   ScrollView,
@@ -30,9 +31,17 @@ export default function ListingsScreen() {
   const [content, setContent] = useState("");
   const { userData } = useUserData();
   const queryClient = useQueryClient();
-  const { data: listings = [] } = useGetListings(undefined, userData?.id);
-  const { data: requests } = useIncomingBorrowRequests();
-  const { data: pendingRequests } = useBorrowerPendingRequests();
+  const { data: listings = [], isLoading: listingsLoading } = useGetListings(
+    undefined,
+    userData?.id
+  );
+  const { data: requests, isLoading: requestLoading } =
+    useIncomingBorrowRequests();
+  const { data: pendingRequests, isLoading: pendingRequestsLoading } =
+    useBorrowerPendingRequests();
+
+  const isAnyLoading =
+    requestLoading || listingsLoading || pendingRequestsLoading;
 
   const listedItems =
     listings?.filter((item) => item.owner?.id === userData.id).slice(0, 5) ??
@@ -69,6 +78,12 @@ export default function ListingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isAnyLoading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </View>
+      )}
+
       <InnerContainer style={{ marginTop: 20 }}>
         <Header headerTitle="Listings" />
 
@@ -211,5 +226,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: 20,
+  },
+  loaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.light.background,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
   },
 });

@@ -2,6 +2,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { h3, ItemStatus, UserRole } from "@/constants/random";
 import { formatDate, formatTime } from "@/utils";
+import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 const statusColors = {
@@ -76,7 +77,7 @@ export const RenderButton = ({
     if (isListed) {
       return (
         <TouchableOpacity
-          style={styles.primaryButton}
+          style={[styles.primaryButton, styles.buttonHover, { width: "100%" }]}
           onPress={() => func.handleEditListing(itemId)}
         >
           <CustomText style={styles.primaryButtonText}>Edit Listing</CustomText>
@@ -85,7 +86,11 @@ export const RenderButton = ({
     } else if (isBorrowed) {
       return (
         <TouchableOpacity
-          style={styles.secondaryButton}
+          style={[
+            styles.secondaryButton,
+            styles.buttonHover,
+            { width: "100%" },
+          ]}
           disabled={isPending}
           onPress={func.handleMarkAsReturned}
         >
@@ -102,7 +107,7 @@ export const RenderButton = ({
       <>
         {isListed && (
           <TouchableOpacity
-            style={styles.primaryButton}
+            style={[styles.primaryButton, styles.buttonHover]}
             onPress={func.handleRequestToBorrow}
           >
             <CustomText style={styles.primaryButtonText}>
@@ -110,14 +115,19 @@ export const RenderButton = ({
             </CustomText>
           </TouchableOpacity>
         )}
+        <View
+          style={[styles.dotHover, { backgroundColor: Colors.light.primary }]}
+        ></View>
         {(isListed || isBorrowed) && (
           <TouchableOpacity
-            style={styles.secondaryButton}
+            style={[styles.secondaryButton, styles.msgHover]}
             onPress={() => func.handleMessageOwner()}
           >
-            <CustomText style={styles.secondaryButtonText}>
-              Message Owner
-            </CustomText>
+            <Ionicons
+              name="mail-outline"
+              size={28}
+              color={Colors.light.primary}
+            />
           </TouchableOpacity>
         )}
       </>
@@ -154,12 +164,32 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.primary,
     borderWidth: 1,
     padding: 14,
-    borderRadius: 10,
     alignItems: "center",
   },
   secondaryButtonText: {
     color: Colors.light.primary,
     fontFamily: "Satoshi-Bold",
     fontSize: 18,
+  },
+  buttonHover: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "75%",
+    height: 65, // Set the height
+    borderRadius: 65 / 2,
+  },
+  dotHover: {
+    width: "1.6%",
+    height: "10%",
+    marginVertical: "auto",
+    borderRadius: 100,
+  },
+  msgHover: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "20%",
+    height: 65, // Set the height
+    borderRadius: 100,
+    borderTopLeftRadius: 20,
   },
 });

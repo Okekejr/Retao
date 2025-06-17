@@ -10,23 +10,36 @@ import { useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function HomeScreen() {
-  const { data: Listings } = useGetListings();
+  const { data: Listings, isLoading } = useGetListings();
   const { data: location } = useGetLocation();
-  const { data: ListingByLoc } = useGetListings();
-  const { data: Categories } = useGetCategories();
+  const { data: ListingByLoc, isLoading: loadingLoc } = useGetListings(
+    location,
+    undefined,
+    undefined
+  );
+  const { data: Categories, isLoading: catLoading } = useGetCategories();
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const isAnyLoading = isLoading || loadingLoc || catLoading;
+
   return (
     <SafeAreaView style={styles.container}>
+      {isAnyLoading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </View>
+      )}
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
         <Header headerTitle="Home" />
 
@@ -47,7 +60,7 @@ export default function HomeScreen() {
             <ItemSection heading="Recently Listed Near You" data={Listings} />
           )}
 
-          {ListingByLoc && (
+          {ListingByLoc && location && (
             <ItemSection
               heading={`Listed in ${location ?? "your area"}`}
               data={ListingByLoc}
@@ -71,5 +84,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: Platform.OS === "ios" ? 30 : 30,
+  },
+  loaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.light.background,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
   },
 });

@@ -72,7 +72,7 @@ export default function ListingSelect() {
 
     const loc = await Location.getCurrentPositionAsync({});
     const place = await Location.reverseGeocodeAsync(loc.coords);
-    const cityString = `${place[0].city}, ${place[0].region}`;
+    const cityString = `${place[0].city}`;
     setLocation(cityString);
     updateFormData("location", cityString);
   };

@@ -8,18 +8,28 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
+import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
 import { profileItems } from "@/utils";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { userData } = useUserData();
+  const { refreshData } = useGetUserData();
   const { logout } = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const openModal = (content: string) => {
     setModalVisible(true);
@@ -28,13 +38,36 @@ export default function ProfileScreen() {
 
   const closeModal = () => setModalVisible(false);
 
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (userData.id === "") {
+        try {
+          setLoading(true);
+          await refreshData();
+        } catch (error) {
+          console.log("Error refreshing userData:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadUserData();
+  }, [userData.id]);
+
   return (
     <SafeAreaView style={styles.container}>
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </View>
+      )}
+
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
         <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
 
         <ScrollView style={{ gap: 12 }}>
-          <IdentityCard user={userData} />
+          {userData.id !== "" && <IdentityCard user={userData} />}
 
           <ListAnItemBtn openModal={() => openModal("createListing")} />
 
@@ -73,5 +106,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
+  },
+  loaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.light.background,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
   },
 });

@@ -52,7 +52,13 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
 
   return (
     <Modal visible={visible} animationType="fade" transparent>
-      <Pressable style={styles.overlay} onPress={onClose}>
+      <Pressable
+        style={styles.overlay}
+        onPress={() => {
+          handleClear();
+          onClose();
+        }}
+      >
         <MotiView
           from={{ translateY: -100, opacity: 0 }}
           animate={{ translateY: 0, opacity: 1 }}
@@ -66,7 +72,13 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
           >
             <CustomText style={h3}>Search Listings</CustomText>
 
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={() => {
+                handleClear();
+                onClose();
+              }}
+              style={styles.closeButton}
+            >
               <Feather name="x" size={24} color="#000" />
             </TouchableOpacity>
           </View>

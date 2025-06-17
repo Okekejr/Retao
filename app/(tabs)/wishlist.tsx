@@ -6,7 +6,13 @@ import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
 import { MotiView } from "moti";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function WishlistScreen() {
   const { userData } = useUserData();
@@ -14,6 +20,11 @@ export default function WishlistScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </View>
+      )}
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
         <Header headerTitle="Wishlist" />
 
@@ -67,5 +78,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     width: "100%",
+  },
+  loaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.light.background,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
   },
 });
