@@ -43,11 +43,8 @@ export const IdentityCard = ({ user }: IdentityCardProps) => {
         </CustomText>
         <View style={styles.statsRow}>
           <CustomStats label="Listed" value={user.stats.listed} />
-          <CustomStats label="Borrowed" value={user.stats.borrowed} />
-          <CustomStats
-            label="Rating"
-            value={`${user.stats.rating} ⭐ (${user.stats.reviewsCount})`}
-          />
+          <CustomStats label="Borrowing" value={user.stats.borrowed} />
+          <CustomStats label="Rating" value={`⭐ ${user.stats.rating}`} />
         </View>
       </View>
     </View>

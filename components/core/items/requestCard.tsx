@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "85%",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.light.textTertiery,
     borderRadius: 16,
     padding: 20,
     alignItems: "center",
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 12,
+    color: Colors.light.surfaceArea,
   },
   modalButtons: {
     flexDirection: "row",

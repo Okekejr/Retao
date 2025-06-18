@@ -4,6 +4,7 @@ import {
   RenderTimeline,
   StatusBadge,
 } from "@/components/core/items/itemsDetails";
+import { RatingModal } from "@/components/core/items/rating/ratingModal";
 import { BorrowersCard } from "@/components/core/profile/borrowerCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
@@ -18,10 +19,11 @@ import {
 } from "@/hooks/useBorrowRequests";
 import { useGetListingById } from "@/hooks/useGetListings";
 import { useBorrowerHistory } from "@/hooks/useGetUserData";
-import { avatarsT } from "@/types";
+import { useSubmitRatings } from "@/hooks/useRatings";
+import { avatarsT, Listing } from "@/types";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -45,9 +47,16 @@ export default function ItemScreen() {
   const { data: selectedItem, isLoading } = useGetListingById(id as string);
   const { data: borrowRequestData } = useBorrowRequestByItem(id as string);
   const { mutate: requestToBorrow } = useRequestToBorrow();
-  const { mutate, isPending } = useUpdateBorrowRequest();
+  const { mutate: markAsReturnedMutation, isPending } =
+    useUpdateBorrowRequest();
   const { data: borrwerHistory } = useBorrowerHistory(id as string);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const { mutate: submitRatingMutation, isPending: pendingRating } =
+    useSubmitRatings();
   const slideAnim = useRef(new Animated.Value(height)).current;
+  const [borrowerForRating, setBorrowerForRating] = useState<Listing | null>(
+    null
+  );
 
   useEffect(() => {
     // Slide up animation
@@ -87,8 +96,32 @@ export default function ItemScreen() {
   };
 
   const handleMarkAsReturned = () => {
-    if (!borrowRequestData?.id) return;
-    mutate({ requestId: borrowRequestData.id, status: "returned" });
+    console.log("Borrower at time of mark:", selectedItem.borrower);
+    if (!selectedItem?.borrower?.id) return;
+
+    setBorrowerForRating(selectedItem);
+    setShowRatingModal(true);
+  };
+
+  const handleSubmitRating = (rating: number) => {
+    if (!borrowerForRating?.borrower?.id) return;
+
+    // First submit rating
+    submitRatingMutation(
+      { rateeId: borrowerForRating.borrower?.id, rating },
+      {
+        onSuccess: () => {
+          // Then mark the item as returned
+          if (!borrowRequestData?.id) return;
+          markAsReturnedMutation({
+            requestId: borrowRequestData.id,
+            status: "returned",
+          });
+        },
+      }
+    );
+
+    setBorrowerForRating(null); // clear
   };
 
   const handleViewOwnerProfile = () => {
@@ -198,6 +231,13 @@ export default function ItemScreen() {
           />
         )}
       </Animated.View>
+
+      <RatingModal
+        borrower={borrowerForRating?.borrower?.name}
+        visible={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        onSubmit={handleSubmitRating}
+      />
     </>
   );
 }
