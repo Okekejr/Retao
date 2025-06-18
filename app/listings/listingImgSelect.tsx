@@ -5,7 +5,9 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
+import { showToast } from "@/utils/showToast";
 import { Ionicons } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -21,12 +23,22 @@ import {
 export default function ListingImgSelectScreen() {
   const router = useRouter();
   const { formData, updateFormData } = useListing();
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<{ uri: string; sizeMB: number }[]>([]);
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    const invalid = images.length === 0;
-    setDisabled(invalid);
+    const hasNoImages = images.length === 0;
+    const hasLargeImage = images.some((img) => img.sizeMB > 5);
+    setDisabled(hasNoImages || hasLargeImage);
+
+    const largeImage = images.find((img) => img.sizeMB > 5);
+    if (largeImage) {
+      showToast({
+        type: "error",
+        text1: "Image too large",
+        message: "Each image must be 5MB or smaller.",
+      });
+    }
   }, [images]);
 
   const progressPercentage: DimensionValue = `${
@@ -42,13 +54,30 @@ export default function ListingImgSelectScreen() {
     });
 
     if (!result.canceled) {
-      const selected = result.assets.map((asset) => asset.uri);
-      // Limit to 3 images
+      const selectedWithSize = await Promise.all(
+        result.assets.map(async (asset) => {
+          const fileInfo = await FileSystem.getInfoAsync(asset.uri);
+          const sizeMB =
+            fileInfo.exists && fileInfo.size
+              ? fileInfo.size / (1024 * 1024)
+              : 0;
+
+          return {
+            uri: asset.uri,
+            sizeMB: Number(sizeMB.toFixed(2)),
+          };
+        })
+      );
+
       setImages((prev) => {
-        const combined = [...prev, ...selected].slice(0, 3);
+        const combined = [...prev, ...selectedWithSize].slice(0, 3);
         return combined;
       });
     }
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleBack = () => {
@@ -87,22 +116,38 @@ export default function ListingImgSelectScreen() {
                   const image = images[index];
 
                   return (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={pickImage}
-                      style={styles.imageSlot}
-                      activeOpacity={0.8}
-                    >
+                    <View key={index} style={styles.imageSlotWrapper}>
                       {image ? (
-                        <Image
-                          source={{ uri: image }}
-                          style={styles.imagePreview}
-                          contentFit="cover"
-                        />
+                        <>
+                          <Image
+                            source={{ uri: image.uri }}
+                            style={styles.imagePreview}
+                            contentFit="cover"
+                          />
+                          <TouchableOpacity
+                            style={styles.removeIcon}
+                            onPress={() => removeImage(index)}
+                          >
+                            <Ionicons
+                              name="close-circle"
+                              size={22}
+                              color="red"
+                            />
+                          </TouchableOpacity>
+                          <CustomText style={styles.imageSizeText}>
+                            {image.sizeMB} MB
+                          </CustomText>
+                        </>
                       ) : (
-                        <Ionicons name="add-outline" size={28} color="#999" />
+                        <TouchableOpacity
+                          onPress={pickImage}
+                          style={styles.imageSlotEmpty}
+                          activeOpacity={0.8}
+                        >
+                          <Ionicons name="add-outline" size={28} color="#999" />
+                        </TouchableOpacity>
                       )}
-                    </TouchableOpacity>
+                    </View>
                   );
                 })}
               </View>
@@ -136,19 +181,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+    paddingHorizontal: 10,
   },
-  imageSlot: {
-    width: 120,
-    height: 120,
+  imageSlotWrapper: {
+    width: 100,
+    height: 130, // slightly taller to fit size text
+    position: "relative",
+    alignItems: "center",
+  },
+  imageSlotEmpty: {
+    width: 100,
+    height: 100,
     borderWidth: 1,
     borderRadius: 12,
     borderColor: Colors.light.textSecondary,
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
+    backgroundColor: "#f9f9f9",
   },
   imagePreview: {
-    width: "100%",
-    height: "100%",
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+  },
+  imageSizeText: {
+    fontSize: 12,
+    marginTop: 4,
+    color: "#555",
+    textAlign: "center",
+  },
+  removeIcon: {
+    position: "absolute",
+    top: -6,
+    right: -6,
+    backgroundColor: "#fff",
+    borderRadius: 11,
+    zIndex: 10,
   },
 });

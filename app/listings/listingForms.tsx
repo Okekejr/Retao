@@ -98,8 +98,13 @@ export default function ListingFormsScreen() {
                   onFocus={() => setFocusedInput("title")}
                   onBlur={() => setFocusedInput(null)}
                 />
-                {errors.title !== "" && (
+                {errors.title !== "" ? (
                   <CustomText style={styles.error}>{errors.title}</CustomText>
+                ) : (
+                  <CustomText style={styles.helperText}>
+                    Title must be:
+                    {"\n"}- At least 2 words
+                  </CustomText>
                 )}
               </View>
 
@@ -121,9 +126,14 @@ export default function ListingFormsScreen() {
                   onFocus={() => setFocusedInput("description")}
                   onBlur={() => setFocusedInput(null)}
                 />
-                {errors.description !== "" && (
+                {errors.description !== "" ? (
                   <CustomText style={styles.error}>
                     {errors.description}
+                  </CustomText>
+                ) : (
+                  <CustomText style={styles.helperText}>
+                    Description must be:
+                    {"\n"}- At least 5 words
                   </CustomText>
                 )}
               </View>
@@ -159,7 +169,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 12,
     fontSize: 16,
-    marginBottom: 20,
     backgroundColor: "#fafafa",
   },
   textArea: {
@@ -174,5 +183,9 @@ const styles = StyleSheet.create({
   focusedInput: {
     borderColor: "#000",
     borderWidth: 2,
+  },
+  helperText: {
+    color: "#6B7280",
+    fontSize: 12,
   },
 });

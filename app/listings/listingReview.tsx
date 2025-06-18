@@ -7,6 +7,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
+import { showToast } from "@/utils/showToast";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -21,7 +22,7 @@ import {
 
 export default function ListingReview() {
   const router = useRouter();
-  const { formData, updateFormData } = useListing();
+  const { formData, updateFormData, resetFormData } = useListing();
   const [loading, setLoading] = useState(false);
 
   const progressPercentage: DimensionValue = `${
@@ -52,8 +53,10 @@ export default function ListingReview() {
       formDataPayload.append("category_id", formData.category_id);
 
       formData.images.forEach((image: any, index: number) => {
+        const imageUri = typeof image === "string" ? image : image.uri;
+
         formDataPayload.append("images", {
-          uri: image,
+          uri: imageUri,
           name: `listing-image-${index}.jpg`,
           type: "image/jpeg",
         } as any);
@@ -62,7 +65,6 @@ export default function ListingReview() {
       const response = await fetch(`${BASE_URL}listings/create`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: formDataPayload,
@@ -71,7 +73,24 @@ export default function ListingReview() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create listing");
+        if (response.status === 403) {
+          showToast({
+            type: "error",
+            text1: "Listing limit reached",
+            message: "You can only list up to 5 items. Upgrade to add more.",
+          });
+        } else {
+          showToast({
+            type: "error",
+            text1: "Failed to create listing",
+            message: data.error || "Something went wrong.",
+          });
+        }
+
+        setLoading(false);
+        resetFormData();
+        router.push("/listings");
+        return;
       }
 
       setLoading(false);
@@ -95,7 +114,7 @@ export default function ListingReview() {
               subHeading="Here's everything you provided. Double-check and hit submit when you're ready!"
             />
 
-            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 10 }}>
               <InfoBlock label="Title" value={formData.title} />
               <InfoBlock label="Description" value={formData.description} />
               <InfoBlock label="Category" value={formData.category} />
@@ -108,14 +127,19 @@ export default function ListingReview() {
                 <View style={{ marginVertical: 10 }}>
                   <CustomText style={styles.label}>Images</CustomText>
                   <View style={styles.imageRow}>
-                    {formData.images.map((uri: string, index: number) => (
-                      <Image
-                        key={index}
-                        source={{ uri }}
-                        contentFit="cover"
-                        style={styles.image}
-                      />
-                    ))}
+                    {formData.images.map(
+                      (img: string | { uri: string }, index: number) => {
+                        const uri = typeof img === "string" ? img : img.uri;
+                        return (
+                          <Image
+                            key={index}
+                            source={{ uri }}
+                            contentFit="cover"
+                            style={styles.image}
+                          />
+                        );
+                      }
+                    )}
                   </View>
                 </View>
               )}
