@@ -6,6 +6,7 @@ import {
 } from "@/components/core/items/itemsDetails";
 import { RatingModal } from "@/components/core/items/rating/ratingModal";
 import { BorrowersCard } from "@/components/core/profile/borrowerCard";
+import { SubscriptionBadge } from "@/components/core/profile/subscriptionBadge";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
@@ -76,6 +77,8 @@ export default function ItemScreen() {
       ? "borrower"
       : "viewer";
 
+  const userSub = selectedItem.owner.subscription_plan;
+
   const avatar = avatars.find((a) => a.id === selectedItem.owner.avatar);
 
   const handleEditListing = (itemId: string) => {
@@ -145,7 +148,10 @@ export default function ItemScreen() {
 
         <View style={styles.content}>
           <View style={styles.titleRow}>
-            <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+              <SubscriptionBadge plan={userSub} inline />
+            </View>
             {selectedItem?.status && (
               <StatusBadge status={selectedItem.status} />
             )}

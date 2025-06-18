@@ -59,6 +59,7 @@ export default function UserProfileCardScreen() {
                       description={item.description}
                       distance={item.distance}
                       ownerId={recipient.id}
+                      subscription_plan={recipient.subscription_plan}
                     />
                   )}
                 />
@@ -68,7 +69,7 @@ export default function UserProfileCardScreen() {
             </View>
 
             <View>
-              <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
+              <CustomText style={[styles.heading, h3]}>Borrowing</CustomText>
               {recipient && recipient.borrowedItems.length > 0 ? (
                 <FlatList
                   data={recipient.borrowedItems}
@@ -89,7 +90,7 @@ export default function UserProfileCardScreen() {
                   )}
                 />
               ) : (
-                <CustomText>No listed items yet</CustomText>
+                <CustomText>No items yet</CustomText>
               )}
             </View>
           </View>

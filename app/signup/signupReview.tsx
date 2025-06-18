@@ -80,6 +80,7 @@ export default function SignupReviewScreen() {
             "location",
             "join_date",
             "stats",
+            "listing_limit",
             "subscription_plan",
             "listings",
             "borrowedItems",

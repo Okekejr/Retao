@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SubscriptionBadge } from "../profile/subscriptionBadge";
 
 interface ItemsCardProps {
   id: string;
@@ -29,8 +30,10 @@ interface ItemsCardProps {
     name?: string;
     avatar?: any;
     contact?: string;
+    subscription_plan: string;
   };
   ownerId?: string;
+  subscription_plan?: string;
 }
 
 export const ItemsCard: FC<ItemsCardProps> = ({
@@ -41,6 +44,7 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   distance,
   owner,
   ownerId,
+  subscription_plan,
 }) => {
   const { userData } = useUserData();
   const router = useRouter();
@@ -52,6 +56,8 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   );
   const addFavorite = useAddFavorite();
   const removeFavorite = useRemoveFavorite();
+
+  const userSub = owner?.subscription_plan || subscription_plan;
 
   const toggleFavorite = () => {
     if (!userData?.id || !id) return;
@@ -75,6 +81,7 @@ export const ItemsCard: FC<ItemsCardProps> = ({
     <TouchableOpacity onPress={handlePress} style={styles.card}>
       <View style={styles.imageWrapper}>
         <Image source={image[0]} style={styles.image} contentFit="cover" />
+        {userSub && <SubscriptionBadge plan={userSub} />}
         {!hideFavorite && (
           <TouchableOpacity
             style={styles.favoriteIcon}

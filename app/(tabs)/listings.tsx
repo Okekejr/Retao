@@ -87,7 +87,17 @@ export default function ListingsScreen() {
       <InnerContainer style={{ marginTop: 20 }}>
         <Header headerTitle="Listings" />
 
-        <ListAnItemBtn openModal={() => openModal("createListing")} />
+        {userData.stats.listed < userData.listing_limit ? (
+          <ListAnItemBtn openModal={() => openModal("createListing")} />
+        ) : (
+          <ListAnItemBtn
+            openModal={() => openModal("Plans")}
+            title="Listing limit reached"
+            subText="Upgrade your plan"
+            icon="checkmark-done-circle-outline"
+            limitReached
+          />
+        )}
 
         <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
           {content === "createListing" && (

@@ -10,6 +10,7 @@ export interface userProfile {
   location: string;
   join_date: string;
   subscription_plan: string;
+  listing_limit: number;
   stats: {
     listed: number;
     borrowed: number;
@@ -46,6 +47,7 @@ const initialState: userProfile = {
   location: "",
   join_date: "",
   subscription_plan: "",
+  listing_limit: 5,
   current_step: 1,
   total_steps: 4,
   stats: {

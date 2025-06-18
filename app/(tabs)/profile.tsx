@@ -76,7 +76,17 @@ export default function ProfileScreen() {
             />
           )}
 
-          <ListAnItemBtn openModal={() => openModal("createListing")} />
+          {userData.stats.listed < userData.listing_limit ? (
+            <ListAnItemBtn openModal={() => openModal("createListing")} />
+          ) : (
+            <ListAnItemBtn
+              openModal={() => openModal("Plans")}
+              title="Listing limit reached"
+              subText="Upgrade your plan"
+              icon="checkmark-done-circle-outline"
+              limitReached
+            />
+          )}
 
           <FlatList
             data={profileItems}
@@ -122,5 +132,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,
+  },
+  upgradeButton: {
+    backgroundColor: "#fce4ec",
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    marginVertical: 14,
+  },
+  upgradeText: {
+    color: "#d81b60",
+    fontWeight: "bold",
   },
 });

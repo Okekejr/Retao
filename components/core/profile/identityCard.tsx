@@ -2,6 +2,7 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { avatarsT } from "@/types";
 import { getPlanColor } from "@/utils";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { CustomStats } from "./stats";
@@ -35,7 +36,24 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
 
   return (
     <TouchableOpacity style={styles.card}>
-      <Image source={avatar?.src} style={styles.avatar} />
+      <View style={styles.avatarContainer}>
+        <Image source={avatar?.src} style={styles.avatar} />
+
+        {user.subscription_plan !== "free" && (
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: getPlanColor(user.subscription_plan) },
+            ]}
+          >
+            <Ionicons
+              name={user.subscription_plan === "pro" ? "star" : "diamond"}
+              size={12}
+              color="#fff"
+            />
+          </View>
+        )}
+      </View>
       <View style={styles.textSection}>
         <View
           style={{
@@ -140,5 +158,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Satoshi-Bold",
     textTransform: "capitalize",
+  },
+  avatarContainer: {
+    position: "relative",
+    width: 72,
+    height: 72,
+    marginRight: 16,
+  },
+  badge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: Colors.light.surfaceArea, // match card bg for clean edge
   },
 });

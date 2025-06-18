@@ -1,21 +1,50 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface ListAnItemBtnProps {
   openModal: () => void;
+  title?: string;
+  subText?: string;
+  limitReached?: boolean;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
-export const ListAnItemBtn = ({ openModal }: ListAnItemBtnProps) => {
+export const ListAnItemBtn = ({
+  openModal,
+  title = "List an item",
+  subText = "Its fast and easy to get started",
+  limitReached,
+  icon = "cube-outline",
+}: ListAnItemBtnProps) => {
+  const { userData } = useUserData();
+
   return (
     <>
-      <TouchableOpacity style={styles.ctaButton} onPress={openModal}>
-        <Ionicons name="cube-outline" size={28} style={styles.ctaIcon} />
+      <TouchableOpacity
+        style={[
+          styles.ctaButton,
+          limitReached && { backgroundColor: "#fce4ec" },
+        ]}
+        onPress={openModal}
+      >
+        <Ionicons
+          name={icon}
+          size={28}
+          style={[styles.ctaIcon, limitReached && { color: "#d81b60" }]}
+        />
         <View>
-          <CustomText style={styles.ctaTitle}>List an item</CustomText>
-          <CustomText style={styles.ctaSubtitle}>
-            It's fast and easy to get started
+          <CustomText
+            style={[styles.ctaTitle, limitReached && { color: "#000" }]}
+          >
+            {title} ({userData.stats.listed}/{userData.listing_limit})
+          </CustomText>
+          <CustomText
+            style={[styles.ctaSubtitle, limitReached && { color: "#d81b60" }]}
+          >
+            {subText}
           </CustomText>
         </View>
       </TouchableOpacity>

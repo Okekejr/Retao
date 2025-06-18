@@ -15,6 +15,7 @@ export type ListingsT = {
     name: string;
     avatar: any;
     contact: string;
+    subscription_plan: string;
   };
   borrower?: {
     id: string;
@@ -40,6 +41,7 @@ export type Listing = {
     name: string;
     avatar: any;
     contact: string;
+    subscription_plan: string;
   };
   borrower?: {
     id: string;
