@@ -1,8 +1,9 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { avatarsT } from "@/types";
+import { getPlanColor } from "@/utils";
 import { Image } from "expo-image";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { CustomStats } from "./stats";
 
 interface IdentityCardProps {
@@ -12,6 +13,7 @@ interface IdentityCardProps {
     avatar: any;
     bio: string;
     join_date: string;
+    subscription_plan: string;
     stats: {
       listed: number;
       borrowed: number;
@@ -19,6 +21,8 @@ interface IdentityCardProps {
       reviewsCount: any;
     };
   };
+  showPlan?: boolean;
+  func?: () => void;
 }
 
 const avatars: avatarsT = [
@@ -26,15 +30,45 @@ const avatars: avatarsT = [
   { id: "avatar2", src: require("../../../assets/img/avatar2.png") },
 ];
 
-export const IdentityCard = ({ user }: IdentityCardProps) => {
+export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
   const avatar = avatars.find((a) => a.id === user.avatar);
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card}>
       <Image source={avatar?.src} style={styles.avatar} />
       <View style={styles.textSection}>
-        <CustomText style={styles.name}>{user.name}</CustomText>
-        <CustomText style={styles.handle}>{user.handle}</CustomText>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View>
+            <CustomText style={styles.name}>{user.name}</CustomText>
+            <CustomText style={styles.handle}>{user.handle}</CustomText>
+          </View>
+
+          {showPlan && user.subscription_plan && (
+            <TouchableOpacity
+              onPress={func}
+              style={[
+                styles.planBadge,
+                { borderColor: getPlanColor(user.subscription_plan) },
+              ]}
+            >
+              <CustomText
+                style={[
+                  styles.planText,
+                  { color: getPlanColor(user.subscription_plan) },
+                ]}
+              >
+                {user.subscription_plan} plan
+              </CustomText>
+            </TouchableOpacity>
+          )}
+        </View>
+
         <CustomText numberOfLines={2} style={styles.bio}>
           {user.bio}
         </CustomText>
@@ -47,7 +81,7 @@ export const IdentityCard = ({ user }: IdentityCardProps) => {
           <CustomStats label="Rating" value={`⭐ ${user.stats.rating}`} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -94,5 +128,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 8,
+  },
+  planBadge: {
+    borderWidth: 1.5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+  },
+  planText: {
+    fontSize: 12,
+    fontFamily: "Satoshi-Bold",
+    textTransform: "capitalize",
   },
 });

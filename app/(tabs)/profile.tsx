@@ -1,5 +1,6 @@
 import { ListAnItemBtn } from "@/components/core/listing/listAnItemBtn";
 import SelectCategory from "@/components/core/listing/selectCategory";
+import { SelectPlans } from "@/components/core/plans/selectPlans";
 import { IdentityCard } from "@/components/core/profile/identityCard";
 import { ProfileSection } from "@/components/core/profile/profileSection";
 import { Settings } from "@/components/core/profile/settings";
@@ -67,7 +68,13 @@ export default function ProfileScreen() {
         <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
 
         <ScrollView style={{ gap: 12 }}>
-          {userData.id !== "" && <IdentityCard user={userData} />}
+          {userData.id !== "" && (
+            <IdentityCard
+              user={userData}
+              func={() => openModal("Plans")}
+              showPlan
+            />
+          )}
 
           <ListAnItemBtn openModal={() => openModal("createListing")} />
 
@@ -95,6 +102,8 @@ export default function ProfileScreen() {
             )}
 
             {content === "settings" && <Settings closeModal={closeModal} />}
+
+            {content === "Plans" && <SelectPlans closeModal={closeModal} />}
           </CustomModal>
         </ScrollView>
       </InnerContainer>

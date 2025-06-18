@@ -74,3 +74,14 @@ export const getStatusStyle = (status: string) => {
       return { color: "#FFA000" }; // amber/orange
   }
 };
+
+const SUBSCRIPTION_PLANS = [
+  { id: "free", label: "Free", color: "#4F46E5" },
+  { id: "pro", label: "Pro", color: "#000000" },
+  { id: "unlimited", label: "Unlimited", color: "#D4AF37" },
+];
+
+export const getPlanColor = (planId: string): string => {
+  const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId);
+  return plan ? plan.color : "#4F46E5";
+};

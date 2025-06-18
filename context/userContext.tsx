@@ -9,6 +9,7 @@ export interface userProfile {
   bio: string;
   location: string;
   join_date: string;
+  subscription_plan: string;
   stats: {
     listed: number;
     borrowed: number;
@@ -44,6 +45,7 @@ const initialState: userProfile = {
   bio: "",
   location: "",
   join_date: "",
+  subscription_plan: "",
   current_step: 1,
   total_steps: 4,
   stats: {

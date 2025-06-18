@@ -55,7 +55,12 @@ export const AccountSettings: profileItemsT = [
     hrefLink: "/settings/loginSecurity",
   },
   {
-    label: "Notifications",
-    icon: "notifications-outline",
+    label: "Manage Subscriptions",
+    icon: "checkmark-done-circle-outline",
+    hrefLink: "/subscription/subPlans",
   },
+  // {
+  //   label: "Notifications",
+  //   icon: "notifications-outline",
+  // },
 ];

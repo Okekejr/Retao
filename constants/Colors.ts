@@ -22,6 +22,13 @@ export const Colors = {
     primary: "#4F46E5",
     success: "#24f07d",
     muted: "#C8C8C8",
+    pro: "#000",
+    unlimited: "#D4AF37",
+  },
+  planColor: {
+    free: "#4F46E5",
+    pro: "#000000",
+    unlimited: "#D4AF37",
   },
   dark: {
     text: "#FFFFFF",

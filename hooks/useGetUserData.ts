@@ -36,6 +36,7 @@ export const useGetUserData = () => {
         "location",
         "join_date",
         "stats",
+        "subscription_plan",
         "listings",
         "borrowedItems",
         "current_step",
