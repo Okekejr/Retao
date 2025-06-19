@@ -87,7 +87,8 @@ export default function ListingsScreen() {
       <InnerContainer style={{ marginTop: 20 }}>
         <Header headerTitle="Listings" />
 
-        {userData.stats.listed < userData.listing_limit ? (
+        {userData.subscription_plan === "unlimited" ||
+        userData.stats.listed < userData.listing_limit ? (
           <ListAnItemBtn openModal={() => openModal("createListing")} />
         ) : (
           <ListAnItemBtn
@@ -137,9 +138,9 @@ export default function ListingsScreen() {
             )}
           </View>
 
-          <View>
-            <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
-            {borrowedItems.length > 0 ? (
+          {borrowedItems.length > 0 && (
+            <View>
+              <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
               <FlatList
                 data={borrowedItems}
                 keyExtractor={(item) => item.title}
@@ -158,14 +159,13 @@ export default function ListingsScreen() {
                   />
                 )}
               />
-            ) : (
-              <CustomText>No borrowed items yet</CustomText>
-            )}
-          </View>
+            </View>
+          )}
 
-          <View>
-            <CustomText style={[styles.heading, h3]}>Requests</CustomText>
-            {filterRequests && filterRequests.length > 0 ? (
+          {filterRequests && filterRequests.length > 0 && (
+            <View>
+              <CustomText style={[styles.heading, h3]}>Requests</CustomText>
+
               <FlatList
                 data={filterRequests}
                 keyExtractor={(item) => item.id}
@@ -177,16 +177,15 @@ export default function ListingsScreen() {
                   <RequestCard {...item} mode="owner" />
                 )}
               />
-            ) : (
-              <CustomText>No Requests yet</CustomText>
-            )}
-          </View>
+            </View>
+          )}
 
-          <View>
-            <CustomText style={[styles.heading, h3]}>
-              My Pending Requests
-            </CustomText>
-            {pendingRequests && pendingRequests.length > 0 ? (
+          {pendingRequests && pendingRequests.length > 0 && (
+            <View>
+              <CustomText style={[styles.heading, h3]}>
+                My Pending Requests
+              </CustomText>
+
               <FlatList
                 data={pendingRequests}
                 keyExtractor={(item) => item.id}
@@ -198,10 +197,8 @@ export default function ListingsScreen() {
                   <RequestCard {...item} mode="borrower" />
                 )}
               />
-            ) : (
-              <CustomText>No pending requests found.</CustomText>
-            )}
-          </View>
+            </View>
+          )}
         </InnerContainer>
       </ScrollView>
     </SafeAreaView>

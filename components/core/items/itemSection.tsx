@@ -12,23 +12,29 @@ interface ItemSectionProps {
   heading: string;
   data: ListingsT;
   loc?: string | undefined;
+  feat?: boolean;
 }
 
-export const ItemSection: FC<ItemSectionProps> = ({ heading, data, loc }) => {
+export const ItemSection: FC<ItemSectionProps> = ({
+  heading,
+  data,
+  loc,
+  feat,
+}) => {
   const [finalList, setFinalList] = useState<ListingsT>([]);
   const { userData } = useUserData();
   const router = useRouter();
 
   useEffect(() => {
-    if (data) {
-      setFinalList(
-        data
-          .filter((item) => item.owner.id !== userData.id)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 5)
-      );
+    if (feat) {
+      setFinalList(data.slice(0, 5));
+    } else {
+      const filtered = data
+        .filter((item) => item.owner.id !== userData.id)
+        .slice(0, 5);
+      setFinalList(filtered);
     }
-  }, [data]);
+  }, [data, feat, userData.id]);
 
   const handlePress = () => {
     loc

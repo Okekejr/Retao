@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/constants/random";
 import { SubscriptionPlan } from "@/types";
 import { showToast } from "@/utils/showToast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import { useGetUserData } from "./useGetUserData";
 
@@ -36,6 +36,7 @@ export const useGetPlans = () => {
 
 export const useSubscribeToPlan = () => {
   const { refreshData } = useGetUserData();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (planId: string) => {
@@ -60,6 +61,13 @@ export const useSubscribeToPlan = () => {
         message: "Your plan was updated successfully.",
       });
       refreshData();
+
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          ["featuredListings", "listings", "listing"].includes(
+            query.queryKey[0] as string
+          ),
+      });
     },
     onError: (error: any) => {
       showToast({

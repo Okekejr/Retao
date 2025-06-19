@@ -76,7 +76,8 @@ export default function ProfileScreen() {
             />
           )}
 
-          {userData.stats.listed < userData.listing_limit ? (
+          {userData.subscription_plan === "unlimited" ||
+          userData.stats.listed < userData.listing_limit ? (
             <ListAnItemBtn openModal={() => openModal("createListing")} />
           ) : (
             <ListAnItemBtn

@@ -6,7 +6,7 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useGetCategories } from "@/hooks/useGetCategories";
-import { useGetListings } from "@/hooks/useGetListings";
+import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { useState } from "react";
 import {
@@ -22,6 +22,8 @@ import {
 export default function HomeScreen() {
   const { data: Listings, isLoading } = useGetListings();
   const { data: location } = useGetLocation();
+  const { data: featuredListings, isLoading: featuredLoading } =
+    useGetFeaturedListings(location);
   const { data: ListingByLoc, isLoading: loadingLoc } = useGetListings(
     location,
     undefined,
@@ -31,7 +33,7 @@ export default function HomeScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const isAnyLoading = isLoading || loadingLoc || catLoading;
+  const isAnyLoading = isLoading || loadingLoc || catLoading || featuredLoading;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -58,6 +60,10 @@ export default function HomeScreen() {
         >
           {Listings && (
             <ItemSection heading="Recently Listed Near You" data={Listings} />
+          )}
+
+          {featuredListings && featuredListings?.length > 0 && (
+            <ItemSection heading="Featured" data={featuredListings} feat />
           )}
 
           {ListingByLoc && location && (

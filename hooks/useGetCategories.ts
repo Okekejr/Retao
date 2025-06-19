@@ -48,6 +48,7 @@ export const useGetListingsByCategory = (id: string) => {
         distance: string;
         image: string[];
         favorited?: boolean;
+        subscription_plan: string;
       }[];
     },
     enabled: !!id,

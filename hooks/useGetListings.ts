@@ -61,6 +61,37 @@ export const useGetListingById = (id: string) => {
   });
 };
 
+export const useGetFeaturedListings = (location?: string, limit?: string) => {
+  return useQuery<ListingsT, Error>({
+    queryKey: ["featuredListings", location, limit],
+    queryFn: async () => {
+      const url = new URL(`${BASE_URL}listings/featured`);
+
+      if (location) {
+        url.searchParams.append("location", location);
+      }
+
+      if (limit) {
+        url.searchParams.append("limit", limit);
+      }
+
+      try {
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error("Failed to fetch featured listings");
+        }
+
+        const data = await response.json();
+        return data ?? [];
+      } catch (error) {
+        console.error("Error fetching featured listings:", error);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useSearchListings = (query: string) => {
   return useQuery<SearchListingsResponse["data"]>({
     queryKey: ["searchListings", query],

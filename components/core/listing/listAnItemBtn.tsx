@@ -39,7 +39,12 @@ export const ListAnItemBtn = ({
           <CustomText
             style={[styles.ctaTitle, limitReached && { color: "#000" }]}
           >
-            {title} ({userData.stats.listed}/{userData.listing_limit})
+            {title}{" "}
+            {userData.subscription_plan !== "unlimited" && (
+              <>
+                ({userData.stats.listed}/{userData.listing_limit})
+              </>
+            )}
           </CustomText>
           <CustomText
             style={[styles.ctaSubtitle, limitReached && { color: "#d81b60" }]}

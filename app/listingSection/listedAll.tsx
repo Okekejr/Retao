@@ -2,18 +2,34 @@ import { Section } from "@/components/core/items/section";
 import { BackButton } from "@/components/ui/backButton";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
-import { useGetListings } from "@/hooks/useGetListings";
+import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
+import { useGetLocation } from "@/hooks/useGetLocation";
+import { ListingsT } from "@/types";
 import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ListedAllScreen() {
   const { userData } = useUserData();
   const { heading } = useLocalSearchParams();
   const { data: Listings } = useGetListings();
+  const { data: location } = useGetLocation();
+  const { data: featuredListings, isLoading: featuredLoading } =
+    useGetFeaturedListings(location);
+  const [finalList, setFinalList] = useState<ListingsT>([]);
 
-  if (!Listings) return;
+  if (!Listings || !featuredListings) return;
 
-  const filterUser = Listings.filter((item) => item.owner.id !== userData.id);
+  useEffect(() => {
+    if (heading === "Featured") {
+      setFinalList(featuredListings.slice(0, 5));
+    } else {
+      const filterUser = Listings.filter(
+        (item) => item.owner.id !== userData.id
+      );
+      setFinalList(filterUser);
+    }
+  }, [heading, Listings, featuredListings, userData.id]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,7 +37,7 @@ export default function ListedAllScreen() {
         <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
       </View>
 
-      {Listings && <Section heading={heading as string} data={filterUser} />}
+      {Listings && <Section heading={heading as string} data={finalList} />}
     </SafeAreaView>
   );
 }
