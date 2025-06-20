@@ -2,7 +2,13 @@ import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { useUpdateBorrowRequest } from "@/hooks/useBorrowRequests";
 import { Decision } from "@/types";
-import { getStatusStyle, toLocalISOString } from "@/utils";
+import {
+  addReturnDateToCalendar,
+  getStatusStyle,
+  showToast,
+  themeColor,
+  toLocalISOString,
+} from "@/utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import { FC, useState } from "react";
@@ -38,6 +44,11 @@ export const RequestCard: FC<RequestCardProps> = ({
   status,
   mode,
 }) => {
+  const bg = themeColor("background");
+  const surfaceArea = themeColor("surfaceArea");
+  const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
+  const textTertiary = themeColor("textTertiery");
   const router = useRouter();
   const { mutate: updateRequest } = useUpdateBorrowRequest();
   const [showPicker, setShowPicker] = useState(false);
@@ -65,23 +76,36 @@ export const RequestCard: FC<RequestCardProps> = ({
     }
   };
 
-  const handleSubmitDate = () => {
-    setShowPicker(false);
-    updateRequest({
-      requestId: id,
-      status: "accepted",
-      dueDate: toLocalISOString(selectedDate),
-    });
+  const handleSubmitDate = async () => {
+    try {
+      setShowPicker(false);
+      updateRequest({
+        requestId: id,
+        status: "accepted",
+        dueDate: toLocalISOString(selectedDate),
+      });
+      await addReturnDateToCalendar(item_title, selectedDate);
+      showToast({
+        type: "success",
+        text1: "Calendar updated",
+        message: "Return reminder added to your calendar.",
+      });
+    } catch (error) {
+      console.warn("Calendar error:", error);
+    }
   };
 
   return (
-    <Pressable style={styles.card} onPress={handlePress}>
-      <CustomText style={styles.itemTitle} numberOfLines={1}>
+    <Pressable
+      style={[styles.card, { backgroundColor: bg }]}
+      onPress={handlePress}
+    >
+      <CustomText style={[styles.itemTitle, { color: text }]} numberOfLines={1}>
         {item_title}
       </CustomText>
       <CustomText
         style={[
-          styles.borrowerName,
+          styles.borrowerName && { color: textSec },
           mode === "borrower" && getStatusStyle(status),
         ]}
         numberOfLines={1}
@@ -116,8 +140,12 @@ export const RequestCard: FC<RequestCardProps> = ({
       {showPicker && (
         <Modal transparent animationType="slide">
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <CustomText style={styles.modalTitle}>Select Due Date</CustomText>
+            <View
+              style={[styles.modalContent, { backgroundColor: textTertiary }]}
+            >
+              <CustomText style={[styles.modalTitle, { color: surfaceArea }]}>
+                Select Due Date
+              </CustomText>
 
               <DateTimePicker
                 value={selectedDate}
@@ -162,7 +190,6 @@ export const RequestCard: FC<RequestCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     width: 220,
     borderRadius: 16,
     padding: 16,
@@ -176,12 +203,10 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: Colors.light.text,
     marginBottom: 8,
   },
   borrowerName: {
     fontSize: 14,
-    color: Colors.light.textSecondary,
     marginBottom: 12,
   },
   actionsContainer: {
@@ -213,7 +238,6 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "85%",
-    backgroundColor: Colors.light.textTertiery,
     borderRadius: 16,
     padding: 20,
     alignItems: "center",
@@ -222,7 +246,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 12,
-    color: Colors.light.surfaceArea,
   },
   modalButtons: {
     flexDirection: "row",

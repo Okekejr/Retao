@@ -1,3 +1,4 @@
+import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
 import { FC } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
@@ -7,14 +8,21 @@ interface SearchBarProps {
 }
 
 export const SearchBar: FC<SearchBarProps> = ({ placeholder }) => {
+  const textTertiery = themeColor("textTertiery");
+
   return (
     <View style={styles.container}>
-      <Feather name="search" size={20} color="#888" style={styles.icon} />
+      <Feather
+        name="search"
+        size={20}
+        color={textTertiery}
+        style={styles.icon}
+      />
 
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor="#888"
+        placeholderTextColor={textTertiery}
         editable={false}
         pointerEvents="none"
       />
@@ -45,7 +53,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1A1A1A",
     fontFamily: "Inter-Regular",
   },
 });

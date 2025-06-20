@@ -1,14 +1,17 @@
 import { JSX } from "react";
 import { Image, ImageStyle, StyleProp } from "react-native";
+import { themeColor } from "./themeColor";
 
 export const getIconName = (
   routeName: string,
   focused: boolean
 ): JSX.Element => {
+  const text = themeColor("text");
+
   const iconStyle: StyleProp<ImageStyle> = {
     width: 24,
     height: 24,
-    tintColor: focused ? "#1A1A1A" : "grey",
+    tintColor: focused ? text : "grey",
   };
 
   switch (routeName) {

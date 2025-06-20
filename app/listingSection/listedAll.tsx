@@ -5,11 +5,13 @@ import { useUserData } from "@/context/userContext";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { ListingsT } from "@/types";
+import { themeColor } from "@/utils";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ListedAllScreen() {
+  const bg = themeColor("background");
   const { userData } = useUserData();
   const { heading } = useLocalSearchParams();
   const { data: Listings } = useGetListings();
@@ -32,7 +34,7 @@ export default function ListedAllScreen() {
   }, [heading, Listings, featuredListings, userData.id]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <View style={styles.iconRow}>
         <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
       </View>
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   iconRow: {
     position: "absolute",

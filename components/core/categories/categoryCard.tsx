@@ -1,5 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { categoriesIcon } from "@/constants/random";
+import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -11,6 +12,7 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard = ({ id, icon, title }: CategoryCardProps) => {
+  const text = themeColor("text");
   const router = useRouter();
 
   const iconObj = categoriesIcon.find((i) => i.id === icon);
@@ -25,7 +27,7 @@ export const CategoryCard = ({ id, icon, title }: CategoryCardProps) => {
   return (
     <TouchableOpacity onPress={handlePress} style={styles.card}>
       <Image source={iconObj?.icon} style={styles.image} contentFit="cover" />
-      <CustomText style={styles.title}>{title}</CustomText>
+      <CustomText style={[styles.title, { color: text }]}>{title}</CustomText>
     </TouchableOpacity>
   );
 };
@@ -43,8 +45,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontFamily: "Inter-Regular",
     textAlign: "center",
-    color: "#1A1A1A",
   },
 });

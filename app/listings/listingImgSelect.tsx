@@ -5,7 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
-import { showToast } from "@/utils/showToast";
+import { showToast } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";

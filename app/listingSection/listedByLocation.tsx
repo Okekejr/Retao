@@ -2,6 +2,7 @@ import { Section } from "@/components/core/items/section";
 import { BackButton } from "@/components/ui/backButton";
 import { Colors } from "@/constants/Colors";
 import { useGetListings } from "@/hooks/useGetListings";
+import { themeColor } from "@/utils";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { useLocalSearchParams } from "expo-router";
@@ -17,6 +18,7 @@ export default function SectionListedScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["10%", "52%", "88%"], []);
   const [coords, setCoords] = useState<{ lat: number; lon: number }>();
+  const bg = themeColor("background");
 
   const { data: ListingByLoc } = useGetListings(
     location as string,
@@ -72,7 +74,10 @@ export default function SectionListedScreen() {
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
-        backgroundStyle={styles.bottomSheetBackground}
+        backgroundStyle={[
+          styles.bottomSheetBackground,
+          { backgroundColor: bg },
+        ]}
         handleIndicatorStyle={styles.handleIndicator}
       >
         <BottomSheetView style={styles.contentContainer}>
@@ -97,7 +102,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   bottomSheetBackground: {
-    backgroundColor: Colors.light.background,
     borderRadius: 20,
   },
   handleIndicator: {

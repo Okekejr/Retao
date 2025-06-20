@@ -39,4 +39,16 @@ export const toastConfig = {
       <Text style={{ ...h3, color: "white" }}>{text1}</Text>
     </View>
   ),
+
+  message: ({ text1 }: BaseToastProps) => (
+    <View style={[styles.toast, { backgroundColor: Colors.light.primary }]}>
+      <Ionicons
+        name="chatbubble-ellipses-outline"
+        size={24}
+        color="white"
+        style={{ marginRight: 12 }}
+      />
+      <Text style={{ ...h3, color: "white" }}>{text1}</Text>
+    </View>
+  ),
 };

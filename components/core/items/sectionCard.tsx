@@ -1,6 +1,6 @@
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
-import { Colors } from "@/constants/Colors";
+import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FC, useState } from "react";
@@ -27,6 +27,8 @@ export const SectionCard: FC<SectionCardProps> = ({
   const router = useRouter();
   const [isScrolling, setIsScrolling] = useState(false);
   const [favorite, setFavorite] = useState(favorited);
+  const textSec = themeColor("textSecondary");
+  const text = themeColor("text");
 
   const toggleFavorite = () => {
     setFavorite(!favorited);
@@ -60,14 +62,22 @@ export const SectionCard: FC<SectionCardProps> = ({
       </View>
 
       <View style={styles.content}>
-        <CustomHeading numberOfLines={1} style={[styles.title]}>
+        <CustomHeading
+          numberOfLines={1}
+          style={[styles.title, { color: text }]}
+        >
           {title}
         </CustomHeading>
         <View style={{ marginTop: 5 }}>
-          <CustomText style={styles.description} numberOfLines={1}>
+          <CustomText
+            style={[styles.description, { color: textSec }]}
+            numberOfLines={1}
+          >
             {description}
           </CustomText>
-          <CustomText style={styles.distance}>{distance}</CustomText>
+          <CustomText style={[styles.distance, { color: textSec }]}>
+            {distance}
+          </CustomText>
         </View>
       </View>
     </TouchableOpacity>
@@ -106,7 +116,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
     lineHeight: 18,
   },
   distance: {

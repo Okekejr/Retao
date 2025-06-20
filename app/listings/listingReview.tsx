@@ -7,7 +7,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
-import { showToast } from "@/utils/showToast";
+import { showToast } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";

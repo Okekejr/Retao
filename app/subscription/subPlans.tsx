@@ -6,10 +6,14 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { SettingsItem } from "@/components/ui/settingItem";
 import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
+import { themeColor } from "@/utils";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function PlansScreen() {
+  const bg = themeColor("background");
+  const textSec = themeColor("textSecondary");
+  const text = themeColor("text");
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
 
@@ -21,7 +25,7 @@ export default function PlansScreen() {
   const closeModal = () => setModalVisible(false);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <View style={styles.iconRow}>
         <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
       </View>
@@ -32,7 +36,9 @@ export default function PlansScreen() {
       >
         <InnerContainer style={{ flex: 1, gap: 16 }}>
           <View style={styles.modalHeader}>
-            <CustomText style={h2}>Manage Subscription</CustomText>
+            <CustomText style={[h2, { color: text }]}>
+              Manage Subscription
+            </CustomText>
           </View>
 
           <View style={{ gap: 40 }}>

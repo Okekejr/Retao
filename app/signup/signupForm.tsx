@@ -77,7 +77,7 @@ export default function SignupFormScreen() {
     return isValid;
   };
 
-  const handleBack = () => router.back();
+  const handleBack = () => router.push({ pathname: "/login/login" });
 
   const handleNext = () => {
     if (!validateInputs()) return;

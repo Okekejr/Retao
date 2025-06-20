@@ -22,6 +22,7 @@ import { useGetListingById } from "@/hooks/useGetListings";
 import { useBorrowerHistory } from "@/hooks/useGetUserData";
 import { useSubmitRatings } from "@/hooks/useRatings";
 import { avatarsT, Listing } from "@/types";
+import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -58,6 +59,9 @@ export default function ItemScreen() {
   const [borrowerForRating, setBorrowerForRating] = useState<Listing | null>(
     null
   );
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
 
   useEffect(() => {
     // Slide up animation
@@ -137,7 +141,9 @@ export default function ItemScreen() {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={[styles.container, { backgroundColor: bg }]}
+      >
         <View style={styles.imageContainer}>
           <ItemImagesCarousel images={selectedItem?.image} />
 
@@ -149,7 +155,9 @@ export default function ItemScreen() {
         <View style={styles.content}>
           <View style={styles.titleRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <CustomHeading style={h2}>{selectedItem?.title}</CustomHeading>
+              <CustomHeading style={[h2, { color: text }]}>
+                {selectedItem?.title}
+              </CustomHeading>
               <SubscriptionBadge plan={userSub} inline />
             </View>
             {selectedItem?.status && (
@@ -157,11 +165,11 @@ export default function ItemScreen() {
             )}
           </View>
           <View>
-            <CustomText style={styles.description}>
+            <CustomText style={{ color: text }}>
               {selectedItem?.description}
             </CustomText>
 
-            <CustomText style={styles.metaText}>
+            <CustomText style={[styles.metaText, { color: textSec }]}>
               {selectedItem?.distance}
             </CustomText>
           </View>
@@ -173,7 +181,7 @@ export default function ItemScreen() {
               contentFit="cover"
             />
             <CustomText
-              style={styles.ownerName}
+              style={[styles.ownerName, { color: text }]}
               onPress={handleViewOwnerProfile}
             >
               Shared by {selectedItem?.owner.name}
@@ -193,7 +201,7 @@ export default function ItemScreen() {
           )}
 
           <View style={{ marginTop: 20 }}>
-            <CustomText style={[styles.heading, h3]}>
+            <CustomText style={[styles.heading, h3, { color: text }]}>
               Borrowers History
             </CustomText>
             {borrwerHistory && borrwerHistory.length > 0 ? (
@@ -252,7 +260,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 40,
-    backgroundColor: Colors.light.background,
   },
   imageContainer: {
     width: "100%",
@@ -288,12 +295,8 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 12,
   },
-  description: {
-    color: Colors.light.text,
-  },
   metaText: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
   },
   ownerSection: {
     flexDirection: "row",
@@ -308,7 +311,6 @@ const styles = StyleSheet.create({
   },
   ownerName: {
     fontSize: 14,
-    color: Colors.light.text,
   },
   availability: {
     fontSize: 14,

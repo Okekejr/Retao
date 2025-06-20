@@ -2,6 +2,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { h3 } from "@/constants/random";
 import { ListingsT } from "@/types";
+import { themeColor } from "@/utils";
 import { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SectionCard } from "./sectionCard";
@@ -17,6 +18,7 @@ export const Section = ({ heading, data }: SectionProps) => {
 
   const visibleListings = data.slice(0, visibleCount);
   const hasMore = visibleCount < data.length;
+  const text = themeColor("text");
 
   const loadMore = () => {
     if (!hasMore) return;
@@ -30,8 +32,10 @@ export const Section = ({ heading, data }: SectionProps) => {
   return (
     <InnerContainer>
       <View style={styles.modalHeader}>
-        <CustomText style={h3}>{heading}</CustomText>
-        <CustomText>Over ({data?.length}) items</CustomText>
+        <CustomText style={[h3, { color: text }]}>{heading}</CustomText>
+        <CustomText style={{ color: text }}>
+          Over ({data?.length}) items
+        </CustomText>
       </View>
 
       <FlatList

@@ -2,12 +2,12 @@ import { ItemsCard } from "@/components/core/items/itemsCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
-import { Colors } from "@/constants/Colors";
 import { categoriesIcon, h3 } from "@/constants/random";
 import {
   useGetCategoryById,
   useGetListingsByCategory,
 } from "@/hooks/useGetCategories";
+import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { MotiView } from "moti";
@@ -17,6 +17,9 @@ const { height } = Dimensions.get("window");
 
 export default function CategoryScreen() {
   const { id } = useLocalSearchParams();
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
   const { data: category } = useGetCategoryById(id as string);
   const { data: listings, isLoading } = useGetListingsByCategory(id as string);
 
@@ -25,7 +28,7 @@ export default function CategoryScreen() {
   const iconObj = categoriesIcon.find((i) => i.id === category.icon);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: bg }]}>
       <View style={styles.imageContainer}>
         <Image source={iconObj?.icon} style={styles.image} contentFit="cover" />
 
@@ -35,8 +38,10 @@ export default function CategoryScreen() {
       </View>
 
       <InnerContainer style={{ flex: 1 }}>
-        <CustomText style={[h3, styles.title]}>{category?.title}</CustomText>
-        <CustomText style={styles.description}>
+        <CustomText style={[h3, styles.title, { color: text }]}>
+          {category?.title}
+        </CustomText>
+        <CustomText style={[styles.description, { color: text }]}>
           {category?.description ||
             "Explore and borrow items shared by your neighbors."}
         </CustomText>
@@ -63,7 +68,7 @@ export default function CategoryScreen() {
                 </MotiView>
               ))
             ) : (
-              <CustomText style={styles.emptyText}>
+              <CustomText style={[styles.emptyText, { color: textSec }]}>
                 No items available in this category yet.
               </CustomText>
             )}
@@ -78,7 +83,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 40,
-    backgroundColor: Colors.light.background,
   },
   imageContainer: {
     width: "100%",
@@ -95,12 +99,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    color: Colors.light.text,
     marginTop: 12,
     marginBottom: 5,
   },
   description: {
-    color: Colors.light.text,
     marginBottom: 12,
   },
   image: {
@@ -117,7 +119,6 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   emptyText: {
-    color: Colors.light.textSecondary,
     fontSize: 14,
     textAlign: "center",
     marginTop: 20,

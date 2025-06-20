@@ -1,5 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { themeColor } from "@/utils";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 interface UpdatePasswordCompProps {
@@ -49,10 +50,15 @@ export const UpdatePasswordComp = ({
   handleUpdate,
   setFocusedInput,
 }: UpdatePasswordCompProps) => {
+  const bg = themeColor("background");
+  const text = themeColor("text");
+
   return (
     <View>
       <View style={{ marginBottom: 20 }}>
-        <CustomText style={styles.label}>Current password</CustomText>
+        <CustomText style={[styles.label, { color: text }]}>
+          Current password
+        </CustomText>
         <TextInput
           ref={passwordInputRef}
           style={[
@@ -76,7 +82,9 @@ export const UpdatePasswordComp = ({
       </View>
 
       <View style={{ marginBottom: 20 }}>
-        <CustomText style={styles.label}>New password</CustomText>
+        <CustomText style={[styles.label, { color: text }]}>
+          New password
+        </CustomText>
 
         <TextInput
           ref={newPasswordInputRef}
@@ -97,7 +105,9 @@ export const UpdatePasswordComp = ({
       </View>
 
       <View style={{ marginBottom: 20 }}>
-        <CustomText style={styles.label}>Confirm New Password</CustomText>
+        <CustomText style={[styles.label, { color: text }]}>
+          Confirm New Password
+        </CustomText>
         <View
           style={[
             styles.passwordInputContainer,
@@ -185,6 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 45.5,
     paddingHorizontal: 10,
+    backgroundColor: "#fafafa",
   },
   passwordInput: {
     flex: 1,

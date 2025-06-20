@@ -1,7 +1,8 @@
+import ColorSwitcher from "@/components/ui/colorSwitcher";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { h3 } from "@/constants/random";
-import { AccountSettings } from "@/utils";
+import { AccountSettings, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { FC } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
@@ -13,18 +14,19 @@ interface SettingsProps {
 
 export const Settings: FC<SettingsProps> = ({ closeModal }) => {
   const router = useRouter();
+  const text = themeColor("text");
 
   return (
     <InnerContainer>
       <View style={styles.modalHeader}>
-        <CustomText style={h3}>Account Settings</CustomText>
+        <CustomText style={[h3, { color: text }]}>Account Settings</CustomText>
       </View>
 
       <FlatList
         data={AccountSettings}
         keyExtractor={(item) => item.label}
         scrollEnabled={false}
-        contentContainerStyle={{ gap: 10, paddingBottom: 50 }}
+        contentContainerStyle={{ gap: 10 }}
         renderItem={({ item }) => (
           <ProfileSection
             icon={item.icon}
@@ -35,6 +37,8 @@ export const Settings: FC<SettingsProps> = ({ closeModal }) => {
           />
         )}
       />
+
+      <ColorSwitcher />
     </InnerContainer>
   );
 };

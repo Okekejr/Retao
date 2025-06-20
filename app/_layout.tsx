@@ -1,12 +1,12 @@
 import { ListingProvider } from "@/context/listingContext";
-import { UserProvider } from "@/context/userContext";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { toastConfig } from "@/utils/toastConfig";
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+  NotificationProvider,
+  useNotifications,
+} from "@/context/notificationContext";
+import { UserProvider } from "@/context/userContext";
+import { ThemeProvider, useTheme } from "@/context/userThemeContext";
+import { useWebSocket } from "@/hooks/useWebsocket";
+import { showToast, toastConfig } from "@/utils";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
@@ -19,8 +19,35 @@ import Toast from "react-native-toast-message";
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
+function WebSocketInitializer() {
+  const { latestMessage } = useWebSocket();
+  const { setNotifications } = useNotifications();
+
+  useEffect(() => {
+    if (!latestMessage) return;
+
+    switch (latestMessage.type) {
+      case "message":
+        setNotifications((prev) => ({
+          ...prev,
+          messages: prev.messages + 1,
+        }));
+
+        showToast({
+          type: "message",
+          text1: "New message received",
+          message: "Someone just messaged you!",
+        });
+
+        break;
+    }
+  }, [latestMessage]);
+
+  return null;
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     "Satoshi-Bold": require("../assets/fonts/Satoshi-Bold.ttf"),
@@ -41,18 +68,21 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <ListingProvider>
-          <UserProvider>
-            <Stack
-              screenOptions={{ headerShown: false, gestureEnabled: false }}
-            >
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </UserProvider>
-        </ListingProvider>
-        <StatusBar style="dark" />
+      <ThemeProvider>
+        <NotificationProvider>
+          <WebSocketInitializer />
+          <ListingProvider>
+            <UserProvider>
+              <Stack
+                screenOptions={{ headerShown: false, gestureEnabled: false }}
+              >
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </UserProvider>
+          </ListingProvider>
+        </NotificationProvider>
+        <StatusBar style={theme === "dark" ? "light" : "dark"} />
       </ThemeProvider>
       <Toast config={toastConfig} />
     </QueryClientProvider>

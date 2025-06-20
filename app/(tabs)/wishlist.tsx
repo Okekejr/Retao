@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
+import { themeColor } from "@/utils";
 import { MotiView } from "moti";
 import {
   ActivityIndicator,
@@ -15,13 +16,15 @@ import {
 } from "react-native";
 
 export default function WishlistScreen() {
+  const bg = themeColor("background");
+  const textSec = themeColor("textSecondary");
   const { userData } = useUserData();
   const { data: favorited = [], isLoading } = useFavorites(userData.id);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {isLoading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
@@ -29,7 +32,9 @@ export default function WishlistScreen() {
         <Header headerTitle="Wishlist" />
 
         {isLoading ? (
-          <CustomText style={styles.emptyText}>Loading favorites...</CustomText>
+          <CustomText style={[styles.emptyText, { color: textSec }]}>
+            Loading favorites...
+          </CustomText>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.grid}>
@@ -49,7 +54,7 @@ export default function WishlistScreen() {
                   </MotiView>
                 ))
               ) : (
-                <CustomText style={styles.emptyText}>
+                <CustomText style={[styles.emptyText, { color: textSec }]}>
                   No favorited items available yet.
                 </CustomText>
               )}
@@ -64,7 +69,6 @@ export default function WishlistScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   grid: {
     flexDirection: "row",
@@ -73,7 +77,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   emptyText: {
-    color: Colors.light.textSecondary,
     fontSize: 14,
     textAlign: "center",
     marginTop: 20,
@@ -81,7 +84,6 @@ const styles = StyleSheet.create({
   },
   loaderOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.light.background,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,

@@ -2,6 +2,7 @@ import CustomHeading from "@/components/ui/customHeading";
 import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { ListingsT } from "@/types";
+import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FC, useEffect, useState } from "react";
@@ -21,6 +22,7 @@ export const ItemSection: FC<ItemSectionProps> = ({
   loc,
   feat,
 }) => {
+  const text = themeColor("text");
   const [finalList, setFinalList] = useState<ListingsT>([]);
   const { userData } = useUserData();
   const router = useRouter();
@@ -51,8 +53,8 @@ export const ItemSection: FC<ItemSectionProps> = ({
   return (
     <View style={styles.container}>
       <Pressable style={styles.headerContainer} onPress={handlePress}>
-        <CustomHeading style={h3}>{heading}</CustomHeading>
-        <Ionicons name="chevron-forward-outline" size={12} />
+        <CustomHeading style={[h3, { color: text }]}>{heading}</CustomHeading>
+        <Ionicons name="chevron-forward-outline" size={12} color={text} />
       </Pressable>
 
       <FlatList

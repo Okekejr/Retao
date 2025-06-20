@@ -2,6 +2,7 @@ import { ChatHeader } from "@/components/core/chat/chatHeader";
 import { MessageBubble } from "@/components/core/chat/messageBubble";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { useNotifications } from "@/context/notificationContext";
 import { useUserData } from "@/context/userContext";
 import { useMessages } from "@/hooks/useChat";
 import { useRecipientProfile } from "@/hooks/useGetUserData";
@@ -48,6 +49,7 @@ export default function ChatScreen() {
   const [disableSend, setDisableSend] = useState(false);
   const { data: recipient } = useRecipientProfile(recipientId as string);
   const isFocused = useIsFocused();
+  const { setNotifications } = useNotifications();
 
   const handleTyping = () => {
     if (typingTimeout) {
@@ -87,6 +89,7 @@ export default function ChatScreen() {
 
       // Clear input locally
       setMessage("");
+      flatListRef.current?.scrollToEnd({ animated: true });
 
       queryClient.invalidateQueries({
         predicate: (query) =>
@@ -170,6 +173,12 @@ export default function ChatScreen() {
         conversationId,
         messageIds: unread,
       });
+
+      // ✅ Reset unread count locally
+      setNotifications((prev) => ({
+        ...prev,
+        messages: 0,
+      }));
     }
   }, [messages, isFocused]);
 
@@ -194,13 +203,14 @@ export default function ChatScreen() {
           avatar={recipient?.avatar}
         />
       </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <KeyboardAvoidingView
-          style={styles.inner}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
+      <KeyboardAvoidingView
+        style={styles.inner}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
             <FlatList
+              ref={flatListRef}
               data={messages}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
@@ -212,6 +222,12 @@ export default function ChatScreen() {
               scrollEnabled
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={styles.chatContainer}
+              onContentSizeChange={() =>
+                flatListRef.current?.scrollToOffset({
+                  offset: 0,
+                  animated: true,
+                })
+              }
             />
 
             {typingUserId && (
@@ -252,8 +268,8 @@ export default function ChatScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
 }

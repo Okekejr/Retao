@@ -5,7 +5,12 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
-import { checkEmailExists, validateEmail, validatePassword } from "@/utils";
+import {
+  checkEmailExists,
+  themeColor,
+  validateEmail,
+  validatePassword,
+} from "@/utils";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
@@ -41,6 +46,9 @@ export default function SignupScreen() {
     login: "",
   });
   const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textTertiery = themeColor("textTertiery");
 
   useEffect(() => {
     const passwordsMatch =
@@ -93,16 +101,18 @@ export default function SignupScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1, justifyContent: "center" }}>
-            <CustomHeading style={{ marginBottom: 20 }}>
+            <CustomHeading style={{ marginBottom: 20, color: text }}>
               Create an account
             </CustomHeading>
 
             <View style={{ marginBottom: 20 }}>
-              <CustomText style={styles.label}>Email</CustomText>
+              <CustomText style={[styles.label, { color: text }]}>
+                Email
+              </CustomText>
               <TextInput
                 ref={emailInputRef}
                 style={[
@@ -136,7 +146,9 @@ export default function SignupScreen() {
             </View>
 
             <View style={{ marginBottom: 20 }}>
-              <CustomText style={styles.label}>Password</CustomText>
+              <CustomText style={[styles.label, { color: text }]}>
+                Password
+              </CustomText>
               <TextInput
                 ref={passwordInputRef}
                 style={[
@@ -156,7 +168,9 @@ export default function SignupScreen() {
             </View>
 
             <View style={{ marginBottom: 20 }}>
-              <CustomText style={styles.label}>Confirm Password</CustomText>
+              <CustomText style={[styles.label, { color: text }]}>
+                Confirm Password
+              </CustomText>
               <View
                 style={[
                   styles.passwordInputContainer,
@@ -211,7 +225,7 @@ export default function SignupScreen() {
             <CustomDivider text="OR" />
 
             <TouchableOpacity
-              style={[styles.nextButton, styles.otherButton]}
+              style={[styles.nextButton, { backgroundColor: textTertiery }]}
               onPress={() => router.push("/login/login")}
             >
               <CustomText style={styles.buttonText}>
@@ -230,7 +244,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 16,
@@ -282,9 +295,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 12,
     alignItems: "center",
-  },
-  otherButton: {
-    backgroundColor: Colors.light.textTertiery,
   },
   buttonText: {
     color: "#fff",

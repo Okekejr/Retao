@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/constants/random";
 import { BorrowRequestByItem, BorrowRequestsResponse } from "@/types";
-import { showToast } from "@/utils/showToast";
+import { showToast } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 

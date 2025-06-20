@@ -1,5 +1,7 @@
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
+import { getNextIncompleteStep, isProfileComplete } from "@/utils";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
@@ -11,10 +13,11 @@ const ANIMATION_DURATION = 1200;
 export default function IndexScreen() {
   const router = useRouter();
   const { refreshData } = useGetUserData();
+  const { userData } = useUserData();
 
   useEffect(() => {
     const checkAuth = async () => {
-      // ⏳ Wait for animation to complete
+      // Wait for logo animation
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const token = await SecureStore.getItemAsync("token");
@@ -27,7 +30,12 @@ export default function IndexScreen() {
       try {
         await refreshData();
 
-        router.replace("/home");
+        if (!isProfileComplete(userData)) {
+          const nextRoute = getNextIncompleteStep(userData.current_step || 0);
+          router.replace(nextRoute);
+        } else {
+          router.replace("/home");
+        }
       } catch (error) {
         console.error("Auth check failed:", error);
         await SecureStore.deleteItemAsync("token");

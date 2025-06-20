@@ -11,7 +11,7 @@ import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
-import { profileItems } from "@/utils";
+import { profileItems, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -31,6 +31,7 @@ export default function ProfileScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const bg = themeColor("background");
 
   const openModal = (content: string) => {
     setModalVisible(true);
@@ -57,9 +58,9 @@ export default function ProfileScreen() {
   }, [userData.id]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {loading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
@@ -125,11 +126,9 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   loaderOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.light.background,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,

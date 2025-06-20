@@ -3,9 +3,9 @@ import { IdentityCard } from "@/components/core/profile/identityCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
-import { Colors } from "@/constants/Colors";
 import { h2, h3 } from "@/constants/random";
 import { useRecipientProfile } from "@/hooks/useGetUserData";
+import { themeColor } from "@/utils";
 import { useLocalSearchParams } from "expo-router";
 import {
   FlatList,
@@ -18,9 +18,11 @@ import {
 export default function UserProfileCardScreen() {
   const { userId } = useLocalSearchParams();
   const { data: recipient } = useRecipientProfile(userId as string);
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <View style={styles.iconRow}>
         <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
       </View>
@@ -31,19 +33,18 @@ export default function UserProfileCardScreen() {
       >
         <InnerContainer style={{ flex: 1, gap: 16 }}>
           <View style={styles.modalHeader}>
-            <CustomText style={h2}>Profile Card</CustomText>
+            <CustomText style={[h2, { color: text }]}>Profile Card</CustomText>
           </View>
 
           <View style={{ gap: 40 }}>
-            {recipient ? (
-              <IdentityCard user={recipient} />
-            ) : (
-              <CustomText>No profile availabile</CustomText>
-            )}
+            {recipient && <IdentityCard user={recipient} />}
 
-            <View>
-              <CustomText style={[styles.heading, h3]}>Listings</CustomText>
-              {recipient && recipient.listings.length > 0 ? (
+            {recipient && recipient.listings.length > 0 && (
+              <View>
+                <CustomText style={[styles.heading, h3, { color: text }]}>
+                  Listings
+                </CustomText>
+
                 <FlatList
                   data={recipient.listings}
                   keyExtractor={(item) => item.title}
@@ -63,14 +64,15 @@ export default function UserProfileCardScreen() {
                     />
                   )}
                 />
-              ) : (
-                <CustomText>No listed items yet</CustomText>
-              )}
-            </View>
+              </View>
+            )}
 
-            <View>
-              <CustomText style={[styles.heading, h3]}>Borrowing</CustomText>
-              {recipient && recipient.borrowedItems.length > 0 ? (
+            {recipient && recipient.borrowedItems.length > 0 && (
+              <View>
+                <CustomText style={[styles.heading, h3, { color: text }]}>
+                  Borrowing
+                </CustomText>
+
                 <FlatList
                   data={recipient.borrowedItems}
                   keyExtractor={(item) => item.title}
@@ -89,10 +91,8 @@ export default function UserProfileCardScreen() {
                     />
                   )}
                 />
-              ) : (
-                <CustomText>No items yet</CustomText>
-              )}
-            </View>
+              </View>
+            )}
           </View>
         </InnerContainer>
       </ScrollView>
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.light.background,
     gap: 28,
   },
   iconRow: {

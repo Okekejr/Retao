@@ -1,3 +1,4 @@
+import { userProfile } from "@/context/userContext";
 import { IntroUtilsT } from "./intro";
 
 export const OnboardingIntroUtils: IntroUtilsT = [
@@ -20,3 +21,26 @@ export const OnboardingIntroUtils: IntroUtilsT = [
     image: require("../assets/img/loc.png"),
   },
 ];
+
+// Define the valid onboarding routes in order
+export const onboardingRoutes = [
+  "/signup/onBoarding",
+  "/signup/signupForm",
+  "/signup/signupAvatar",
+  "/signup/signupBioLoc",
+  "/signup/signupReview",
+] as const;
+
+export type OnboardingRoute = (typeof onboardingRoutes)[number];
+
+// Get the next route based on current step
+export const getNextIncompleteStep = (step: number): OnboardingRoute =>
+  onboardingRoutes[step] || "/signup/onBoarding";
+
+// Determine if the profile is complete
+export const isProfileComplete = (userData: Partial<userProfile>) =>
+  !!userData.name &&
+  !!userData.handle &&
+  !!userData.avatar &&
+  !!userData.bio &&
+  !!userData.location;

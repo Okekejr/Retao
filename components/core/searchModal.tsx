@@ -25,11 +25,7 @@ interface SearchModalProps {
 
 export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
   const [submittedQuery, setSubmittedQuery] = useState("");
-  const {
-    data: results,
-    isLoading,
-    isError,
-  } = useSearchListings(submittedQuery);
+  const { data: results, isLoading } = useSearchListings(submittedQuery);
   const [search, setSearch] = useState("");
   const modalCardRef = useRef(null);
   const [focused, setFocused] = useState(false);

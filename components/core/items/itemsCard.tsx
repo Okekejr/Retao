@@ -1,12 +1,12 @@
 import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
-import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import {
   useAddFavorite,
   useIsFavorited,
   useRemoveFavorite,
 } from "@/hooks/useFavorite";
+import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -46,6 +46,8 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   ownerId,
   subscription_plan,
 }) => {
+  const text = themeColor("text");
+  const textSecondary = themeColor("textSecondary");
   const { userData } = useUserData();
   const router = useRouter();
   const hideFavorite = userData.id === owner?.id || ownerId;
@@ -106,11 +108,17 @@ export const ItemsCard: FC<ItemsCardProps> = ({
       </View>
 
       <View style={styles.content}>
-        <CustomHeading numberOfLines={1} style={[styles.title]}>
+        <CustomHeading
+          numberOfLines={1}
+          style={[styles.title, { color: text }]}
+        >
           {title}
         </CustomHeading>
         <View style={{ marginTop: 5 }}>
-          <CustomText style={styles.description} numberOfLines={1}>
+          <CustomText
+            style={[styles.description, { color: textSecondary }]}
+            numberOfLines={1}
+          >
             {description}
           </CustomText>
           <CustomText style={styles.distance}>{distance}</CustomText>
@@ -146,7 +154,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
     lineHeight: 18,
   },
   distance: {

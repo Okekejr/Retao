@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { themeColor } from "@/utils";
 import {
   Dimensions,
   Modal,
@@ -24,6 +24,8 @@ export const CustomModal = ({
   closeModal,
   style,
 }: CustomModalProps) => {
+  const bg = themeColor("background");
+
   return (
     <Modal
       visible={modalVisible}
@@ -37,7 +39,7 @@ export const CustomModal = ({
         onPress={closeModal}
       >
         <View
-          style={[styles.modalContent, style]}
+          style={[styles.modalContent, style, { backgroundColor: bg }]}
           onStartShouldSetResponder={() => true}
         >
           {children}
@@ -58,7 +60,6 @@ const styles = StyleSheet.create({
     width: width, // Take up the full width
     height: "auto", // Take up 80% of the height from the bottom
     paddingVertical: 20,
-    backgroundColor: Colors.light.background,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },

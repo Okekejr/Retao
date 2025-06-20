@@ -1,7 +1,6 @@
 import CustomText from "@/components/ui/customText";
-import { Colors } from "@/constants/Colors";
 import { avatarsT } from "@/types";
-import { getPlanColor } from "@/utils";
+import { getPlanColor, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -32,10 +31,14 @@ const avatars: avatarsT = [
 ];
 
 export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
+  const bg = themeColor("surfaceArea");
+  const text = themeColor("text");
+  const textSecondary = themeColor("textSecondary");
+  const textTertiary = themeColor("textTertiery");
   const avatar = avatars.find((a) => a.id === user.avatar);
 
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={[styles.card, { backgroundColor: bg }]}>
       <View style={styles.avatarContainer}>
         <Image source={avatar?.src} style={styles.avatar} />
 
@@ -43,7 +46,10 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
           <View
             style={[
               styles.badge,
-              { backgroundColor: getPlanColor(user.subscription_plan) },
+              {
+                backgroundColor: getPlanColor(user.subscription_plan),
+                borderColor: bg,
+              },
             ]}
           >
             <Ionicons
@@ -63,8 +69,18 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
           }}
         >
           <View>
-            <CustomText style={styles.name}>{user.name}</CustomText>
-            <CustomText style={styles.handle}>{user.handle}</CustomText>
+            <CustomText
+              style={[styles.name, { color: text }]}
+              numberOfLines={1}
+            >
+              {user.name}
+            </CustomText>
+            <CustomText
+              style={[styles.handle, { color: textSecondary }]}
+              numberOfLines={1}
+            >
+              {user.handle}
+            </CustomText>
           </View>
 
           {showPlan && user.subscription_plan && (
@@ -87,7 +103,10 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
           )}
         </View>
 
-        <CustomText numberOfLines={2} style={styles.bio}>
+        <CustomText
+          numberOfLines={2}
+          style={[styles.bio, { color: textTertiary }]}
+        >
           {user.bio}
         </CustomText>
         <CustomText style={styles.joined}>
@@ -108,7 +127,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 16,
     borderRadius: 16,
-    backgroundColor: Colors.light.surfaceArea,
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 3 },
@@ -126,15 +144,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   name: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 17,
+    fontFamily: "Satoshi-Bold",
   },
   handle: {
-    color: "#666",
     marginBottom: 4,
   },
   bio: {
-    color: "#333",
     marginBottom: 4,
   },
   joined: {
@@ -176,6 +192,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
-    borderColor: Colors.light.surfaceArea, // match card bg for clean edge
   },
 });

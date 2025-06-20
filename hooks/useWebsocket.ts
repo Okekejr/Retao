@@ -1,4 +1,5 @@
 import { WS_URL } from "@/constants/random";
+import { useNotifications } from "@/context/notificationContext";
 import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -13,6 +14,8 @@ export const useWebSocket = () => {
   const [incomingMessage, setIncomingMessage] = useState<WSMessage | null>(
     null
   );
+
+  const { setNotifications } = useNotifications();
 
   // Initialize WebSocket connection
   const connect = useCallback(async () => {
@@ -30,6 +33,14 @@ export const useWebSocket = () => {
       try {
         const msg = JSON.parse(event.data);
         console.log("📥 WS message received:", msg);
+
+        if (msg.type === "message") {
+          setNotifications((prev) => ({
+            ...prev,
+            messages: prev.messages + 1,
+          }));
+        }
+
         setIncomingMessage(msg);
       } catch (err) {
         console.error("❌ Failed to parse WS message", err);

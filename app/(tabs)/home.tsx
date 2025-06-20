@@ -8,6 +8,7 @@ import { Colors } from "@/constants/Colors";
 import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
+import { themeColor } from "@/utils";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -20,6 +21,7 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
+  const bg = themeColor("background");
   const { data: Listings, isLoading } = useGetListings();
   const { data: location } = useGetLocation();
   const { data: featuredListings, isLoading: featuredLoading } =
@@ -36,9 +38,9 @@ export default function HomeScreen() {
   const isAnyLoading = isLoading || loadingLoc || catLoading || featuredLoading;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {isAnyLoading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
@@ -86,14 +88,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   scrollContent: {
     paddingBottom: Platform.OS === "ios" ? 30 : 30,
   },
   loaderOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.light.background,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,

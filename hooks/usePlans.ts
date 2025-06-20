@@ -1,9 +1,9 @@
 import { BASE_URL } from "@/constants/random";
 import { SubscriptionPlan } from "@/types";
-import { showToast } from "@/utils/showToast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import { useGetUserData } from "./useGetUserData";
+import { showToast } from "@/utils";
 
 const getAuthHeaders = async () => {
   const token = await SecureStore.getItemAsync("token");

@@ -4,7 +4,7 @@ import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { useGetPlans, useSubscribeToPlan } from "@/hooks/usePlans";
-import { getPlanColor } from "@/utils";
+import { getPlanColor, themeColor } from "@/utils";
 import {
   ActivityIndicator,
   FlatList,
@@ -21,17 +21,21 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
   const { data: plans, isLoading } = useGetPlans();
   const { mutate: subscribeToPlan, isPending } = useSubscribeToPlan();
   const { userData } = useUserData();
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   return (
     <InnerContainer>
       {isLoading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
 
       <View style={styles.modalHeader}>
-        <CustomText style={h3}>Subscription plans</CustomText>
+        <CustomText style={[h3, { color: text }]}>
+          Subscription plans
+        </CustomText>
       </View>
 
       <View>
@@ -79,7 +83,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
                       ? "Current Plan"
                       : isPending
                       ? "Subscribing..."
-                      : "Upgrade"}
+                      : "Select Plan"}
                   </CustomText>
                 </TouchableOpacity>
               </View>

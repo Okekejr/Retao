@@ -3,15 +3,16 @@ import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { SettingsItem } from "@/components/ui/settingItem";
-import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
 import { useDeactivateAccount } from "@/hooks/useDeleteAccount";
 import { useUpdatePassword } from "@/hooks/useUpdatePassword";
-import { validatePassword } from "@/utils";
+import { themeColor, validatePassword } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
 
 export default function LoginSecurityScreen() {
+  const bg = themeColor("background");
+  const text = themeColor("text");
   const { deactivate, loading } = useDeactivateAccount();
   const { updatePassword, error: updateError, success } = useUpdatePassword();
   const [password, setPassword] = useState("");
@@ -86,14 +87,16 @@ export default function LoginSecurityScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <View style={styles.iconRow}>
         <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
       </View>
 
       <InnerContainer style={{ flex: 1, gap: 32 }}>
         <View style={styles.modalHeader}>
-          <CustomText style={h2}>Login & Security</CustomText>
+          <CustomText style={[h2, { color: text }]}>
+            Login & Security
+          </CustomText>
         </View>
 
         <View style={{ gap: 40 }}>
@@ -144,7 +147,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.light.background,
     gap: 28,
   },
   iconRow: {

@@ -22,8 +22,6 @@ export const Colors = {
     primary: "#4F46E5",
     success: "#24f07d",
     muted: "#C8C8C8",
-    pro: "#000",
-    unlimited: "#D4AF37",
   },
   planColor: {
     free: "#4F46E5",
@@ -32,14 +30,18 @@ export const Colors = {
   },
   dark: {
     text: "#FFFFFF",
-    background: "#121212",
-    surfaceArea: "#1E1E1E",
+    textSecondary: "#AAAAAA", // Softer gray for contrast
+    textTertiery: "#888888", // Even softer for subtle elements
+    accent: "#5AB6FF", // Softer neon blue
+    accentAlt: "#4BC8B4", // Muted teal
+    background: "#121212", // True dark
+    surfaceArea: "#1E1E1E", // Slightly lighter surface
     tint: tintColorDark,
     icon: "#9BA1A6",
     tabIconDefault: "#9BA1A6",
     tabIconSelected: tintColorDark,
-    primary: "#24B4E7",
-    success: "#3CF78F",
-    muted: "#5A5A5A",
+    primary: "#4F46E5", // Electric blue
+    success: "#3CF78F", // Balanced green
+    muted: "#C8C8C8",
   },
 };

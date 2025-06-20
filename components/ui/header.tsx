@@ -1,3 +1,4 @@
+import { themeColor } from "@/utils";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import CustomHeading from "./customHeading";
 
@@ -8,9 +9,11 @@ interface HeaderProps {
 }
 
 export const Header = ({ children, headerTitle, style }: HeaderProps) => {
+  const text = themeColor("text");
+
   return (
     <View style={[styles.container, style]}>
-      <CustomHeading>{headerTitle}</CustomHeading>
+      <CustomHeading style={{ color: text }}>{headerTitle}</CustomHeading>
       <View style={styles.childrenContainer}>{children}</View>
     </View>
   );

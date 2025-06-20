@@ -5,6 +5,7 @@ import { categoriesIcon, h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { useGetCategories } from "@/hooks/useGetCategories";
 import { Category } from "@/types";
+import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { MotiView } from "moti";
@@ -16,6 +17,9 @@ interface SelectCategoryProps {
 }
 
 export default function SelectCategory({ closeModal }: SelectCategoryProps) {
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const primary = themeColor("primary");
   const router = useRouter();
   const { data: Categories } = useGetCategories();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -34,7 +38,9 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
   return (
     <InnerContainer>
       <View style={styles.modalHeader}>
-        <CustomText style={h3}>What type of item are you listing?</CustomText>
+        <CustomText style={[h3, { color: text }]}>
+          What type of item are you listing?
+        </CustomText>
       </View>
 
       <ScrollView contentContainerStyle={styles.cardList}>
@@ -55,13 +61,14 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
                 <TouchableOpacity
                   style={[
                     styles.categoryCard,
+                    { backgroundColor: bg },
                     selectedCategory?.id === cat.id &&
-                      styles.categoryCardSelected,
+                      styles.categoryCardSelected && { borderColor: primary },
                   ]}
                   onPress={() => setSelectedCategory(cat)}
                 >
                   <View>
-                    <CustomText style={styles.categoryTitle}>
+                    <CustomText style={[styles.categoryTitle, { color: text }]}>
                       {cat.title}
                     </CustomText>
                   </View>
@@ -107,7 +114,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#ccc",
-    backgroundColor: "#fff",
   },
   categoryCardSelected: {
     borderColor: Colors.light.primary,

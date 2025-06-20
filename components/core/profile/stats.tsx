@@ -1,4 +1,5 @@
 import CustomText from "@/components/ui/customText";
+import { themeColor } from "@/utils";
 import { StyleSheet, View } from "react-native";
 
 interface CustomStatsProps {
@@ -7,10 +8,17 @@ interface CustomStatsProps {
 }
 
 export const CustomStats = ({ label, value }: CustomStatsProps) => {
+  const textSecondary = themeColor("textSecondary");
+  const text = themeColor("text");
+
   return (
     <View style={styles.stat}>
-      <CustomText style={styles.statValue}>{value}</CustomText>
-      <CustomText style={styles.statLabel}>{label}</CustomText>
+      <CustomText style={[styles.statValue, { color: text }]}>
+        {value}
+      </CustomText>
+      <CustomText style={[styles.statLabel, { color: textSecondary }]}>
+        {label}
+      </CustomText>
     </View>
   );
 };
@@ -21,7 +29,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "Satoshi-Bold",
   },
   statLabel: {
     fontSize: 12,

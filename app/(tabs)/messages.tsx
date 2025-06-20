@@ -4,6 +4,7 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useConversations } from "@/hooks/useChat";
+import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
@@ -22,7 +23,10 @@ import {
 } from "react-native";
 
 export default function MessagesScreen() {
-  const { data: conversations, isLoading, error } = useConversations();
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textTertiery = themeColor("textTertiery");
+  const { data: conversations, isLoading } = useConversations();
   const queryClient = useQueryClient();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,9 +46,9 @@ export default function MessagesScreen() {
   }, [searchQuery, conversations]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {isLoading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
@@ -102,9 +106,9 @@ export default function MessagesScreen() {
                   {searchQuery.length > 0 && (
                     <TouchableOpacity
                       onPress={() => setSearchQuery("")}
-                      style={styles.closeButton}
+                      style={[styles.closeButton, { backgroundColor: bg }]}
                     >
-                      <Feather name="x" size={16} color="#000" />
+                      <Feather name="x" size={16} color={text} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -115,7 +119,9 @@ export default function MessagesScreen() {
                     setSearchQuery("");
                   }}
                 >
-                  <CustomText style={styles.backText}>Cancel</CustomText>
+                  <CustomText style={[styles.backText, { color: text }]}>
+                    Cancel
+                  </CustomText>
                 </TouchableOpacity>
               </MotiView>
             )}
@@ -130,7 +136,9 @@ export default function MessagesScreen() {
               contentContainerStyle={{ paddingVertical: 16 }}
               ListEmptyComponent={
                 <View style={styles.emptyState}>
-                  <CustomText style={styles.emptyText}>
+                  <CustomText
+                    style={[styles.emptyText, { color: textTertiery }]}
+                  >
                     No conversations found
                   </CustomText>
                   <CustomText style={styles.emptySubText}>
@@ -149,7 +157,6 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   emptyState: {
     alignItems: "center",
@@ -158,8 +165,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#444",
+    fontFamily: "Satoshi-Bold",
   },
   emptySubText: {
     fontSize: 14,
@@ -168,7 +174,6 @@ const styles = StyleSheet.create({
   },
   loaderOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.light.background,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,
@@ -216,6 +221,5 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 4,
     borderRadius: "100%",
-    backgroundColor: Colors.light.background,
   },
 });

@@ -1,5 +1,5 @@
 import CustomText from "@/components/ui/customText";
-import { Colors } from "@/constants/Colors";
+import { themeColor } from "@/utils";
 import { StyleSheet, View } from "react-native";
 
 interface InfoBlockProps {
@@ -8,10 +8,17 @@ interface InfoBlockProps {
 }
 
 export const InfoBlock = ({ label, value }: InfoBlockProps) => {
+  const textSecondary = themeColor("textSecondary");
+  const text = themeColor("text");
+
   return (
     <View style={styles.infoBlock}>
-      <CustomText style={styles.label}>{label}</CustomText>
-      <CustomText style={styles.value}>{value || "—"}</CustomText>
+      <CustomText style={[styles.label, { color: textSecondary }]}>
+        {label}
+      </CustomText>
+      <CustomText style={[styles.value, { color: text }]}>
+        {value || "—"}
+      </CustomText>
     </View>
   );
 };
@@ -25,7 +32,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: Colors.light.textSecondary,
     marginBottom: 4,
   },
   value: {

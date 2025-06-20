@@ -14,6 +14,7 @@ import {
   useIncomingBorrowRequests,
 } from "@/hooks/useBorrowRequests";
 import { useGetListings } from "@/hooks/useGetListings";
+import { themeColor } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -27,6 +28,9 @@ import {
 } from "react-native";
 
 export default function ListingsScreen() {
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
   const { userData } = useUserData();
@@ -77,9 +81,9 @@ export default function ListingsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {isAnyLoading && (
-        <View style={styles.loaderOverlay}>
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
       )}
@@ -113,7 +117,9 @@ export default function ListingsScreen() {
       >
         <InnerContainer style={{ gap: 16, flex: 1 }}>
           <View>
-            <CustomText style={[styles.heading, h3]}>My Listings</CustomText>
+            <CustomText style={[styles.heading, h3, { color: text }]}>
+              My Listings
+            </CustomText>
             {listedItems.length > 0 ? (
               <FlatList
                 data={listedItems}
@@ -134,13 +140,17 @@ export default function ListingsScreen() {
                 )}
               />
             ) : (
-              <CustomText>No listed items yet</CustomText>
+              <CustomText style={{ color: textSec }}>
+                No listed items yet
+              </CustomText>
             )}
           </View>
 
           {borrowedItems.length > 0 && (
             <View>
-              <CustomText style={[styles.heading, h3]}>Borrowed</CustomText>
+              <CustomText style={[styles.heading, h3, { color: text }]}>
+                Borrowed
+              </CustomText>
               <FlatList
                 data={borrowedItems}
                 keyExtractor={(item) => item.title}
@@ -164,7 +174,9 @@ export default function ListingsScreen() {
 
           {filterRequests && filterRequests.length > 0 && (
             <View>
-              <CustomText style={[styles.heading, h3]}>Requests</CustomText>
+              <CustomText style={[styles.heading, h3, { color: text }]}>
+                Requests
+              </CustomText>
 
               <FlatList
                 data={filterRequests}
@@ -182,7 +194,7 @@ export default function ListingsScreen() {
 
           {pendingRequests && pendingRequests.length > 0 && (
             <View>
-              <CustomText style={[styles.heading, h3]}>
+              <CustomText style={[styles.heading, h3, { color: text }]}>
                 My Pending Requests
               </CustomText>
 
@@ -208,7 +220,6 @@ export default function ListingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   heading: {
     fontSize: 24,
@@ -236,7 +247,6 @@ const styles = StyleSheet.create({
   },
   loaderOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.light.background,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,
