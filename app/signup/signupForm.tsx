@@ -8,6 +8,7 @@ import { BASE_URL } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import {
   DimensionValue,
@@ -21,7 +22,7 @@ import {
 
 export default function SignupFormScreen() {
   const router = useRouter();
-  const { userData, updateUserForm } = useUserData();
+  const { userData, updateUserForm, resetUserData } = useUserData();
   const [invalid, setInvalid] = useState(false);
   const [isHandleUnique, setHandleUnique] = useState(true);
   const [errors, setErrors] = useState({ name: "", handle: "" });
@@ -77,7 +78,15 @@ export default function SignupFormScreen() {
     return isValid;
   };
 
-  const handleBack = () => router.push({ pathname: "/login/login" });
+  const handleBack = async () => {
+    try {
+      await SecureStore.deleteItemAsync("token");
+      resetUserData();
+      router.replace({ pathname: "/login/login" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleNext = () => {
     if (!validateInputs()) return;
@@ -138,6 +147,7 @@ export default function SignupFormScreen() {
               handleBack={handleBack}
               handleNext={handleNext}
               disabled={invalid}
+              backBtnTitle="Cancel"
             />
           </View>
         </TouchableWithoutFeedback>

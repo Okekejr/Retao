@@ -38,7 +38,7 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
   const avatar = avatars.find((a) => a.id === user.avatar);
 
   return (
-    <TouchableOpacity style={[styles.card, { backgroundColor: bg }]}>
+    <View style={[styles.card, { backgroundColor: bg }]}>
       <View style={styles.avatarContainer}>
         <Image source={avatar?.src} style={styles.avatar} />
 
@@ -118,7 +118,7 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
           <CustomStats label="Rating" value={`⭐ ${user.stats.rating}`} />
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

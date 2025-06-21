@@ -20,6 +20,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -39,6 +40,14 @@ export default function ProfileScreen() {
   };
 
   const closeModal = () => setModalVisible(false);
+
+  const handleViewOwnerProfile = () => {
+    if (!userData.id) return;
+    router.push({
+      pathname: "/userProfile/userProfileCard",
+      params: { userId: userData.id },
+    });
+  };
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -70,11 +79,13 @@ export default function ProfileScreen() {
 
         <ScrollView style={{ gap: 12 }}>
           {userData.id !== "" && (
-            <IdentityCard
-              user={userData}
-              func={() => openModal("Plans")}
-              showPlan
-            />
+            <TouchableOpacity onPress={handleViewOwnerProfile}>
+              <IdentityCard
+                user={userData}
+                func={() => openModal("Plans")}
+                showPlan
+              />
+            </TouchableOpacity>
           )}
 
           {userData.subscription_plan === "unlimited" ||

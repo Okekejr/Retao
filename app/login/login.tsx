@@ -4,9 +4,12 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { AppName } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import {
   checkEmailExists,
+  getNextIncompleteStep,
+  isProfileComplete,
   LoginFunc,
   themeColor,
   validateEmail,
@@ -33,6 +36,8 @@ export default function LoginScreen() {
   const [focusedInput, setFocusedInput] = useState<null | "email" | "password">(
     null
   );
+  const { userData } = useUserData();
+  const [isChecking, setIsChecking] = useState(false);
 
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
@@ -91,12 +96,26 @@ export default function LoginScreen() {
     }
 
     try {
+      setIsChecking(true);
       await refreshData();
-      router.replace("/home");
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
     }
   };
+
+  useEffect(() => {
+    if (!isChecking) return;
+
+    if (userData?.email) {
+      if (isProfileComplete(userData)) {
+        router.replace("/home");
+      } else {
+        const nextRoute = getNextIncompleteStep(userData.current_step || 0);
+        router.replace(nextRoute);
+      }
+      setIsChecking(false); // ✅ reset
+    }
+  }, [userData, isChecking]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>

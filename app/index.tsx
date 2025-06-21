@@ -4,7 +4,7 @@ import { useGetUserData } from "@/hooks/useGetUserData";
 import { getNextIncompleteStep, isProfileComplete } from "@/utils";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 
@@ -14,28 +14,21 @@ export default function IndexScreen() {
   const router = useRouter();
   const { refreshData } = useGetUserData();
   const { userData } = useUserData();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Wait for logo animation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // logo delay
 
       const token = await SecureStore.getItemAsync("token");
-
       if (!token) {
         router.replace("/login/login");
         return;
       }
 
       try {
-        await refreshData();
-
-        if (!isProfileComplete(userData)) {
-          const nextRoute = getNextIncompleteStep(userData.current_step || 0);
-          router.replace(nextRoute);
-        } else {
-          router.replace("/home");
-        }
+        await refreshData(); // updates context
+        setIsChecking(false); // ready to evaluate userData
       } catch (error) {
         console.error("Auth check failed:", error);
         await SecureStore.deleteItemAsync("token");
@@ -45,6 +38,20 @@ export default function IndexScreen() {
 
     checkAuth();
   }, []);
+
+  // 🔁 Second effect: run when userData updates after refreshData
+  useEffect(() => {
+    if (isChecking) return; // wait until refreshData is done
+
+    if (userData?.email) {
+      if (isProfileComplete(userData)) {
+        router.replace("/home");
+      } else {
+        const nextRoute = getNextIncompleteStep(userData.current_step || 0);
+        router.replace(nextRoute);
+      }
+    }
+  }, [userData, isChecking]);
 
   return (
     <View style={styles.container}>
