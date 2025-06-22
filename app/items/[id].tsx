@@ -223,7 +223,9 @@ export default function ItemScreen() {
                 )}
               />
             ) : (
-              <CustomText>No borrowers yet.</CustomText>
+              <CustomText style={{ color: textSec }}>
+                No borrowers yet.
+              </CustomText>
             )}
           </View>
         </View>

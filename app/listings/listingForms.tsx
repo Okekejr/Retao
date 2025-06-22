@@ -6,7 +6,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
-import { isMoreThanDashWords } from "@/utils";
+import { isMoreThanDashWords, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -22,6 +22,8 @@ import {
 export default function ListingFormsScreen() {
   const router = useRouter();
   const { formData, updateFormData } = useListing();
+  const bg = themeColor("background");
+  const text = themeColor("text");
   const [invalid, setInvalid] = useState(false);
   const [errors, setErrors] = useState({ title: "", description: "" });
   const [focusedInput, setFocusedInput] = useState<
@@ -70,7 +72,7 @@ export default function ListingFormsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1, justifyContent: "space-between" }}>
@@ -85,7 +87,9 @@ export default function ListingFormsScreen() {
 
               {/* Title Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={[styles.label, h3]}>Title</CustomText>
+                <CustomText style={[styles.label, h3, { color: text }]}>
+                  Title
+                </CustomText>
                 <TextInput
                   style={[
                     styles.input,
@@ -110,7 +114,9 @@ export default function ListingFormsScreen() {
 
               {/* Description Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={[styles.label, h3]}>Description</CustomText>
+                <CustomText style={[styles.label, h3, { color: text }]}>
+                  Description
+                </CustomText>
                 <TextInput
                   style={[
                     styles.input,
@@ -156,7 +162,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 16,

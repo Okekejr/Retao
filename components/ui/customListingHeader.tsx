@@ -1,5 +1,5 @@
-import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
+import { themeColor } from "@/utils";
 import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
 import CustomText from "./customText";
 
@@ -14,10 +14,17 @@ export const CustomListingHeader = ({
   subHeading,
   style,
 }: CustomLisitngHeaderProps) => {
+  const textSec = themeColor("textSecondary");
+  const text = themeColor("text");
+
   return (
     <View style={{ marginVertical: 30, gap: 5 }}>
-      <CustomText style={[styles.heading, h2, style]}>{heading}</CustomText>
-      <CustomText style={[styles.subheading, style]}>{subHeading}</CustomText>
+      <CustomText style={[styles.heading, h2, { color: text }, style]}>
+        {heading}
+      </CustomText>
+      <CustomText style={[styles.subheading, { color: textSec }, style]}>
+        {subHeading}
+      </CustomText>
     </View>
   );
 };
@@ -29,6 +36,5 @@ const styles = StyleSheet.create({
   },
   subheading: {
     fontSize: 16,
-    color: Colors.light.textSecondary,
   },
 });

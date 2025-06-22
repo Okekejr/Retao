@@ -134,7 +134,7 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
                       </CustomText>
                       <CustomText
                         style={styles.cardDescription}
-                        numberOfLines={2}
+                        numberOfLines={1}
                       >
                         {item.description}
                       </CustomText>
@@ -234,15 +234,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardTitle: {
-    fontSize: 14,
+    fontFamily: "Satoshi-Bold",
+    fontSize: 16,
     letterSpacing: 0.5,
+    color: "#000",
   },
   cardDistance: {
     fontSize: 12,
     color: "#999",
   },
   cardDescription: {
-    fontSize: 13,
+    fontSize: 12,
     color: Colors.light.textSecondary,
     lineHeight: 18,
   },

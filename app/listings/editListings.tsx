@@ -7,7 +7,7 @@ import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { useDeleteListing } from "@/hooks/useEditListing";
 import { useGetListingById } from "@/hooks/useGetListings";
-import { isMoreThanDashWords } from "@/utils";
+import { isMoreThanDashWords, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,8 +35,11 @@ export default function EditListingsScreen() {
   const { data: listing, isLoading } = useGetListingById(id as string);
   const { formData, updateFormData, resetFormData } = useListing();
   const router = useRouter();
-  const { mutate: deleteListing, isPending } = useDeleteListing();
+  const { mutate: deleteListing } = useDeleteListing();
   const queryClient = useQueryClient();
+
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [availableNow, setAvailableNow] = useState(
@@ -243,7 +246,7 @@ export default function EditListingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator
@@ -260,7 +263,9 @@ export default function EditListingsScreen() {
                 />
 
                 <View>
-                  <CustomText style={styles.label}>Title</CustomText>
+                  <CustomText style={[styles.label, { color: text }]}>
+                    Title
+                  </CustomText>
                   <TextInput
                     style={styles.input}
                     placeholder="E.g. Camping Tent for 2 People"
@@ -281,7 +286,9 @@ export default function EditListingsScreen() {
                 </View>
 
                 <View>
-                  <CustomText style={styles.label}>Description</CustomText>
+                  <CustomText style={[styles.label, { color: text }]}>
+                    Description
+                  </CustomText>
                   <TextInput
                     style={[styles.input, styles.textArea]}
                     placeholder="Provide details: condition, brand, usage, etc."
@@ -312,7 +319,9 @@ export default function EditListingsScreen() {
                 </View>
 
                 <View>
-                  <CustomText style={styles.label}>Images</CustomText>
+                  <CustomText style={[styles.label, { color: text }]}>
+                    Images
+                  </CustomText>
                   <View style={styles.imageSlotsContainer}>
                     {[0, 1, 2].map((_, index) => {
                       const image = images[index];
@@ -342,7 +351,9 @@ export default function EditListingsScreen() {
 
                 <View style={{ marginVertical: 10 }}>
                   <View style={styles.row}>
-                    <CustomText>Available Now</CustomText>
+                    <CustomText style={{ color: text }}>
+                      Available Now
+                    </CustomText>
                     <Switch
                       value={availableNow}
                       onValueChange={handleAvailabilityToggle}
@@ -364,12 +375,15 @@ export default function EditListingsScreen() {
                       value={selectedDateTime || new Date()}
                       mode="datetime"
                       onChange={handleDateChange}
+                      style={{ backgroundColor: text }}
                     />
                   )}
                 </View>
 
                 <View>
-                  <CustomText style={styles.label}>Location</CustomText>
+                  <CustomText style={[styles.label, { color: text }]}>
+                    Location
+                  </CustomText>
                   <TextInput
                     style={styles.input}
                     placeholder="E.g. Monterrey, N.L."
@@ -413,7 +427,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 16,

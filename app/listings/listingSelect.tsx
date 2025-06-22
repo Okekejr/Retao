@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
+import { themeColor } from "@/utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
@@ -24,7 +25,9 @@ import {
 export default function ListingSelect() {
   const router = useRouter();
   const { formData, updateFormData } = useListing();
-
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
   const [availableNow, setAvailableNow] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
@@ -97,7 +100,7 @@ export default function ListingSelect() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1, justifyContent: "space-between" }}>
@@ -110,9 +113,13 @@ export default function ListingSelect() {
               />
 
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={styles.label}>Availability</CustomText>
+                <CustomText style={[styles.label, { color: text }]}>
+                  Availability
+                </CustomText>
                 <View style={styles.row}>
-                  <CustomText style={styles.text}>Available Now</CustomText>
+                  <CustomText style={[styles.text, { color: textSec }]}>
+                    Available Now
+                  </CustomText>
                   <Switch
                     value={availableNow}
                     onValueChange={handleAvailabilityToggle}
@@ -134,6 +141,7 @@ export default function ListingSelect() {
                         mode="datetime"
                         value={selectedDateTime || new Date()}
                         onChange={handleDateChange}
+                        style={{ backgroundColor: text }}
                       />
                     )}
                   </View>
@@ -141,11 +149,14 @@ export default function ListingSelect() {
               </View>
 
               <View>
-                <CustomText style={styles.label}>Location</CustomText>
+                <CustomText style={[styles.label, { color: text }]}>
+                  Location
+                </CustomText>
 
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: text }]}
                   placeholder="Enter your city e.g Monterrey, N.L."
+                  placeholderTextColor={textSec}
                   value={location}
                   onChangeText={handleLocationChange}
                 />
@@ -175,7 +186,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontFamily: "Satoshi-Bold",

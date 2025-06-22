@@ -1,9 +1,11 @@
 import { BASE_URL } from "@/constants/random";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
+import { useGetUserData } from "./useGetUserData";
 
 export const useDeleteListing = () => {
   const queryClient = useQueryClient();
+  const { refreshData } = useGetUserData();
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -30,10 +32,16 @@ export const useDeleteListing = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) =>
-          ["favorites", "listings", "listing", "isFavorited"].includes(
-            query.queryKey[0] as string
-          ),
+          [
+            "favorites",
+            "listings",
+            "listing",
+            "isFavorited",
+            "userHistory",
+          ].includes(query.queryKey[0] as string),
       });
+
+      refreshData();
     },
   });
 };

@@ -4,7 +4,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
-import { IntroUtils } from "@/utils";
+import { IntroUtils, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { MotiView } from "moti";
 import {
@@ -17,11 +17,13 @@ import {
 
 export default function ListingIntroScreen() {
   const router = useRouter();
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   const handleStart = () => router.push("/listings/listingForms");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
@@ -33,7 +35,7 @@ export default function ListingIntroScreen() {
               />
             </View>
 
-            <CustomText style={[styles.heading, h2]}>
+            <CustomText style={[styles.heading, h2, { color: text }]}>
               Let’s help you list your item!
             </CustomText>
 
@@ -84,7 +86,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   iconRow: {
     flexDirection: "row",

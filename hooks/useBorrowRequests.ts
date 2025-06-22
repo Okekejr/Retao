@@ -110,6 +110,7 @@ export const useUpdateBorrowRequest = () => {
             "listing",
             "borrowerRequests",
             "borrowerHistory",
+            "userHistory",
           ].includes(query.queryKey[0] as string),
       });
     },

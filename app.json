@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Reznuf",
-    "slug": "reznuf",
+    "name": "Renth",
+    "slug": "renth",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "reznuf",
+    "scheme": "renth",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {

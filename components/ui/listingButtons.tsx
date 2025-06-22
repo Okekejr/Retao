@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/Colors";
+import { themeColor } from "@/utils";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomText from "./customText";
 
@@ -17,10 +18,14 @@ export const ListingButtons = ({
   nextBtnTitle = "Next",
   backBtnTitle = "Back",
 }: ListingButtonsProps) => {
+  const text = themeColor("text");
+
   return (
     <View style={styles.btnContainer}>
       <TouchableOpacity onPress={handleBack}>
-        <CustomText style={styles.backText}>{backBtnTitle}</CustomText>
+        <CustomText style={[styles.backText, { color: text }]}>
+          {backBtnTitle}
+        </CustomText>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -28,7 +33,9 @@ export const ListingButtons = ({
         style={[styles.nextButton, disabled && styles.disabledButton]}
         onPress={handleNext}
       >
-        <CustomText style={styles.buttonText}>{nextBtnTitle}</CustomText>
+        <CustomText style={[styles.buttonText, { color: text }]}>
+          {nextBtnTitle}
+        </CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -55,7 +62,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
     fontFamily: "Satoshi-Bold",
     fontSize: 18,
   },

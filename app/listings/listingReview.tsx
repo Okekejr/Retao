@@ -4,10 +4,9 @@ import { CustomProgressBar } from "@/components/ui/customProgressBar";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
-import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
-import { showToast } from "@/utils";
+import { showToast, themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -24,6 +23,8 @@ export default function ListingReview() {
   const router = useRouter();
   const { formData, updateFormData, resetFormData } = useListing();
   const [loading, setLoading] = useState(false);
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   const progressPercentage: DimensionValue = `${
     (formData.current_step / formData.total_steps) * 100
@@ -103,7 +104,7 @@ export default function ListingReview() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
@@ -125,7 +126,9 @@ export default function ListingReview() {
             <View>
               {formData.images?.length > 0 && (
                 <View style={{ marginVertical: 10 }}>
-                  <CustomText style={styles.label}>Images</CustomText>
+                  <CustomText style={[styles.label, { color: text }]}>
+                    Images
+                  </CustomText>
                   <View style={styles.imageRow}>
                     {formData.images.map(
                       (img: string | { uri: string }, index: number) => {
@@ -162,12 +165,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 14,
-    color: Colors.light.textSecondary,
-    marginBottom: 4,
+    marginBottom: 12,
   },
   imageRow: {
     flexDirection: "row",

@@ -27,8 +27,7 @@ export default function SignupBioLocScreen() {
 
   useEffect(() => {
     const loc = userData.location;
-    const invalidInput =
-      bio.trim().length === 0 || loc.trim() === "" || !location;
+    const invalidInput = (bio && bio.length === 0) || loc === "" || !location;
     setInvalid(invalidInput);
   }, [bio, userData.location]);
 
@@ -42,7 +41,7 @@ export default function SignupBioLocScreen() {
 
     const loc = await Location.getCurrentPositionAsync({});
     const place = await Location.reverseGeocodeAsync(loc.coords);
-    const cityString = `${place[0].city}, ${place[0].region}`;
+    const cityString = `${place[0].city}`;
     setLocation(cityString);
     updateUserForm("location", cityString);
   };
@@ -56,12 +55,12 @@ export default function SignupBioLocScreen() {
     const newErrors = { bio: "", location: "" };
     let isValid = true;
 
-    if (bio.trim().length === 0) {
+    if (bio && bio.length === 0) {
       newErrors.bio = "Bio can't be empty.";
       isValid = false;
     }
 
-    if (location.trim() === "") {
+    if (location === "") {
       newErrors.bio = "Must add location";
       isValid = false;
     }
@@ -80,7 +79,7 @@ export default function SignupBioLocScreen() {
 
     try {
       updateUserForm("current_step", userData.current_step + 1);
-      updateUserForm("bio", bio.trim());
+      updateUserForm("bio", bio);
       router.push("/signup/signupReview");
     } catch (error) {
       console.log("Error", error);

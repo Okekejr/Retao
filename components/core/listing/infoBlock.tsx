@@ -8,12 +8,12 @@ interface InfoBlockProps {
 }
 
 export const InfoBlock = ({ label, value }: InfoBlockProps) => {
-  const textSecondary = themeColor("textSecondary");
+  const textSec = themeColor("textSecondary");
   const text = themeColor("text");
 
   return (
     <View style={styles.infoBlock}>
-      <CustomText style={[styles.label, { color: textSecondary }]}>
+      <CustomText style={[styles.label, { color: textSec }]}>
         {label}
       </CustomText>
       <CustomText style={[styles.value, { color: text }]}>

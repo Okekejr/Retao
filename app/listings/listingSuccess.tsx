@@ -3,6 +3,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
+import { themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import {
@@ -18,6 +19,7 @@ export default function ListingSuccess() {
   const router = useRouter();
   const { resetFormData } = useListing();
   const { refreshData } = useGetUserData();
+  const bg = themeColor("background");
 
   const handleFinish = () => {
     try {
@@ -30,7 +32,7 @@ export default function ListingSuccess() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   header: {
     alignItems: "center",

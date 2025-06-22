@@ -37,7 +37,8 @@ export default function ListingsScreen() {
   const queryClient = useQueryClient();
   const { data: listings = [], isLoading: listingsLoading } = useGetListings(
     undefined,
-    userData?.id
+    userData?.id,
+    undefined
   );
   const { data: requests, isLoading: requestLoading } =
     useIncomingBorrowRequests();

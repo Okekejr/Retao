@@ -27,6 +27,7 @@ export const profileItems: profileItemsT = [
   {
     label: "History",
     icon: "time-outline",
+    hrefLink: "/history/history",
   },
   {
     label: "Help & FAQs",

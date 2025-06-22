@@ -5,7 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
-import { showToast } from "@/utils";
+import { showToast, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
@@ -25,6 +25,8 @@ export default function ListingImgSelectScreen() {
   const { formData, updateFormData } = useListing();
   const [images, setImages] = useState<{ uri: string; sizeMB: number }[]>([]);
   const [disabled, setDisabled] = useState(false);
+  const bg = themeColor("background");
+  const text = themeColor("text");
 
   useEffect(() => {
     const hasNoImages = images.length === 0;
@@ -96,7 +98,7 @@ export default function ListingImgSelectScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
@@ -109,7 +111,9 @@ export default function ListingImgSelectScreen() {
             />
 
             <View>
-              <CustomText style={styles.label}>Select Images</CustomText>
+              <CustomText style={[styles.label, { color: text }]}>
+                Select Images
+              </CustomText>
 
               <View style={styles.imageSlotsContainer}>
                 {[0, 1, 2].map((slot, index) => {
@@ -170,7 +174,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
-    backgroundColor: Colors.light.background,
   },
   label: {
     fontSize: 16,
