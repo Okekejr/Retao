@@ -155,7 +155,7 @@ export default function ListingSelect() {
 
                 <TextInput
                   style={[styles.input, { color: text }]}
-                  placeholder="Enter your city e.g Monterrey, N.L."
+                  placeholder="Enter your city e.g Monterrey"
                   placeholderTextColor={textSec}
                   value={location}
                   onChangeText={handleLocationChange}

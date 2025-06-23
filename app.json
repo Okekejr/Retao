@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Renth",
-    "slug": "renth",
+    "name": "Retao",
+    "slug": "Retao",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "renth",
+    "scheme": "Retao",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
@@ -34,7 +34,25 @@
           "backgroundColor": "#FAFAF7"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Retao needs to access your calendar."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Retao to use your location."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Retao accesses your photos to let you share them for Listings."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

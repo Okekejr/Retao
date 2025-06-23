@@ -18,7 +18,7 @@ export const BASE_URL = `http://${machineIP}:3000/api/`;
 
 export const WS_URL = `ws://${machineIP}:3000`;
 
-export const AppName = "Renth";
+export const AppName = "Retao";
 
 export type UserRole = "owner" | "borrower" | "viewer";
 
