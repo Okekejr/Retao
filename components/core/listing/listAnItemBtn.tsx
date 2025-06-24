@@ -1,6 +1,7 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -14,8 +15,8 @@ interface ListAnItemBtnProps {
 
 export const ListAnItemBtn = ({
   openModal,
-  title = "List an item",
-  subText = "Its fast and easy to get started",
+  title,
+  subText,
   limitReached,
   icon = "cube-outline",
 }: ListAnItemBtnProps) => {
@@ -39,7 +40,7 @@ export const ListAnItemBtn = ({
           <CustomText
             style={[styles.ctaTitle, limitReached && { color: "#000" }]}
           >
-            {title}{" "}
+            {title || t("listings.listBtnTitle")}{" "}
             {userData.subscription_plan !== "unlimited" && (
               <>
                 ({userData.stats.listed}/{userData.listing_limit})
@@ -49,7 +50,7 @@ export const ListAnItemBtn = ({
           <CustomText
             style={[styles.ctaSubtitle, limitReached && { color: "#d81b60" }]}
           >
-            {subText}
+            {subText || t("listings.listBtnSubTitle")}
           </CustomText>
         </View>
       </TouchableOpacity>

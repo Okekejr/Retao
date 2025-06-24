@@ -21,6 +21,7 @@ import {
 import { useGetListingById } from "@/hooks/useGetListings";
 import { useBorrowerHistory } from "@/hooks/useGetUserData";
 import { useSubmitRatings } from "@/hooks/useRatings";
+import { t } from "@/localization/t";
 import { avatarsT, Listing } from "@/types";
 import { themeColor } from "@/utils";
 import { Image } from "expo-image";
@@ -184,7 +185,7 @@ export default function ItemScreen() {
               style={[styles.ownerName, { color: text }]}
               onPress={handleViewOwnerProfile}
             >
-              Shared by {selectedItem?.owner.name}
+              {t("item.shared")} {selectedItem?.owner.name}
             </CustomText>
           </View>
 
@@ -202,7 +203,7 @@ export default function ItemScreen() {
 
           <View style={{ marginTop: 20 }}>
             <CustomText style={[styles.heading, h3, { color: text }]}>
-              Borrowers History
+              {t("item.borrowers")}
             </CustomText>
             {borrwerHistory && borrwerHistory.length > 0 ? (
               <FlatList
@@ -224,7 +225,7 @@ export default function ItemScreen() {
               />
             ) : (
               <CustomText style={{ color: textSec }}>
-                No borrowers yet.
+                {t("item.noBorrowers")}
               </CustomText>
             )}
           </View>

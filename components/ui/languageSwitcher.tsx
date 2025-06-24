@@ -1,4 +1,4 @@
-import { useTheme } from "@/context/userThemeContext";
+import { useLanguage } from "@/context/languageContext";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,41 +6,35 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CustomText from "../ui/customText";
 
-type ColorModeT = "light" | "dark" | "system";
-const colorModes: ColorModeT[] = ["light", "dark", "system"];
+interface LanguageSwitcherProps {
+  onClose: () => void;
+}
 
-const ColorSwitcher = () => {
-  const { theme, colorMode, setColorMode } = useTheme();
+const LanguageSwitcher = ({ onClose }: LanguageSwitcherProps) => {
+  const { language, availableLanguages, setLanguage, getLanguageName } =
+    useLanguage();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const bg = themeColor("surfaceArea");
   const text = themeColor("text");
 
-  const handlePickerToggle = () => {
-    setIsPickerVisible((prev) => !prev);
-  };
+  const togglePicker = () => setIsPickerVisible((prev) => !prev);
 
-  const handleModeSelect = (mode: ColorModeT) => {
-    setColorMode(mode);
+  const handleLanguageSelect = (lang: string) => {
+    setLanguage(lang as any);
     setIsPickerVisible(false);
   };
 
   return (
-    <View style={{ paddingBottom: 50 }}>
+    <View style={{ paddingVertical: 10 }}>
       <View style={[styles.categoryBox, { backgroundColor: bg }]}>
-        <Ionicons
-          name={theme === "dark" ? "moon-outline" : "sunny-outline"}
-          size={24}
-          color={text}
-        />
-        <CustomText style={[styles.colorSchemeText, { color: text }]}>
-          {t("accountSettings.colorScheme")}
+        <Ionicons name="language-outline" size={22} color={text} />
+        <CustomText style={[styles.label, { color: text }]}>
+          {t("accountSettings.language")}
         </CustomText>
-        <TouchableOpacity
-          onPress={handlePickerToggle}
-          style={styles.pickerButton}
-        >
+
+        <TouchableOpacity onPress={togglePicker} style={styles.pickerButton}>
           <CustomText style={[styles.pickerText, { color: text }]}>
-            {colorMode.charAt(0).toUpperCase() + colorMode.slice(1)}
+            {getLanguageName(language)}
           </CustomText>
           <Ionicons
             name={isPickerVisible ? "chevron-up" : "chevron-down"}
@@ -52,26 +46,26 @@ const ColorSwitcher = () => {
 
       {isPickerVisible && (
         <View style={styles.pickerList}>
-          {colorModes.map((mode) => (
+          {availableLanguages.map((lang) => (
             <TouchableOpacity
-              key={mode}
-              onPress={() => handleModeSelect(mode)}
+              key={lang}
+              onPress={() => {
+                handleLanguageSelect(lang);
+                onClose();
+              }}
               style={styles.pickerItem}
             >
-              {colorMode === mode ? (
+              {language === lang ? (
                 <Ionicons
-                  style={{ marginHorizontal: 5 }}
                   name="checkmark-sharp"
                   size={15}
                   color="#fff"
+                  style={{ marginRight: 5 }}
                 />
               ) : (
-                <View style={{ marginHorizontal: 5, width: 15 }} />
+                <View style={{ width: 15, marginRight: 5 }} />
               )}
-
-              <Text style={styles.pickerItemText}>
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
-              </Text>
+              <Text style={styles.pickerItemText}>{getLanguageName(lang)}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -87,9 +81,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 16,
   },
-  colorSchemeText: {
+  label: {
     flex: 1,
-    color: "#fff",
     fontSize: 16,
     marginLeft: 10,
   },
@@ -103,7 +96,7 @@ const styles = StyleSheet.create({
   },
   pickerList: {
     position: "absolute",
-    bottom: 100,
+    bottom: 60,
     right: 1,
     backgroundColor: "#444",
     borderRadius: 10,
@@ -123,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ColorSwitcher;
+export default LanguageSwitcher;

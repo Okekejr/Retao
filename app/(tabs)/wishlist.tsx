@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { MotiView } from "moti";
 import {
@@ -29,11 +30,11 @@ export default function WishlistScreen() {
         </View>
       )}
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle="Wishlist" />
+        <Header headerTitle={t("wishList.title")} />
 
         {isLoading ? (
           <CustomText style={[styles.emptyText, { color: textSec }]}>
-            Loading favorites...
+            {t("wishList.loadingText")}
           </CustomText>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -55,7 +56,7 @@ export default function WishlistScreen() {
                 ))
               ) : (
                 <CustomText style={[styles.emptyText, { color: textSec }]}>
-                  No favorited items available yet.
+                  {t("wishList.noFavs")}
                 </CustomText>
               )}
             </View>

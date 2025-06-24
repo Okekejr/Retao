@@ -4,6 +4,7 @@ import { Colors } from "@/constants/Colors";
 import { categoriesIcon, h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { useGetCategories } from "@/hooks/useGetCategories";
+import { t } from "@/localization/t";
 import { Category } from "@/types";
 import { themeColor } from "@/utils";
 import { Image } from "expo-image";
@@ -39,7 +40,7 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
     <InnerContainer>
       <View style={styles.modalHeader}>
         <CustomText style={[h3, { color: text }]}>
-          What type of item are you listing?
+          {t("selectCategories.title")}
         </CustomText>
       </View>
 
@@ -91,7 +92,9 @@ export default function SelectCategory({ closeModal }: SelectCategoryProps) {
         disabled={!selectedCategory}
         onPress={handleNext}
       >
-        <CustomText style={styles.primaryButtonText}>Next</CustomText>
+        <CustomText style={styles.primaryButtonText}>
+          {t("btnTexts.next")}
+        </CustomText>
       </TouchableOpacity>
     </InnerContainer>
   );

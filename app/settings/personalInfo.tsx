@@ -6,6 +6,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { h2 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { useUpdatePersonalInfo } from "@/hooks/useUserHistory";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
@@ -41,28 +42,31 @@ export default function PersonalInfoScreen() {
       <InnerContainer style={{ flex: 1, gap: 32 }}>
         <View style={styles.modalHeader}>
           <CustomText style={[h2, { color: text }]}>
-            Personal Information
+            {t("accountSettings.personal")}
           </CustomText>
         </View>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <InfoBlock
-            label="Name"
+            label={t("userProfile.name")}
             value={userData.name}
             editFunc={() => handleEdit("name", userData.name)}
           />
           <InfoBlock label="Handle" value={userData.handle} />
           <InfoBlock
-            label="Email"
+            label={t("userProfile.email")}
             value={userData.email}
             editFunc={() => handleEdit("email", userData.email)}
           />
           <InfoBlock
-            label="Bio"
+            label={t("userProfile.bio")}
             value={userData.bio}
             editFunc={() => handleEdit("bio", userData.bio)}
           />
-          <InfoBlock label="Location" value={userData.location} />
+          <InfoBlock
+            label={t("userProfile.location")}
+            value={userData.location}
+          />
         </ScrollView>
       </InnerContainer>
 

@@ -1,4 +1,5 @@
 import CustomText from "@/components/ui/customText";
+import { t } from "@/localization/t";
 import { avatarsT } from "@/types";
 import { getPlanColor, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -110,12 +111,19 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
           {user.bio}
         </CustomText>
         <CustomText style={styles.joined}>
-          Joined {new Date(user.join_date).toLocaleDateString()}
+          {t("profile.cardJoined")}{" "}
+          {new Date(user.join_date).toLocaleDateString()}
         </CustomText>
         <View style={styles.statsRow}>
-          <CustomStats label="Listed" value={user.stats.listed} />
-          <CustomStats label="Borrowing" value={user.stats.borrowed} />
-          <CustomStats label="Rating" value={`⭐ ${user.stats.rating}`} />
+          <CustomStats label={t("listings.title")} value={user.stats.listed} />
+          <CustomStats
+            label={t("profile.cardBorrow")}
+            value={user.stats.borrowed}
+          />
+          <CustomStats
+            label={t("profile.cardRating")}
+            value={`⭐ ${user.stats.rating}`}
+          />
         </View>
       </View>
     </View>

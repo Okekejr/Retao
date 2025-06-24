@@ -5,6 +5,7 @@ import { ListingsT } from "@/types";
 import { themeColor } from "@/utils";
 import { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { t } from "../../../localization/t";
 import { SectionCard } from "./sectionCard";
 
 interface SectionProps {
@@ -34,7 +35,7 @@ export const Section = ({ heading, data }: SectionProps) => {
       <View style={styles.modalHeader}>
         <CustomText style={[h3, { color: text }]}>{heading}</CustomText>
         <CustomText style={{ color: text }}>
-          Over ({data?.length}) items
+          {t("listedAll.title", { amount: data?.length })}
         </CustomText>
       </View>
 

@@ -1,6 +1,5 @@
 import { Section } from "@/components/core/items/section";
 import { BackButton } from "@/components/ui/backButton";
-import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";

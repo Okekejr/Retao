@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
 import { useUserHistory } from "@/hooks/useUserHistory";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import {
   ActivityIndicator,
@@ -40,44 +41,50 @@ export default function HistoryScreen() {
         <InnerContainer style={{ flex: 1, gap: 32 }}>
           <View style={styles.modalHeader}>
             <CustomText style={[h2, { color: text }]}>
-              Past Activities
+              {t("history.title")}
             </CustomText>
           </View>
 
-          <View>
-            <FlatList
-              data={history}
-              keyExtractor={(item) => item.date}
-              scrollEnabled={false}
-              contentContainerStyle={styles.listContent}
-              renderItem={({ item }) => (
-                <View style={styles.dateGroup}>
-                  <View style={styles.centerWrapper}>
-                    <CustomText style={[styles.dateText, { color: textSec }]}>
-                      {item.date}
-                    </CustomText>
-                    <View
-                      style={[
-                        styles.verticalLine,
-                        { backgroundColor: textSec },
-                      ]}
-                    />
-                  </View>
-
-                  <View style={styles.cardsWrapper}>
-                    {item.actions.map((entry, index) => (
-                      <HistoryCard
-                        key={entry.item.id}
-                        item={entry.item}
-                        index={index}
-                        type={entry.type}
+          {history && history.length > 0 ? (
+            <View>
+              <FlatList
+                data={history}
+                keyExtractor={(item) => item.date}
+                scrollEnabled={false}
+                contentContainerStyle={styles.listContent}
+                renderItem={({ item }) => (
+                  <View style={styles.dateGroup}>
+                    <View style={styles.centerWrapper}>
+                      <CustomText style={[styles.dateText, { color: textSec }]}>
+                        {item.date}
+                      </CustomText>
+                      <View
+                        style={[
+                          styles.verticalLine,
+                          { backgroundColor: textSec },
+                        ]}
                       />
-                    ))}
+                    </View>
+
+                    <View style={styles.cardsWrapper}>
+                      {item.actions.map((entry, index) => (
+                        <HistoryCard
+                          key={entry.item.id}
+                          item={entry.item}
+                          index={index}
+                          type={entry.type}
+                        />
+                      ))}
+                    </View>
                   </View>
-                </View>
-              )}
-            />
-          </View>
+                )}
+              />
+            </View>
+          ) : (
+            <CustomText style={[styles.emptyText, { color: textSec }]}>
+              {t("history.noHistory")}
+            </CustomText>
+          )}
         </InnerContainer>
       </ScrollView>
     </SafeAreaView>
@@ -128,6 +135,12 @@ const styles = StyleSheet.create({
     height: 20,
   },
   cardsWrapper: {
+    width: "100%",
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 20,
     width: "100%",
   },
   loaderOverlay: {

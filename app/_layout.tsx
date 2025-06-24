@@ -1,3 +1,4 @@
+import { LanguageProvider } from "@/context/languageContext";
 import { ListingProvider } from "@/context/listingContext";
 import {
   NotificationProvider,
@@ -68,22 +69,27 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <NotificationProvider>
-          <WebSocketInitializer />
-          <ListingProvider>
-            <UserProvider>
-              <Stack
-                screenOptions={{ headerShown: false, gestureEnabled: false }}
-              >
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            </UserProvider>
-          </ListingProvider>
-        </NotificationProvider>
-        <StatusBar style={theme === "dark" ? "light" : "dark"} />
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <NotificationProvider>
+            <WebSocketInitializer />
+            <ListingProvider>
+              <UserProvider>
+                <Stack
+                  screenOptions={{ headerShown: false, gestureEnabled: false }}
+                >
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </UserProvider>
+            </ListingProvider>
+          </NotificationProvider>
+          <StatusBar style={theme === "dark" ? "light" : "dark"} />
+        </ThemeProvider>
+      </LanguageProvider>
       <Toast config={toastConfig} />
     </QueryClientProvider>
   );

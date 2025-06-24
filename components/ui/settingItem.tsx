@@ -1,4 +1,5 @@
 import { h3 } from "@/constants/random";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Pressable, StyleSheet, View } from "react-native";
 import CustomText from "./customText";
@@ -30,7 +31,7 @@ export const SettingsItem = ({
 
       <Pressable onPress={func}>
         <CustomText style={[styles.btnText, { color: text }]}>
-          {show ? "Cancel" : btnText}
+          {show ? t("btnTexts.cancel") : btnText}
         </CustomText>
       </Pressable>
     </View>

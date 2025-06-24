@@ -7,6 +7,7 @@ import {
   useGetCategoryById,
   useGetListingsByCategory,
 } from "@/hooks/useGetCategories";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
@@ -42,8 +43,7 @@ export default function CategoryScreen() {
           {category?.title}
         </CustomText>
         <CustomText style={[styles.description, { color: text }]}>
-          {category?.description ||
-            "Explore and borrow items shared by your neighbors."}
+          {category?.description}
         </CustomText>
 
         <ScrollView
@@ -69,7 +69,7 @@ export default function CategoryScreen() {
               ))
             ) : (
               <CustomText style={[styles.emptyText, { color: textSec }]}>
-                No items available in this category yet.
+                {t("categories.noItems")}
               </CustomText>
             )}
           </View>
