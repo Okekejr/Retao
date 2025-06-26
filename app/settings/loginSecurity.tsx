@@ -67,16 +67,17 @@ export default function LoginSecurityScreen() {
     };
 
     if (!password) {
-      errorsTemp.password = "Current password is required";
+      errorsTemp.password = t("loginsecurity.errors.currentPasswordRequired");
     }
 
     if (!validatePassword(newPassword)) {
-      errorsTemp.newPassword =
-        "Password must be at least 6 characters, include uppercase, lowercase, a number and a special character";
+      errorsTemp.newPassword = t("loginsecurity.errors.invalidNewPassword");
     }
 
     if (newPassword !== newConfirmNewPassword) {
-      errorsTemp.confirmNewPassword = "Passwords do not match";
+      errorsTemp.confirmNewPassword = t(
+        "loginsecurity.errors.passwordsDoNotMatch"
+      );
     }
 
     setErrors(errorsTemp);

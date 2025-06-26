@@ -1,23 +1,24 @@
 import { userProfile } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { IntroUtilsT } from "./intro";
 
-export const OnboardingIntroUtils: IntroUtilsT = [
+export const getOnboardingIntroUtils = (): IntroUtilsT => [
   {
     key: "nameHandle",
-    title: "Your Name & Handle",
-    desc: "We’ll use this to personalize your profile and make it easier for others to find you.",
+    title: t("onboardingIntro.nameHandle.title"),
+    desc: t("onboardingIntro.nameHandle.desc"),
     image: require("../assets/img/write.png"),
   },
   {
     key: "avatar",
-    title: "Add a Friendly Photo",
-    desc: "A picture helps others trust you. It can be a selfie or a fun avatar!",
+    title: t("onboardingIntro.avatar.title"),
+    desc: t("onboardingIntro.avatar.desc"),
     image: require("../assets/img/avatar.png"),
   },
   {
     key: "bioLocation",
-    title: "Share a Little About You",
-    desc: "Tell the community who you are and where you're based. Just enough to connect!",
+    title: t("onboardingIntro.bioLocation.title"),
+    desc: t("onboardingIntro.bioLocation.desc"),
     image: require("../assets/img/loc.png"),
   },
 ];

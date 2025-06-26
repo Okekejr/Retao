@@ -1,5 +1,6 @@
 import { LanguageProvider } from "@/context/languageContext";
 import { ListingProvider } from "@/context/listingContext";
+import { NetworkProvider } from "@/context/networkContext";
 import {
   NotificationProvider,
   useNotifications,
@@ -69,27 +70,32 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <ThemeProvider>
-          <NotificationProvider>
-            <WebSocketInitializer />
-            <ListingProvider>
-              <UserProvider>
-                <Stack
-                  screenOptions={{ headerShown: false, gestureEnabled: false }}
-                >
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-              </UserProvider>
-            </ListingProvider>
-          </NotificationProvider>
-          <StatusBar style={theme === "dark" ? "light" : "dark"} />
-        </ThemeProvider>
-      </LanguageProvider>
+      <NetworkProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <NotificationProvider>
+              <WebSocketInitializer />
+              <ListingProvider>
+                <UserProvider>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      gestureEnabled: false,
+                    }}
+                  >
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                </UserProvider>
+              </ListingProvider>
+            </NotificationProvider>
+            <StatusBar style={theme === "dark" ? "light" : "dark"} />
+          </ThemeProvider>
+        </LanguageProvider>
+      </NetworkProvider>
       <Toast config={toastConfig} />
     </QueryClientProvider>
   );

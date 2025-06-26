@@ -3,9 +3,9 @@ import { CustomProgressBar } from "@/components/ui/customProgressBar";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
-import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
+import { t } from "@/localization/t";
 import { isMoreThanDashWords, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -71,6 +71,9 @@ export default function ListingFormsScreen() {
     }
   };
 
+  const titleRules = t("listingForm.titleRules");
+  const descRules = t("listingForm.descRules");
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
@@ -80,15 +83,14 @@ export default function ListingFormsScreen() {
               <CustomProgressBar progressPercentage={progressPercentage} />
 
               <CustomListingHeader
-                heading="Create Your Listing"
-                subHeading="Add a clear title and a compelling description to attract
-                interest."
+                heading={t("listingForm.header")}
+                subHeading={t("listingForm.subTitle")}
               />
 
               {/* Title Input */}
               <View style={{ marginBottom: 20 }}>
                 <CustomText style={[styles.label, h3, { color: text }]}>
-                  Title
+                  {t("editListing.title")}
                 </CustomText>
                 <TextInput
                   style={[
@@ -105,17 +107,25 @@ export default function ListingFormsScreen() {
                 {errors.title !== "" ? (
                   <CustomText style={styles.error}>{errors.title}</CustomText>
                 ) : (
-                  <CustomText style={styles.helperText}>
-                    Title must be:
-                    {"\n"}- At least 2 words
-                  </CustomText>
+                  <View style={{ display: "flex", flexDirection: "column" }}>
+                    <CustomText style={styles.helperText}>
+                      {t("listingForm.titleRuleTitle")}
+                    </CustomText>
+
+                    {Array.isArray(titleRules) &&
+                      titleRules.map((rule, index) => (
+                        <CustomText style={styles.helperText} key={index}>
+                          • {rule}
+                        </CustomText>
+                      ))}
+                  </View>
                 )}
               </View>
 
               {/* Description Input */}
               <View style={{ marginBottom: 20 }}>
                 <CustomText style={[styles.label, h3, { color: text }]}>
-                  Description
+                  {t("listingForm.description")}
                 </CustomText>
                 <TextInput
                   style={[
@@ -137,10 +147,18 @@ export default function ListingFormsScreen() {
                     {errors.description}
                   </CustomText>
                 ) : (
-                  <CustomText style={styles.helperText}>
-                    Description must be:
-                    {"\n"}- At least 5 words
-                  </CustomText>
+                  <View style={{ display: "flex", flexDirection: "column" }}>
+                    <CustomText style={styles.helperText}>
+                      {t("listingForm.descRuleTitle")}
+                    </CustomText>
+
+                    {Array.isArray(descRules) &&
+                      descRules.map((rule, index) => (
+                        <CustomText style={styles.helperText} key={index}>
+                          • {rule}
+                        </CustomText>
+                      ))}
+                  </View>
                 )}
               </View>
             </View>

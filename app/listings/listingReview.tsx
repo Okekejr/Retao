@@ -6,6 +6,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
+import { t } from "@/localization/t";
 import { showToast, themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -77,14 +78,14 @@ export default function ListingReview() {
         if (response.status === 403) {
           showToast({
             type: "error",
-            text1: "Listing limit reached",
-            message: "You can only list up to 5 items. Upgrade to add more.",
+            text1: t("listingReview.toastLimitTitle"),
+            message: t("listingReview.toastLimitMessage"),
           });
         } else {
           showToast({
             type: "error",
-            text1: "Failed to create listing",
-            message: data.error || "Something went wrong.",
+            text1: t("listingReview.toastErrorTitle"),
+            message: data.error || t("listingReview.toastErrorMessage"),
           });
         }
 
@@ -111,23 +112,38 @@ export default function ListingReview() {
             <CustomProgressBar progressPercentage={progressPercentage} />
 
             <CustomListingHeader
-              heading="Review Your Listing"
-              subHeading="Here's everything you provided. Double-check and hit submit when you're ready!"
+              heading={t("listingReview.heading")}
+              subHeading={t("listingReview.subHeading")}
             />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 10 }}>
-              <InfoBlock label="Title" value={formData.title} />
-              <InfoBlock label="Description" value={formData.description} />
-              <InfoBlock label="Category" value={formData.category} />
-              <InfoBlock label="Availability" value={formData.availability} />
-              <InfoBlock label="Location" value={formData.location} />
+              <InfoBlock
+                label={t("listingReview.labels.title")}
+                value={formData.title}
+              />
+              <InfoBlock
+                label={t("listingReview.labels.description")}
+                value={formData.description}
+              />
+              <InfoBlock
+                label={t("listingReview.labels.category")}
+                value={formData.category}
+              />
+              <InfoBlock
+                label={t("listingReview.labels.availability")}
+                value={formData.availability}
+              />
+              <InfoBlock
+                label={t("listingReview.labels.location")}
+                value={formData.location}
+              />
             </ScrollView>
 
             <View>
               {formData.images?.length > 0 && (
                 <View style={{ marginVertical: 10 }}>
                   <CustomText style={[styles.label, { color: text }]}>
-                    Images
+                    {t("editListing.imagesTitle")}
                   </CustomText>
                   <View style={styles.imageRow}>
                     {formData.images.map(
@@ -152,7 +168,11 @@ export default function ListingReview() {
           <ListingButtons
             handleBack={handleBack}
             handleNext={handleNext}
-            nextBtnTitle={loading ? "Listing..." : "Submit"}
+            nextBtnTitle={
+              loading
+                ? t("listingReview.submitting")
+                : t("listingReview.submit")
+            }
           />
         </View>
       </InnerContainer>

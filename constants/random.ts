@@ -12,11 +12,18 @@ export const h3 = {
   color: "#1A1A1A",
 };
 
-export const machineIP = process.env.EXPO_PUBLIC_MACHINE_IP;
+const isDev = process.env.NODE_ENV !== "production";
 
-export const BASE_URL = `http://${machineIP}:3000/api/`;
+// Use EXPO_PUBLIC_MACHINE_IP for local dev
+const machineIP = process.env.EXPO_PUBLIC_MACHINE_IP || "localhost";
 
-export const WS_URL = `ws://${machineIP}:3000`;
+export const BASE_URL = isDev
+  ? `http://${machineIP}:3000/api/`
+  : "https://retaobackend-production.up.railway.app/api/";
+
+export const WS_URL = isDev
+  ? `ws://${machineIP}:3000`
+  : "wss://retaobackend-production.up.railway.app";
 
 export const AppName = "Retao";
 

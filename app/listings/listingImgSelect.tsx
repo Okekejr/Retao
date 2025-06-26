@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
+import { t } from "@/localization/t";
 import { showToast, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
@@ -37,8 +38,8 @@ export default function ListingImgSelectScreen() {
     if (largeImage) {
       showToast({
         type: "error",
-        text1: "Image too large",
-        message: "Each image must be 5MB or smaller.",
+        text1: t("listingImgSelect.text1"),
+        message: t("listingImgSelect.message"),
       });
     }
   }, [images]);
@@ -105,14 +106,13 @@ export default function ListingImgSelectScreen() {
             <CustomProgressBar progressPercentage={progressPercentage} />
 
             <CustomListingHeader
-              heading="Add Photos of Your Item"
-              subHeading="Upload up to 3 clear images to help others see what you’re
-                sharing."
+              heading={t("listingImgSelect.heading")}
+              subHeading={t("listingImgSelect.subHeading")}
             />
 
             <View>
               <CustomText style={[styles.label, { color: text }]}>
-                Select Images
+                {t("listingImgSelect.selectButton")}
               </CustomText>
 
               <View style={styles.imageSlotsContainer}>

@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/Colors";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomText from "./customText";
@@ -15,8 +16,8 @@ export const ListingButtons = ({
   handleBack,
   handleNext,
   disabled,
-  nextBtnTitle = "Next",
-  backBtnTitle = "Back",
+  nextBtnTitle = t("btnTexts.next"),
+  backBtnTitle = t("btnTexts.back"),
 }: ListingButtonsProps) => {
   const text = themeColor("text");
 

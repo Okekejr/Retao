@@ -52,7 +52,7 @@ export default function PersonalInfoScreen() {
             value={userData.name}
             editFunc={() => handleEdit("name", userData.name)}
           />
-          <InfoBlock label="Handle" value={userData.handle} />
+          <InfoBlock label={t("userProfile.handle")} value={userData.handle} />
           <InfoBlock
             label={t("userProfile.email")}
             value={userData.email}

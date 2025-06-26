@@ -3,6 +3,7 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { AppName } from "@/constants/random";
+import { t } from "@/localization/t";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -33,24 +34,26 @@ export default function IntroScreen() {
 
           <Animatable.View animation="fadeInDown" duration={1000}>
             <View style={{ gap: 10 }}>
-              <CustomHeading>{`Welcome to ${AppName}`}</CustomHeading>
-              <CustomText style={[styles.subheading]}>
-                A community-powered app for lending and borrowing everyday items
-                — tools, camping gear, furniture and more.
+              <CustomHeading>
+                {t("introScreen.welcomeHeading", { appName: AppName })}
+              </CustomHeading>
+              <CustomText style={styles.subheading}>
+                {t("introScreen.welcomeSubheading")}
               </CustomText>
             </View>
           </Animatable.View>
 
           <Animatable.View animation="fadeInDown" duration={1000}>
             <CustomText style={styles.description}>
-              In the next few steps, you’ll set up your profile so others can
-              connect with you. It only takes a minute.
+              {t("introScreen.description")}
             </CustomText>
           </Animatable.View>
 
           <Animatable.View animation="fadeInUp" delay={800}>
             <TouchableOpacity style={styles.nextButton} onPress={handleStart}>
-              <CustomText style={styles.buttonText}>Get Started</CustomText>
+              <CustomText style={styles.buttonText}>
+                {t("listingIntro.getStarted")}
+              </CustomText>
             </TouchableOpacity>
           </Animatable.View>
         </View>

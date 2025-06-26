@@ -7,7 +7,8 @@ import { BASE_URL } from "@/constants/random";
 import { useListing } from "@/context/listingContext";
 import { useDeleteListing } from "@/hooks/useEditListing";
 import { useGetListingById } from "@/hooks/useGetListings";
-import { isMoreThanDashWords, themeColor } from "@/utils";
+import { t } from "@/localization/t";
+import { isMoreThanDashWords, showToast, themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useQueryClient } from "@tanstack/react-query";
@@ -220,29 +221,29 @@ export default function EditListingsScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this listing?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            deleteListing(id as string, {
-              onSuccess: () => {
-                Alert.alert("Deleted", "Listing successfully removed.");
-                resetFormData();
-                router.replace("/listings");
-              },
-              onError: (err: any) => {
-                Alert.alert("Error", err.message || "Failed to delete listing");
-              },
-            });
-          },
+    Alert.alert(t("warnings.titleDel"), t("warnings.descDel"), [
+      { text: t("btnTexts.cancel"), style: "cancel" },
+      {
+        text: t("btnTexts.delete"),
+        style: "destructive",
+        onPress: () => {
+          deleteListing(id as string, {
+            onSuccess: () => {
+              showToast({
+                type: "success",
+                text1: t("alerts.del"),
+                message: t("alerts.delMsg"),
+              });
+              resetFormData();
+              router.replace("/listings");
+            },
+            onError: (err: any) => {
+              Alert.alert("Error", err.message || "Failed to delete listing");
+            },
+          });
         },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
@@ -258,24 +259,23 @@ export default function EditListingsScreen() {
             <View style={{ flex: 1, justifyContent: "space-between" }}>
               <View style={{ gap: 10 }}>
                 <CustomListingHeader
-                  heading="Edit Your Listing"
-                  subHeading="Update the title and description of your item."
+                  heading={t("editListing.header")}
+                  subHeading={t("editListing.subHeading")}
                 />
 
                 <View>
                   <CustomText style={[styles.label, { color: text }]}>
-                    Title
+                    {t("editListing.title")}
                   </CustomText>
                   <TextInput
                     style={styles.input}
-                    placeholder="E.g. Camping Tent for 2 People"
                     value={formData.title}
                     onChangeText={(text) => updateFormData("title", text)}
                     onBlur={() => {
                       if (!formData.title) {
                         setErrors((prev) => ({
                           ...prev,
-                          title: "Title is required.",
+                          title: t("editListing.reqTitle"),
                         }));
                       }
                     }}
@@ -287,11 +287,10 @@ export default function EditListingsScreen() {
 
                 <View>
                   <CustomText style={[styles.label, { color: text }]}>
-                    Description
+                    {t("editListing.descriptionTitle")}
                   </CustomText>
                   <TextInput
                     style={[styles.input, styles.textArea]}
-                    placeholder="Provide details: condition, brand, usage, etc."
                     multiline
                     numberOfLines={5}
                     value={formData.description}
@@ -305,8 +304,7 @@ export default function EditListingsScreen() {
                       ) {
                         setErrors((prev) => ({
                           ...prev,
-                          description:
-                            "Description must be more than 5 words long",
+                          description: t("editListing.reqDesc"),
                         }));
                       }
                     }}
@@ -320,7 +318,7 @@ export default function EditListingsScreen() {
 
                 <View>
                   <CustomText style={[styles.label, { color: text }]}>
-                    Images
+                    {t("editListing.imagesTitle")}
                   </CustomText>
                   <View style={styles.imageSlotsContainer}>
                     {[0, 1, 2].map((_, index) => {
@@ -352,7 +350,7 @@ export default function EditListingsScreen() {
                 <View style={{ marginVertical: 10 }}>
                   <View style={styles.row}>
                     <CustomText style={{ color: text }}>
-                      Available Now
+                      {t("editListing.available")}
                     </CustomText>
                     <Switch
                       value={availableNow}
@@ -366,7 +364,8 @@ export default function EditListingsScreen() {
                       style={styles.scheduleButton}
                     >
                       <CustomText>
-                        {formData.availability || "Select Schedule"}
+                        {formData.availability ||
+                          t("editListing.selectSchedule")}
                       </CustomText>
                     </TouchableOpacity>
                   )}
@@ -382,17 +381,16 @@ export default function EditListingsScreen() {
 
                 <View>
                   <CustomText style={[styles.label, { color: text }]}>
-                    Location
+                    {t("userProfile.location")}
                   </CustomText>
                   <TextInput
                     style={styles.input}
-                    placeholder="E.g. Monterrey, N.L."
                     value={formData.location}
                     onChangeText={handleLocationChange}
                   />
                   <TouchableOpacity onPress={detectLocation}>
                     <CustomText style={styles.locationText}>
-                      Use Current Location
+                      {t("editListing.currentLoc")}
                     </CustomText>
                   </TouchableOpacity>
                 </View>
@@ -402,8 +400,8 @@ export default function EditListingsScreen() {
                 <ListingButtons
                   handleBack={handleBack}
                   handleNext={handleSubmit}
-                  backBtnTitle="Cancel"
-                  nextBtnTitle="Submit"
+                  backBtnTitle={t("btnTexts.cancel")}
+                  nextBtnTitle={t("btnTexts.submit")}
                   disabled={disableSubmit}
                 />
               </View>
@@ -412,7 +410,9 @@ export default function EditListingsScreen() {
                 style={[styles.nextButton, { backgroundColor: "red" }]}
                 onPress={handleDelete}
               >
-                <CustomText style={styles.buttonText}>Delete</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t("btnTexts.delete")}
+                </CustomText>
               </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>

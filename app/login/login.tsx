@@ -4,8 +4,10 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { AppName } from "@/constants/random";
+import { useNetwork } from "@/context/networkContext";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
+import { t } from "@/localization/t";
 import {
   checkEmailExists,
   getNextIncompleteStep,
@@ -28,6 +30,7 @@ import {
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,11 +70,11 @@ export default function LoginScreen() {
     let isValid = true;
 
     if (!email) {
-      newErrors.email = "Please provide your email.";
+      newErrors.email = t("login.errors.email");
       isValid = false;
     }
     if (!password) {
-      newErrors.password = "Please provide your password.";
+      newErrors.password = t("login.errors.password");
       isValid = false;
     }
 
@@ -82,6 +85,14 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if ((!validateInputs() && !email) || !password) return;
     if (!validateEmail(email)) return;
+
+    if (!isConnected) {
+      setErrors((prev) => ({
+        ...prev,
+        login: "No internet connection",
+      }));
+      return;
+    }
 
     const { success, error } = await LoginFunc(email, password);
 
@@ -124,16 +135,16 @@ export default function LoginScreen() {
           <View style={{ flex: 1, justifyContent: "center" }}>
             <View style={{ marginBottom: 25, gap: 8 }}>
               <CustomHeading style={{ color: text }}>
-                Log in to {AppName}
+                {t("login.heading", { appName: AppName })}
               </CustomHeading>
               <CustomText style={[styles.subheading, { color: textTertiery }]}>
-                Tools and services, shared by the community.
+                {t("login.subHeading")}
               </CustomText>
             </View>
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={[styles.label, { color: text }]}>
-                Email
+                {t("userProfile.email")}
               </CustomText>
               <TextInput
                 ref={emailInputRef}
@@ -169,7 +180,7 @@ export default function LoginScreen() {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={[styles.label, { color: text }]}>
-                Password
+                {t("loginsecurity.passwordTitle")}
               </CustomText>
               <View
                 style={[
@@ -213,7 +224,9 @@ export default function LoginScreen() {
               disabled={isButtonDisabled}
               onPress={handleLogin}
             >
-              <CustomText style={styles.buttonText}>Log in</CustomText>
+              <CustomText style={styles.buttonText}>
+                {t("login.button")}
+              </CustomText>
             </TouchableOpacity>
 
             <CustomDivider text="OR" />
@@ -223,7 +236,7 @@ export default function LoginScreen() {
               onPress={() => router.push("/signup/signup")}
             >
               <CustomText style={styles.buttonText}>
-                Dont have an account? Sign up
+                {t("login.signupPrompt")}
               </CustomText>
             </TouchableOpacity>
           </View>
