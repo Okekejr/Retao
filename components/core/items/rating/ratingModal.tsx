@@ -1,5 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { t } from "@/localization/t";
 import { useState } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import { StarRating } from "./starRating";
@@ -37,7 +38,9 @@ export const RatingModal = ({
               onClose();
             }}
           >
-            <CustomText style={styles.submitText}>Submit</CustomText>
+            <CustomText style={styles.submitText}>
+              {t("btnTexts.submit")}
+            </CustomText>
           </TouchableOpacity>
         </View>
       </View>

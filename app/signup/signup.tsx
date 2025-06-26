@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import {
   checkEmailExists,
   themeColor,
@@ -57,12 +58,18 @@ export default function SignupScreen() {
   }, [email, password, confirmPassword, isEmailUnique]);
 
   const handleSignup = async () => {
-    const emailError = validateEmail(email) ? "" : "Invalid email format.";
+    const emailError = validateEmail(email)
+      ? ""
+      : t("signUp.errors.invalidEmail");
+
     const passwordError = validatePassword(password)
       ? ""
-      : "Password must be at least 6 characters long, include uppercase, lowercase, a number, and a special character.";
+      : t("signUp.errors.invalidPassword");
+
     const confirmError =
-      password === confirmPassword ? "" : "Passwords do not match.";
+      password === confirmPassword
+        ? ""
+        : t("signUp.errors.passwordsDoNotMatch");
 
     if (emailError || passwordError || confirmError) {
       setErrors({
@@ -100,18 +107,20 @@ export default function SignupScreen() {
     }
   };
 
+  const rules = t("helperText.rules");
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1, justifyContent: "center" }}>
             <CustomHeading style={{ marginBottom: 20, color: text }}>
-              Create an account
+              {t("signUp.heading")}
             </CustomHeading>
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={[styles.label, { color: text }]}>
-                Email
+                {t("userProfile.email")}
               </CustomText>
               <TextInput
                 ref={emailInputRef}
@@ -147,7 +156,7 @@ export default function SignupScreen() {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={[styles.label, { color: text }]}>
-                Password
+                {t("loginsecurity.passwordTitle")}
               </CustomText>
               <TextInput
                 ref={passwordInputRef}
@@ -169,7 +178,7 @@ export default function SignupScreen() {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={[styles.label, { color: text }]}>
-                Confirm Password
+                {t("signUp.confirmPass")}
               </CustomText>
               <View
                 style={[
@@ -201,12 +210,18 @@ export default function SignupScreen() {
               {errors.password ? (
                 <CustomText style={styles.error}>{errors.password}</CustomText>
               ) : (
-                <CustomText style={styles.helperText}>
-                  Password must include:
-                  {"\n"}- At least 6 characters
-                  {"\n"}- Uppercase and lowercase letters
-                  {"\n"}- A number and a special character
-                </CustomText>
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  <CustomText style={styles.helperText}>
+                    {t("helperText.heading")}
+                  </CustomText>
+
+                  {Array.isArray(rules) &&
+                    rules.map((rule, index) => (
+                      <CustomText style={styles.helperText} key={index}>
+                        • {rule}
+                      </CustomText>
+                    ))}
+                </View>
               )}
             </View>
 
@@ -219,7 +234,9 @@ export default function SignupScreen() {
               disabled={isButtonDisabled}
               onPress={handleSignup}
             >
-              <CustomText style={styles.buttonText}>Sign Up</CustomText>
+              <CustomText style={styles.buttonText}>
+                {t("signUp.button")}
+              </CustomText>
             </TouchableOpacity>
 
             <CustomDivider text="OR" />
@@ -229,7 +246,7 @@ export default function SignupScreen() {
               onPress={() => router.push("/login/login")}
             >
               <CustomText style={styles.buttonText}>
-                Have an account? Log in
+                {t("signUp.loginPrompt")}
               </CustomText>
             </TouchableOpacity>
           </View>

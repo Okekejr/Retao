@@ -1,5 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -50,14 +51,15 @@ export const UpdatePasswordComp = ({
   handleUpdate,
   setFocusedInput,
 }: UpdatePasswordCompProps) => {
-  const bg = themeColor("background");
   const text = themeColor("text");
+
+  const rules = t("helperText.rules");
 
   return (
     <View>
       <View style={{ marginBottom: 20 }}>
         <CustomText style={[styles.label, { color: text }]}>
-          Current password
+          {t("signUp.currentPass")}
         </CustomText>
         <TextInput
           ref={passwordInputRef}
@@ -83,7 +85,7 @@ export const UpdatePasswordComp = ({
 
       <View style={{ marginBottom: 20 }}>
         <CustomText style={[styles.label, { color: text }]}>
-          New password
+          {t("signUp.newPass")}
         </CustomText>
 
         <TextInput
@@ -106,7 +108,7 @@ export const UpdatePasswordComp = ({
 
       <View style={{ marginBottom: 20 }}>
         <CustomText style={[styles.label, { color: text }]}>
-          Confirm New Password
+          {t("signUp.confirmPass")}
         </CustomText>
         <View
           style={[
@@ -140,12 +142,18 @@ export const UpdatePasswordComp = ({
             {errors.confirmNewPassword}
           </CustomText>
         ) : (
-          <CustomText style={styles.helperText}>
-            Password must include:
-            {"\n"}- At least 6 characters
-            {"\n"}- Uppercase and lowercase letters
-            {"\n"}- A number and a special character
-          </CustomText>
+          <View style={{ display: "flex", flexDirection: "column" }}>
+            <CustomText style={styles.helperText}>
+              {t("helperText.heading")}
+            </CustomText>
+
+            {Array.isArray(rules) &&
+              rules.map((rule, index) => (
+                <CustomText style={styles.helperText} key={index}>
+                  • {rule}
+                </CustomText>
+              ))}
+          </View>
         )}
       </View>
 
@@ -154,7 +162,7 @@ export const UpdatePasswordComp = ({
         disabled={isdisabled}
         onPress={handleUpdate}
       >
-        <CustomText style={styles.buttonText}>Update Password</CustomText>
+        <CustomText style={styles.buttonText}>{t("signUp.update")}</CustomText>
       </TouchableOpacity>
 
       {updateError ? (
@@ -165,7 +173,7 @@ export const UpdatePasswordComp = ({
 
       {success ? (
         <CustomText style={[styles.success, { marginTop: 10 }]}>
-          Password updated successfully!
+          {t("signUp.success")}
         </CustomText>
       ) : null}
     </View>

@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useSearchListings } from "@/hooks/useGetListings";
+import { t } from "@/localization/t";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -66,7 +67,7 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <CustomText style={h3}>Search Listings</CustomText>
+            <CustomText style={h3}>{t("searchModal.heading")}</CustomText>
 
             <TouchableOpacity
               onPress={() => {
@@ -87,7 +88,7 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
               style={styles.searchInput}
               value={search}
               onChangeText={setSearch}
-              placeholder="Search for items"
+              placeholder={t("searchModal.placeholder")}
               placeholderTextColor="#999"
               returnKeyType="search"
               selectionColor="#000"
@@ -107,7 +108,9 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
           </View>
 
           {isLoading ? (
-            <CustomText style={styles.emptyText}>Loading results...</CustomText>
+            <CustomText style={styles.emptyText}>
+              {t("searchModal.loading")}
+            </CustomText>
           ) : (
             <FlatList
               data={results}
@@ -149,10 +152,10 @@ export const SearchModal: FC<SearchModalProps> = ({ visible, onClose }) => {
                 !results || results?.length === 0 ? (
                   <View style={styles.emptyState}>
                     <CustomText style={styles.emptyText}>
-                      No results yet
+                      {t("searchModal.empty.title")}
                     </CustomText>
                     <CustomText style={styles.emptySubText}>
-                      Start by searching for a listing.
+                      {t("searchModal.empty.subtitle")}
                     </CustomText>
                   </View>
                 ) : null

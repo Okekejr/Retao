@@ -6,6 +6,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { isMoreThanDashWords } from "@/utils";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -47,7 +48,7 @@ export default function SignupFormScreen() {
         setHandleUnique(!data.exists);
         setErrors((prev) => ({
           ...prev,
-          handle: data.exists ? "This handle is already taken." : "",
+          handle: data.exists ? t("signUpForm.errors.handleTaken") : "",
         }));
       } else {
         throw new Error("Failed to validate handle.");
@@ -63,14 +64,13 @@ export default function SignupFormScreen() {
 
     // Validate name: must be at least two words
     if (!isMoreThanDashWords({ text: userData.name, wordsNum: 1 })) {
-      newErrors.name = "Please enter your full name (e.g. John Doe)";
+      newErrors.name = t("signUpForm.errors.name");
       isValid = false;
     }
 
-    // Validate handle: must start with "@" and be one word
     const handle = userData.handle.trim();
     if (!/^@[a-zA-Z0-9_]+$/.test(handle)) {
-      newErrors.handle = "Handle must start with @ and contain no spaces";
+      newErrors.handle = t("signUpForm.errors.handleFormat");
       isValid = false;
     }
 
@@ -109,13 +109,15 @@ export default function SignupFormScreen() {
               <CustomProgressBar progressPercentage={progressPercentage} />
 
               <CustomListingHeader
-                heading="Your Name & Handle"
-                subHeading="We’ll use this to personalize your profile and make it easier for others to find you."
+                heading={t("signUpForm.heading")}
+                subHeading={t("signUpForm.subHeading")}
               />
 
               {/* Name Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={styles.label}>Name</CustomText>
+                <CustomText style={styles.label}>
+                  {t("userProfile.name")}
+                </CustomText>
                 <TextInput
                   style={styles.input}
                   placeholder="E.g. John Doe"
@@ -129,7 +131,9 @@ export default function SignupFormScreen() {
 
               {/* Handle Input */}
               <View style={{ marginBottom: 20 }}>
-                <CustomText style={styles.label}>Handle</CustomText>
+                <CustomText style={styles.label}>
+                  {t("userProfile.handle")}
+                </CustomText>
                 <TextInput
                   style={styles.input}
                   placeholder="E.g. @JohnDoe"
@@ -147,7 +151,7 @@ export default function SignupFormScreen() {
               handleBack={handleBack}
               handleNext={handleNext}
               disabled={invalid}
-              backBtnTitle="Cancel"
+              backBtnTitle={t("btnTexts.cancel")}
             />
           </View>
         </TouchableWithoutFeedback>

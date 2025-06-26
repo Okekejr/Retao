@@ -4,6 +4,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -63,8 +64,8 @@ export default function SignupAvatarScreen() {
             <CustomProgressBar progressPercentage={progressPercentage} />
 
             <CustomListingHeader
-              heading="Add a profile photo"
-              subHeading="A picture helps others trust you. It can be a selfie or a fun avatar!"
+              heading={t("signupAvatar.heading")}
+              subHeading={t("signupAvatar.subHeading")}
             />
 
             <View style={styles.avatarRow}>

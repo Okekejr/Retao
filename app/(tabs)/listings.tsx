@@ -14,6 +14,7 @@ import {
   useIncomingBorrowRequests,
 } from "@/hooks/useBorrowRequests";
 import { useGetListings } from "@/hooks/useGetListings";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
@@ -90,7 +91,7 @@ export default function ListingsScreen() {
       )}
 
       <InnerContainer style={{ marginTop: 20 }}>
-        <Header headerTitle="Listings" />
+        <Header headerTitle={t("listings.title")} />
 
         {userData.subscription_plan === "unlimited" ||
         userData.stats.listed < userData.listing_limit ? (
@@ -98,8 +99,8 @@ export default function ListingsScreen() {
         ) : (
           <ListAnItemBtn
             openModal={() => openModal("Plans")}
-            title="Listing limit reached"
-            subText="Upgrade your plan"
+            title={t("listings.listLimitTitle")}
+            subText={t("listings.listLimitSubTitle")}
             icon="checkmark-done-circle-outline"
             limitReached
           />
@@ -119,7 +120,7 @@ export default function ListingsScreen() {
         <InnerContainer style={{ gap: 16, flex: 1 }}>
           <View>
             <CustomText style={[styles.heading, h3, { color: text }]}>
-              My Listings
+              {t("listings.myListings")}
             </CustomText>
             {listedItems.length > 0 ? (
               <FlatList
@@ -142,7 +143,7 @@ export default function ListingsScreen() {
               />
             ) : (
               <CustomText style={{ color: textSec }}>
-                No listed items yet
+                {t("listings.noListings")}
               </CustomText>
             )}
           </View>
@@ -150,7 +151,7 @@ export default function ListingsScreen() {
           {borrowedItems.length > 0 && (
             <View>
               <CustomText style={[styles.heading, h3, { color: text }]}>
-                Borrowed
+                {t("listings.borrowedListings")}
               </CustomText>
               <FlatList
                 data={borrowedItems}
@@ -176,7 +177,7 @@ export default function ListingsScreen() {
           {filterRequests && filterRequests.length > 0 && (
             <View>
               <CustomText style={[styles.heading, h3, { color: text }]}>
-                Requests
+                {t("listings.requests")}
               </CustomText>
 
               <FlatList
@@ -196,7 +197,7 @@ export default function ListingsScreen() {
           {pendingRequests && pendingRequests.length > 0 && (
             <View>
               <CustomText style={[styles.heading, h3, { color: text }]}>
-                My Pending Requests
+                {t("listings.myPending")}
               </CustomText>
 
               <FlatList

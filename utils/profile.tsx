@@ -1,3 +1,4 @@
+import { t } from "@/localization/t";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 
@@ -18,45 +19,45 @@ export type profileItemsT = {
   func?: boolean;
 }[];
 
-export const profileItems: profileItemsT = [
+export const getProfileItems = (): profileItemsT => [
   {
-    label: "Account Settings",
+    label: t("profile.accountSettings"),
     icon: "settings-outline",
     content: "settings",
   },
   {
-    label: "History",
+    label: t("profile.history"),
     icon: "time-outline",
     hrefLink: "/history/history",
   },
   {
-    label: "Help & FAQs",
+    label: t("profile.help"),
     icon: "help-circle-outline",
   },
   {
-    label: "Contact Support",
+    label: t("profile.support"),
     icon: "chatbubble-ellipses-outline",
   },
   {
-    label: "Log Out",
+    label: t("profile.logout"),
     icon: "log-out-outline",
     func: true,
   },
 ];
 
-export const AccountSettings: profileItemsT = [
+export const getAccountSettings = (): profileItemsT => [
   {
-    label: "Personal information",
+    label: t("accountSettings.personal"),
     icon: "person-outline",
     hrefLink: "/settings/personalInfo",
   },
   {
-    label: "Login & Security",
+    label: t("accountSettings.login"),
     icon: "shield-outline",
     hrefLink: "/settings/loginSecurity",
   },
   {
-    label: "Manage Subscriptions",
+    label: t("accountSettings.subs"),
     icon: "checkmark-done-circle-outline",
     hrefLink: "/subscription/subPlans",
   },

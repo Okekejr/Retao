@@ -1,18 +1,14 @@
 import { CustomListingHeader } from "@/components/ui/customListingHeader";
+import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 
 export default function ListingSuccess() {
@@ -44,8 +40,8 @@ export default function ListingSuccess() {
               style={styles.header}
             >
               <CustomListingHeader
-                heading="🎉 Listing Created!"
-                subHeading="Your item is now available for renting or lending."
+                heading={t("listingSuccess.heading")}
+                subHeading={t("listingSuccess.subHeading")}
                 style={{ textAlign: "center" }}
               />
             </Animatable.View>
@@ -62,7 +58,9 @@ export default function ListingSuccess() {
 
           <Animatable.View animation="fadeInUp" delay={800}>
             <TouchableOpacity onPress={handleFinish} style={styles.button}>
-              <Text style={styles.buttonText}>Finish</Text>
+              <CustomText style={styles.buttonText}>
+                {t("listingSuccess.finish")}
+              </CustomText>
             </TouchableOpacity>
           </Animatable.View>
         </View>

@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { t } from "../../localization/t";
 
 export default function HomeScreen() {
   const bg = themeColor("background");
@@ -45,10 +46,10 @@ export default function HomeScreen() {
         </View>
       )}
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle="Home" />
+        <Header headerTitle={t("home.title")} />
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <SearchBar placeholder="Search items, tools, equipment…" />
+          <SearchBar placeholder={t("home.searchBar")} />
         </TouchableOpacity>
 
         <SearchModal
@@ -61,23 +62,27 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         >
           {Listings && (
-            <ItemSection heading="Recently Listed Near You" data={Listings} />
+            <ItemSection heading={t("home.recently")} data={Listings} />
           )}
 
           {featuredListings && featuredListings?.length > 0 && (
-            <ItemSection heading="Featured" data={featuredListings} feat />
+            <ItemSection
+              heading={t("home.featured")}
+              data={featuredListings}
+              feat
+            />
           )}
 
           {ListingByLoc && location && (
             <ItemSection
-              heading={`Listed in ${location ?? "your area"}`}
+              heading={t("home.location", { location: location })}
               data={ListingByLoc}
               loc={location}
             />
           )}
 
           {Categories && (
-            <CategoriesSection title="Categories" data={Categories} />
+            <CategoriesSection title={t("home.categories")} data={Categories} />
           )}
         </ScrollView>
       </InnerContainer>

@@ -1,5 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import React, { useState } from "react";
 import {
@@ -32,7 +33,7 @@ export const EditModal = ({
       <View style={styles.overlay}>
         <View style={[styles.modal, { backgroundColor: bg }]}>
           <CustomText style={[styles.label, { color: text }]}>
-            Edit {field}
+            {t("editListing.edit")} {field}
           </CustomText>
           <TextInput
             value={input}
@@ -45,12 +46,14 @@ export const EditModal = ({
           <View style={styles.btnRow}>
             <TouchableOpacity onPress={onClose}>
               <CustomText style={[styles.backText, { color: "#999" }]}>
-                Cancel
+                {t("btnTexts.cancel")}
               </CustomText>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => onSave(input)}>
-              <CustomText style={styles.nextButton}>Save</CustomText>
+              <CustomText style={styles.nextButton}>
+                {t("btnTexts.save")}
+              </CustomText>
             </TouchableOpacity>
           </View>
         </View>

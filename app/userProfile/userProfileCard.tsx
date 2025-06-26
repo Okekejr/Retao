@@ -6,6 +6,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h2, h3 } from "@/constants/random";
 import { useRecipientProfile } from "@/hooks/useGetUserData";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useLocalSearchParams } from "expo-router";
 import {
@@ -50,7 +51,7 @@ export default function UserProfileCardScreen() {
             {recipient && recipient.listings.length > 0 && (
               <View>
                 <CustomText style={[styles.heading, h3, { color: text }]}>
-                  Listings
+                  {t("listings.title")}
                 </CustomText>
 
                 <FlatList
@@ -78,7 +79,7 @@ export default function UserProfileCardScreen() {
             {recipient && recipient.borrowedItems.length > 0 && (
               <View>
                 <CustomText style={[styles.heading, h3, { color: text }]}>
-                  Borrowing
+                  {t("listings.borrowedListings")}
                 </CustomText>
 
                 <FlatList

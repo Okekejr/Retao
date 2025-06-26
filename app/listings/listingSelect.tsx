@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useListing } from "@/context/listingContext";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
@@ -108,17 +109,17 @@ export default function ListingSelect() {
               <CustomProgressBar progressPercentage={progressPercentage} />
 
               <CustomListingHeader
-                heading="When and Where is Your Item Available?"
-                subHeading="Let others know when they can borrow it and where to find it. Set a schedule or mark it as available now, and add a pickup location."
+                heading={t("listingSelect.heading")}
+                subHeading={t("listingSelect.subHeading")}
               />
 
               <View style={{ marginBottom: 20 }}>
                 <CustomText style={[styles.label, { color: text }]}>
-                  Availability
+                  {t("listingReview.labels.availability")}
                 </CustomText>
                 <View style={styles.row}>
                   <CustomText style={[styles.text, { color: textSec }]}>
-                    Available Now
+                    {t("editListing.available")}
                   </CustomText>
                   <Switch
                     value={availableNow}
@@ -133,7 +134,7 @@ export default function ListingSelect() {
                       style={styles.scheduleButton}
                     >
                       <CustomText>
-                        {scheduleText || "Select Schedule"}
+                        {scheduleText || t("editListing.selectSchedule")}
                       </CustomText>
                     </TouchableOpacity>
                     {showDatePicker && (
@@ -150,12 +151,12 @@ export default function ListingSelect() {
 
               <View>
                 <CustomText style={[styles.label, { color: text }]}>
-                  Location
+                  {t("userProfile.location")}
                 </CustomText>
 
                 <TextInput
                   style={[styles.input, { color: text }]}
-                  placeholder="Enter your city e.g Monterrey"
+                  placeholder={t("listingSelect.placeholder")}
                   placeholderTextColor={textSec}
                   value={location}
                   onChangeText={handleLocationChange}
@@ -163,7 +164,7 @@ export default function ListingSelect() {
 
                 <TouchableOpacity onPress={detectLocation}>
                   <CustomText style={styles.locationText}>
-                    Use Current Location
+                    {t("editListing.currentLoc")}
                   </CustomText>
                 </TouchableOpacity>
               </View>

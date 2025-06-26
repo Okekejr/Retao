@@ -26,6 +26,8 @@ export const useGetUserData = () => {
     if (!res.ok) throw new Error(data.error || "Failed to fetch");
 
     if (res.ok) {
+      await SecureStore.setItemAsync("user_id", data.id);
+
       const fields: (keyof userProfile)[] = [
         "id",
         "email",

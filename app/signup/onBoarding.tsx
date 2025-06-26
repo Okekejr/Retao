@@ -1,7 +1,7 @@
 import { AnimatedDots } from "@/components/ui/animationDots";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
-import { OnboardingIntroUtils } from "@/utils";
+import { getOnboardingIntroUtils } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
@@ -33,6 +33,8 @@ export default function OnboardingIntroScreen() {
       router.push("/signup/signupForm");
     }
   };
+
+  const OnboardingIntroUtils = getOnboardingIntroUtils();
 
   return (
     <SafeAreaView style={styles.container}>

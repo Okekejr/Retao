@@ -10,6 +10,7 @@ interface WSMessage {
 
 export const useWebSocket = () => {
   const ws = useRef<WebSocket | null>(null);
+  const userIdRef = useRef<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [incomingMessage, setIncomingMessage] = useState<WSMessage | null>(
     null
@@ -20,7 +21,10 @@ export const useWebSocket = () => {
   // Initialize WebSocket connection
   const connect = useCallback(async () => {
     const token = await SecureStore.getItemAsync("token");
-    if (!token) return;
+    const storedUserId = await SecureStore.getItemAsync("user_id");
+    if (!token || !storedUserId) return;
+
+    userIdRef.current = storedUserId;
 
     const socket = new WebSocket(`${WS_URL}?token=${token}`);
 
@@ -33,8 +37,9 @@ export const useWebSocket = () => {
       try {
         const msg = JSON.parse(event.data);
         console.log("📥 WS message received:", msg);
+        console.log("Current user ID:", userIdRef.current);
 
-        if (msg.type === "message") {
+        if (msg.type === "message" && msg.from !== userIdRef.current) {
           setNotifications((prev) => ({
             ...prev,
             messages: prev.messages + 1,

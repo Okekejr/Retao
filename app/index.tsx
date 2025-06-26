@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/Colors";
+import { useNetwork } from "@/context/networkContext";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
-import { getNextIncompleteStep, isProfileComplete } from "@/utils";
+import { getNextIncompleteStep, isProfileComplete, showToast } from "@/utils";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
@@ -12,9 +13,20 @@ const ANIMATION_DURATION = 1200;
 
 export default function IndexScreen() {
   const router = useRouter();
+  const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
   const { userData } = useUserData();
   const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    if (!isConnected) {
+      showToast({
+        type: "error",
+        text1: "You're offline",
+        message: "Please check your internet connection.",
+      });
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     const checkAuth = async () => {

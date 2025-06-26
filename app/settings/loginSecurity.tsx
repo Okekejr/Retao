@@ -6,6 +6,7 @@ import { SettingsItem } from "@/components/ui/settingItem";
 import { h2 } from "@/constants/random";
 import { useDeactivateAccount } from "@/hooks/useDeleteAccount";
 import { useUpdatePassword } from "@/hooks/useUpdatePassword";
+import { t } from "@/localization/t";
 import { themeColor, validatePassword } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
@@ -66,16 +67,17 @@ export default function LoginSecurityScreen() {
     };
 
     if (!password) {
-      errorsTemp.password = "Current password is required";
+      errorsTemp.password = t("loginsecurity.errors.currentPasswordRequired");
     }
 
     if (!validatePassword(newPassword)) {
-      errorsTemp.newPassword =
-        "Password must be at least 6 characters, include uppercase, lowercase, a number and a special character";
+      errorsTemp.newPassword = t("loginsecurity.errors.invalidNewPassword");
     }
 
     if (newPassword !== newConfirmNewPassword) {
-      errorsTemp.confirmNewPassword = "Passwords do not match";
+      errorsTemp.confirmNewPassword = t(
+        "loginsecurity.errors.passwordsDoNotMatch"
+      );
     }
 
     setErrors(errorsTemp);
@@ -95,15 +97,15 @@ export default function LoginSecurityScreen() {
       <InnerContainer style={{ flex: 1, gap: 32 }}>
         <View style={styles.modalHeader}>
           <CustomText style={[h2, { color: text }]}>
-            Login & Security
+            {t("accountSettings.login")}
           </CustomText>
         </View>
 
         <View style={{ gap: 40 }}>
           <SettingsItem
-            header="Password"
-            subHeader="Change your password"
-            btnText="Update"
+            header={t("loginsecurity.passwordTitle")}
+            subHeader={t("loginsecurity.passwordSubtitle")}
+            btnText={t("btnTexts.update")}
             show={showChange}
             func={showPasswords}
           />
@@ -132,9 +134,13 @@ export default function LoginSecurityScreen() {
           )}
 
           <SettingsItem
-            header="Deactivate your account"
-            subHeader="This cannot be undone"
-            btnText={loading ? "Deactivating..." : "Deactivate"}
+            header={t("loginsecurity.deactivateTitle")}
+            subHeader={t("loginsecurity.deactivateSubTitle")}
+            btnText={
+              loading
+                ? t("loginsecurity.deactivating")
+                : t("loginsecurity.deactivate")
+            }
             func={deactivate}
           />
         </View>

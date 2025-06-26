@@ -1,6 +1,7 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { useUpdateBorrowRequest } from "@/hooks/useBorrowRequests";
+import { t } from "@/localization/t";
 import { Decision } from "@/types";
 import {
   addReturnDateToCalendar,
@@ -123,7 +124,9 @@ export const RequestCard: FC<RequestCardProps> = ({
               handleDecision({ requestId: id, status: "accepted" })
             }
           >
-            <CustomText style={styles.buttonText}>Accept</CustomText>
+            <CustomText style={styles.buttonText}>
+              {t("btnTexts.accept")}
+            </CustomText>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.rejectButton]}
@@ -131,7 +134,9 @@ export const RequestCard: FC<RequestCardProps> = ({
               handleDecision({ requestId: id, status: "rejected" })
             }
           >
-            <CustomText style={styles.buttonText}>Reject</CustomText>
+            <CustomText style={styles.buttonText}>
+              {t("btnTexts.reject")}
+            </CustomText>
           </TouchableOpacity>
         </View>
       )}
@@ -144,7 +149,7 @@ export const RequestCard: FC<RequestCardProps> = ({
               style={[styles.modalContent, { backgroundColor: textTertiary }]}
             >
               <CustomText style={[styles.modalTitle, { color: surfaceArea }]}>
-                Select Due Date
+                {t("btnTexts.selectDate")}
               </CustomText>
 
               <DateTimePicker
@@ -170,14 +175,18 @@ export const RequestCard: FC<RequestCardProps> = ({
 
               <View style={styles.modalButtons}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
-                  <CustomText style={styles.cancelText}>Cancel</CustomText>
+                  <CustomText style={styles.cancelText}>
+                    {t("btnTexts.cancel")}
+                  </CustomText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.submitButton}
                   onPress={handleSubmitDate}
                 >
-                  <CustomText style={styles.submitText}>Submit</CustomText>
+                  <CustomText style={styles.submitText}>
+                    {t("btnTexts.submit")}
+                  </CustomText>
                 </TouchableOpacity>
               </View>
             </View>

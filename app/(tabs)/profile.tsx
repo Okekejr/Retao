@@ -11,7 +11,8 @@ import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
-import { profileItems, themeColor } from "@/utils";
+import { t } from "@/localization/t";
+import { getProfileItems, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -66,6 +67,8 @@ export default function ProfileScreen() {
     loadUserData();
   }, [userData.id]);
 
+  const profileItems = getProfileItems();
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {loading && (
@@ -75,14 +78,14 @@ export default function ProfileScreen() {
       )}
 
       <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle="Profile" style={{ marginBottom: 12 }} />
+        <Header headerTitle={t("profile.title")} style={{ marginBottom: 12 }} />
 
         <ScrollView style={{ gap: 12 }}>
           {userData.id !== "" && (
             <TouchableOpacity onPress={handleViewOwnerProfile}>
               <IdentityCard
                 user={userData}
-                func={() => openModal("Plans")}
+                func={() => openModal("plans")}
                 showPlan
               />
             </TouchableOpacity>
@@ -93,9 +96,9 @@ export default function ProfileScreen() {
             <ListAnItemBtn openModal={() => openModal("createListing")} />
           ) : (
             <ListAnItemBtn
-              openModal={() => openModal("Plans")}
-              title="Listing limit reached"
-              subText="Upgrade your plan"
+              openModal={() => openModal("plans")}
+              title={t("listings.listLimitTitle")}
+              subText={t("listings.listLimitSubTitle")}
               icon="checkmark-done-circle-outline"
               limitReached
             />
@@ -126,7 +129,7 @@ export default function ProfileScreen() {
 
             {content === "settings" && <Settings closeModal={closeModal} />}
 
-            {content === "Plans" && <SelectPlans closeModal={closeModal} />}
+            {content === "plans" && <SelectPlans closeModal={closeModal} />}
           </CustomModal>
         </ScrollView>
       </InnerContainer>

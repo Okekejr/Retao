@@ -4,6 +4,7 @@ import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { useConversations } from "@/hooks/useChat";
+import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
@@ -55,7 +56,10 @@ export default function MessagesScreen() {
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header headerTitle="Messages" style={{ marginBottom: 12 }}>
+          <Header
+            headerTitle={t("messages.title")}
+            style={{ marginBottom: 12 }}
+          >
             {!searchOpen && (
               <TouchableOpacity
                 style={{
@@ -120,7 +124,7 @@ export default function MessagesScreen() {
                   }}
                 >
                   <CustomText style={[styles.backText, { color: text }]}>
-                    Cancel
+                    {t("btnTexts.cancel")}
                   </CustomText>
                 </TouchableOpacity>
               </MotiView>
@@ -139,10 +143,10 @@ export default function MessagesScreen() {
                   <CustomText
                     style={[styles.emptyText, { color: textTertiery }]}
                   >
-                    No conversations found
+                    {t("messages.noMsgs")}
                   </CustomText>
                   <CustomText style={styles.emptySubText}>
-                    Try searching by name.
+                    {t("messages.searchMsg")}
                   </CustomText>
                 </View>
               }

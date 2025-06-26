@@ -1,6 +1,7 @@
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { h3, ItemStatus, UserRole } from "@/constants/random";
+import { t } from "@/localization/t";
 import { formatDate, formatTime } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -50,12 +51,18 @@ export const RenderTimeline = ({
     return (
       <View style={styles.timelineContainer}>
         <CustomText style={styles.timelineText}>
-          {status.toUpperCase()} on{" "}
+          {status.toUpperCase()} {t("itemDetails.on")}{" "}
           {releasedOn &&
-            `${formatDate(releasedOn)} at ${formatTime(releasedOn)}`}
+            `${formatDate(releasedOn)} ${t("itemDetails.at")} ${formatTime(
+              releasedOn
+            )}`}
         </CustomText>
         <CustomText style={styles.timelineText}>
-          DUE by {dueDate && `${formatDate(dueDate)} at ${formatTime(dueDate)}`}
+          {t("itemDetails.dueBy")}{" "}
+          {dueDate &&
+            `${formatDate(dueDate)} ${t("itemDetails.at")} ${formatTime(
+              dueDate
+            )}`}
         </CustomText>
       </View>
     );
@@ -80,7 +87,9 @@ export const RenderButton = ({
           style={[styles.primaryButton, styles.buttonHover, { width: "100%" }]}
           onPress={() => func.handleEditListing(itemId)}
         >
-          <CustomText style={styles.primaryButtonText}>Edit Listing</CustomText>
+          <CustomText style={styles.primaryButtonText}>
+            {t("itemDetails.edit")}
+          </CustomText>
         </TouchableOpacity>
       );
     } else if (isBorrowed) {
@@ -95,7 +104,7 @@ export const RenderButton = ({
           onPress={func.handleMarkAsReturned}
         >
           <CustomText style={styles.secondaryButtonText}>
-            Mark as Returned
+            {t("itemDetails.returned")}
           </CustomText>
         </TouchableOpacity>
       );
@@ -111,7 +120,7 @@ export const RenderButton = ({
             onPress={func.handleRequestToBorrow}
           >
             <CustomText style={styles.primaryButtonText}>
-              Request to Borrow
+              {t("itemDetails.request")}
             </CustomText>
           </TouchableOpacity>
         )}

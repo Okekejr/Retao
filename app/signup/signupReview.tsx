@@ -6,6 +6,7 @@ import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL } from "@/constants/random";
 import { userProfile, useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { avatarsT } from "@/types";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -113,8 +114,8 @@ export default function SignupReviewScreen() {
             <CustomProgressBar progressPercentage={progressPercentage} />
 
             <CustomListingHeader
-              heading="🎉 All Set!"
-              subHeading="Take a quick look and make sure everything looks good before you continue."
+              heading={t("signupReview.heading")}
+              subHeading={t("signupReview.subHeading")}
             />
 
             <View>
@@ -126,17 +127,23 @@ export default function SignupReviewScreen() {
             </View>
 
             <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
-              <InfoBlock label="Name" value={userData.name} />
-              <InfoBlock label="Handle" value={userData.handle} />
-              <InfoBlock label="Location" value={userData.location} />
-              <InfoBlock label="Bio" value={userData.bio} />
+              <InfoBlock label={t("userProfile.name")} value={userData.name} />
+              <InfoBlock
+                label={t("userProfile.handle")}
+                value={userData.handle}
+              />
+              <InfoBlock
+                label={t("userProfile.location")}
+                value={userData.location}
+              />
+              <InfoBlock label={t("userProfile.bio")} value={userData.bio} />
             </ScrollView>
           </View>
 
           <ListingButtons
             handleBack={handleBack}
             handleNext={handleNext}
-            nextBtnTitle="Submit"
+            nextBtnTitle={t("btnTexts.submit")}
           />
         </View>
       </InnerContainer>

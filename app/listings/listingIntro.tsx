@@ -4,7 +4,8 @@ import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
-import { IntroUtils, themeColor } from "@/utils";
+import { t } from "@/localization/t";
+import { getIntroUtils, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { MotiView } from "moti";
 import {
@@ -22,6 +23,8 @@ export default function ListingIntroScreen() {
 
   const handleStart = () => router.push("/listings/listingForms");
 
+  const IntroUtils = getIntroUtils();
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       <InnerContainer style={{ flex: 1 }}>
@@ -36,7 +39,7 @@ export default function ListingIntroScreen() {
             </View>
 
             <CustomText style={[styles.heading, h2, { color: text }]}>
-              Let’s help you list your item!
+              {t("listingIntro.heading")}
             </CustomText>
 
             <View style={styles.stepsContainer}>
@@ -73,7 +76,9 @@ export default function ListingIntroScreen() {
           </View>
 
           <TouchableOpacity style={styles.button} onPress={handleStart}>
-            <CustomText style={styles.buttonText}>Get Started</CustomText>
+            <CustomText style={styles.buttonText}>
+              {t("listingIntro.getStarted")}
+            </CustomText>
           </TouchableOpacity>
         </View>
       </InnerContainer>

@@ -5,6 +5,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { ListingButtons } from "@/components/ui/listingButtons";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -56,12 +57,12 @@ export default function SignupBioLocScreen() {
     let isValid = true;
 
     if (bio && bio.length === 0) {
-      newErrors.bio = "Bio can't be empty.";
+      newErrors.bio = t("SignUpBioLoc.errors.emptyBio");
       isValid = false;
     }
 
     if (location === "") {
-      newErrors.bio = "Must add location";
+      newErrors.bio = t("SignUpBioLoc.errors.emptyLocation");
       isValid = false;
     }
 
@@ -94,8 +95,8 @@ export default function SignupBioLocScreen() {
             <CustomProgressBar progressPercentage={progressPercentage} />
 
             <CustomListingHeader
-              heading="Tell us about yourself"
-              subHeading="Tell the community who you are and where you're based. Just enough to connect!"
+              heading={t("SignUpBioLoc.heading")}
+              subHeading={t("SignUpBioLoc.subHeading")}
             />
 
             {/* Bio Input */}
@@ -103,7 +104,7 @@ export default function SignupBioLocScreen() {
               <CustomText style={styles.label}>Bio</CustomText>
               <TextInput
                 style={[styles.input, styles.textArea]}
-                placeholder="DIY enthusiast. I love sharing tools and gear…"
+                placeholder={t("SignUpBioLoc.placeholders.bio")}
                 multiline
                 maxLength={160}
                 value={bio}
@@ -115,18 +116,20 @@ export default function SignupBioLocScreen() {
             </View>
 
             <View>
-              <CustomText style={styles.label}>Location</CustomText>
+              <CustomText style={styles.label}>
+                {t("userProfile.location")}
+              </CustomText>
 
               <TextInput
                 style={styles.input}
-                placeholder="Enter your city"
+                placeholder={t("SignUpBioLoc.placeholders.location")}
                 value={location}
                 onChangeText={handleLocationChange}
               />
 
               <TouchableOpacity onPress={detectLocation}>
                 <CustomText style={styles.locationText}>
-                  Use Current Location
+                  {t("editListing.currentLoc")}
                 </CustomText>
               </TouchableOpacity>
             </View>
