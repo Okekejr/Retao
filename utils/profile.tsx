@@ -17,6 +17,8 @@ export type profileItemsT = {
   content?: string;
   hrefLink?: any;
   func?: boolean;
+  href?: string;
+  mail?: boolean;
 }[];
 
 export const getProfileItems = (): profileItemsT => [
@@ -33,10 +35,12 @@ export const getProfileItems = (): profileItemsT => [
   {
     label: t("profile.help"),
     icon: "help-circle-outline",
+    href: "https://www.okekedev.com",
   },
   {
     label: t("profile.support"),
     icon: "chatbubble-ellipses-outline",
+    mail: true,
   },
   {
     label: t("profile.logout"),

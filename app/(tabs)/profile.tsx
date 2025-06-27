@@ -12,7 +12,8 @@ import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
 import { t } from "@/localization/t";
-import { getProfileItems, themeColor } from "@/utils";
+import { getProfileItems, showToast, themeColor } from "@/utils";
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -69,6 +70,37 @@ export default function ProfileScreen() {
 
   const profileItems = getProfileItems();
 
+  const handleOpenLink = async (href: string) => {
+    const supported = await Linking.canOpenURL(href);
+    if (supported) {
+      await Linking.openURL(href);
+    } else {
+      showToast({
+        type: "error",
+        text1: "Link invalid",
+        message: "Can't open this link",
+      });
+    }
+  };
+
+  const handleOpenEmail = async () => {
+    const email = "dylanokeks8965@gmail.com";
+    const subject = encodeURIComponent("Hello Dylan");
+    const body = encodeURIComponent("I need some help!");
+    const url = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      Linking.openURL(url);
+    } else {
+      showToast({
+        type: "error",
+        text1: "Cant open Email",
+        message: "No email app found to send the email",
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {loading && (
@@ -114,9 +146,11 @@ export default function ProfileScreen() {
                 icon={item.icon}
                 label={item.label}
                 onPress={() => {
-                  item.hrefLink && router.push(item.hrefLink);
-                  item.content && openModal(item.content);
-                  item.func && logout();
+                  if (item.func) logout();
+                  else if (item.content) openModal(item.content);
+                  else if (item.hrefLink) router.push(item.hrefLink);
+                  else if (item.mail) handleOpenEmail();
+                  else if (item.href) handleOpenLink(item.href);
                 }}
               />
             )}

@@ -129,7 +129,7 @@ const en: TranslationKeys = {
     returned: "Mark as Returned",
     request: "Request to Borrow",
     at: "at",
-    on: "el",
+    on: "on",
     dueBy: "DUE by",
   },
   editListing: {
