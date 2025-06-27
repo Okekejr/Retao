@@ -293,6 +293,9 @@ const es: TranslationKeys = {
     },
     placeholder: "Buscar artículos",
   },
+  plans: {
+    header: "Elige tu plan",
+  },
 };
 
 export default es;

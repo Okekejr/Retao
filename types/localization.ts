@@ -274,4 +274,7 @@ export type TranslationKeys = {
     };
     placeholder: string;
   };
+  plans: {
+    header: string;
+  };
 };

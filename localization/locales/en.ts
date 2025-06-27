@@ -292,6 +292,9 @@ const en: TranslationKeys = {
     },
     placeholder: "Search for items",
   },
+  plans: {
+    header: "Choose Your Plan",
+  },
 };
 
 export default en;
