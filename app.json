@@ -5,7 +5,7 @@
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Retao",
+    "scheme": "retao",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
@@ -65,7 +65,8 @@
           "photosPermission": "Retao accesses your photos to let you share them for Listings."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
