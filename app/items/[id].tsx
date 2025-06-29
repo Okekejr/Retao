@@ -28,6 +28,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   FlatList,
@@ -73,18 +74,16 @@ export default function ItemScreen() {
     }).start();
   }, [slideAnim]);
 
-  if (isLoading || !selectedItem) return;
-
   const userRole: UserRole =
-    userData.id === selectedItem.owner.id
+    userData.id === selectedItem?.owner.id
       ? "owner"
-      : userData.id === selectedItem.borrower?.id
+      : userData.id === selectedItem?.borrower?.id
       ? "borrower"
       : "viewer";
 
-  const userSub = selectedItem.owner.subscription_plan;
+  const userSub = selectedItem && selectedItem.owner.subscription_plan;
 
-  const avatar = avatars.find((a) => a.id === selectedItem.owner.avatar);
+  const avatar = avatars.find((a) => a.id === selectedItem?.owner.avatar);
 
   const handleEditListing = (itemId: string) => {
     router.push({ pathname: "/listings/editListings", params: { id: itemId } });
@@ -94,7 +93,7 @@ export default function ItemScreen() {
     router.push({
       pathname: "/message/chatScreen",
       params: {
-        recipientId: selectedItem.owner.id,
+        recipientId: selectedItem && selectedItem.owner.id,
       },
     });
   };
@@ -104,7 +103,10 @@ export default function ItemScreen() {
   };
 
   const handleMarkAsReturned = () => {
-    console.log("Borrower at time of mark:", selectedItem.borrower);
+    console.log(
+      "Borrower at time of mark:",
+      selectedItem && selectedItem.borrower
+    );
     if (!selectedItem?.borrower?.id) return;
 
     setBorrowerForRating(selectedItem);
@@ -133,7 +135,7 @@ export default function ItemScreen() {
   };
 
   const handleViewOwnerProfile = () => {
-    if (!selectedItem.owner.id) return;
+    if (!selectedItem?.owner.id) return;
     router.push({
       pathname: "/userProfile/userProfileCard",
       params: { userId: selectedItem.owner.id },
@@ -142,119 +144,127 @@ export default function ItemScreen() {
 
   return (
     <>
-      <ScrollView
-        contentContainerStyle={[styles.container, { backgroundColor: bg }]}
-      >
-        <View style={styles.imageContainer}>
-          <ItemImagesCarousel images={selectedItem?.image} />
-
-          <View style={styles.iconRow}>
-            <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
-          </View>
+      {isLoading || !selectedItem ? (
+        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>
+      ) : (
+        <>
+          <ScrollView
+            contentContainerStyle={[styles.container, { backgroundColor: bg }]}
+          >
+            <View style={styles.imageContainer}>
+              <ItemImagesCarousel images={selectedItem?.image} />
 
-        <View style={styles.content}>
-          <View style={styles.titleRow}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <CustomHeading style={[h2, { color: text }]}>
-                {selectedItem?.title}
-              </CustomHeading>
-              <SubscriptionBadge plan={userSub} inline />
+              <View style={styles.iconRow}>
+                <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+              </View>
             </View>
-            {selectedItem?.status && (
-              <StatusBadge status={selectedItem.status} />
-            )}
-          </View>
-          <View>
-            <CustomText style={{ color: text }}>
-              {selectedItem?.description}
-            </CustomText>
 
-            <CustomText style={[styles.metaText, { color: textSec }]}>
-              {selectedItem?.distance}
-            </CustomText>
-          </View>
-
-          <View style={styles.ownerSection}>
-            <Image
-              source={avatar?.src}
-              style={styles.avatar}
-              contentFit="cover"
-            />
-            <CustomText
-              style={[styles.ownerName, { color: text }]}
-              onPress={handleViewOwnerProfile}
-            >
-              {t("item.shared")} {selectedItem?.owner.name}
-            </CustomText>
-          </View>
-
-          <CustomText style={styles.availability}>
-            {selectedItem?.availability}
-          </CustomText>
-
-          {selectedItem?.status && (
-            <RenderTimeline
-              status={selectedItem.status}
-              dueDate={selectedItem.borrower?.dueDate}
-              releasedOn={selectedItem.borrower?.borrowedOn}
-            />
-          )}
-
-          <View style={{ marginTop: 20 }}>
-            <CustomText style={[styles.heading, h3, { color: text }]}>
-              {t("item.borrowers")}
-            </CustomText>
-            {borrwerHistory && borrwerHistory.length > 0 ? (
-              <FlatList
-                data={borrwerHistory}
-                keyExtractor={(item) => item.id}
-                scrollEnabled={false}
-                contentContainerStyle={styles.listContent}
-                renderItem={({ item }) => (
-                  <BorrowersCard
-                    user={item}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/userProfile/userProfileCard",
-                        params: { userId: item.id },
-                      })
-                    }
-                  />
+            <View style={styles.content}>
+              <View style={styles.titleRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <CustomHeading style={[h2, { color: text }]}>
+                    {selectedItem?.title}
+                  </CustomHeading>
+                  {userSub && <SubscriptionBadge plan={userSub} inline />}
+                </View>
+                {selectedItem?.status && (
+                  <StatusBadge status={selectedItem.status} />
                 )}
-              />
-            ) : (
-              <CustomText style={{ color: textSec }}>
-                {t("item.noBorrowers")}
+              </View>
+              <View>
+                <CustomText style={{ color: text }}>
+                  {selectedItem?.description}
+                </CustomText>
+
+                <CustomText style={[styles.metaText, { color: textSec }]}>
+                  {selectedItem?.distance}
+                </CustomText>
+              </View>
+
+              <View style={styles.ownerSection}>
+                <Image
+                  source={avatar?.src}
+                  style={styles.avatar}
+                  contentFit="cover"
+                />
+                <CustomText
+                  style={[styles.ownerName, { color: text }]}
+                  onPress={handleViewOwnerProfile}
+                >
+                  {t("item.shared")} {selectedItem?.owner.name}
+                </CustomText>
+              </View>
+
+              <CustomText style={styles.availability}>
+                {selectedItem?.availability}
               </CustomText>
+
+              {selectedItem?.status && (
+                <RenderTimeline
+                  status={selectedItem.status}
+                  dueDate={selectedItem.borrower?.dueDate}
+                  releasedOn={selectedItem.borrower?.borrowedOn}
+                />
+              )}
+
+              <View style={{ marginTop: 20 }}>
+                <CustomText style={[styles.heading, h3, { color: text }]}>
+                  {t("item.borrowers")}
+                </CustomText>
+                {borrwerHistory && borrwerHistory.length > 0 ? (
+                  <FlatList
+                    data={borrwerHistory}
+                    keyExtractor={(item) => item.id}
+                    scrollEnabled={false}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                      <BorrowersCard
+                        user={item}
+                        onPress={() =>
+                          router.push({
+                            pathname: "/userProfile/userProfileCard",
+                            params: { userId: item.id },
+                          })
+                        }
+                      />
+                    )}
+                  />
+                ) : (
+                  <CustomText style={{ color: textSec }}>
+                    {t("item.noBorrowers")}
+                  </CustomText>
+                )}
+              </View>
+            </View>
+          </ScrollView>
+
+          <Animated.View style={[styles.hoverButton, { top: slideAnim }]}>
+            {selectedItem?.status && (
+              <RenderButton
+                itemId={selectedItem.id}
+                status={selectedItem?.status}
+                userRole={userRole}
+                isPending={isPending}
+                func={{
+                  handleEditListing,
+                  handleMarkAsReturned,
+                  handleMessageOwner,
+                  handleRequestToBorrow,
+                }}
+              />
             )}
-          </View>
-        </View>
-      </ScrollView>
+          </Animated.View>
 
-      <Animated.View style={[styles.hoverButton, { top: slideAnim }]}>
-        {selectedItem?.status && (
-          <RenderButton
-            itemId={selectedItem.id}
-            status={selectedItem?.status}
-            userRole={userRole}
-            isPending={isPending}
-            func={{
-              handleEditListing,
-              handleMarkAsReturned,
-              handleMessageOwner,
-              handleRequestToBorrow,
-            }}
+          <RatingModal
+            borrower={borrowerForRating?.borrower?.name}
+            visible={showRatingModal}
+            onClose={() => setShowRatingModal(false)}
+            onSubmit={handleSubmitRating}
           />
-        )}
-      </Animated.View>
-
-      <RatingModal
-        borrower={borrowerForRating?.borrower?.name}
-        visible={showRatingModal}
-        onClose={() => setShowRatingModal(false)}
-        onSubmit={handleSubmitRating}
-      />
+        </>
+      )}
     </>
   );
 }
@@ -263,6 +273,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 40,
+  },
+  loaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
   },
   imageContainer: {
     width: "100%",

@@ -61,7 +61,7 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {Listings && (
+          {Listings && Listings.length > 0 && (
             <ItemSection heading={t("home.recently")} data={Listings} />
           )}
 
@@ -73,7 +73,7 @@ export default function HomeScreen() {
             />
           )}
 
-          {ListingByLoc && location && (
+          {ListingByLoc && ListingByLoc.length > 0 && location && (
             <ItemSection
               heading={t("home.location", { location: location })}
               data={ListingByLoc}
