@@ -46,7 +46,12 @@ export default function TabLayout() {
             </View>
           );
         },
-        tabBarStyle: { backgroundColor: bg },
+        tabBarStyle: {
+          backgroundColor: bg,
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowColor: "transparent",
+        },
       })}
     >
       <Tabs.Screen

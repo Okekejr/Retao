@@ -1,6 +1,6 @@
 import CustomText from "@/components/ui/customText";
 import { Image } from "expo-image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -28,6 +28,16 @@ export const ItemImagesCarousel = ({ images }: ItemImagesCarouselProps) => {
   );
 
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+
+  useEffect(() => {
+    if (images && images.length > 0) {
+      images.forEach((img) => {
+        if (typeof img === "string") {
+          Image.prefetch(img);
+        }
+      });
+    }
+  }, [images]);
 
   return (
     <View style={{ position: "relative" }}>

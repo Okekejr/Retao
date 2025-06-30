@@ -61,6 +61,7 @@ export default function ItemScreen() {
   const [borrowerForRating, setBorrowerForRating] = useState<Listing | null>(
     null
   );
+  const [imageReady, setImageReady] = useState(false);
   const bg = themeColor("background");
   const text = themeColor("text");
   const textSec = themeColor("textSecondary");
@@ -73,6 +74,15 @@ export default function ItemScreen() {
       useNativeDriver: false, // Use false for layout-related animations
     }).start();
   }, [slideAnim]);
+
+  useEffect(() => {
+    const imageUrl = selectedItem?.image?.[0];
+    if (imageUrl) {
+      Image.prefetch(imageUrl).then(() => {
+        setImageReady(true);
+      });
+    }
+  }, [selectedItem]);
 
   const userRole: UserRole =
     userData.id === selectedItem?.owner.id
@@ -144,7 +154,7 @@ export default function ItemScreen() {
 
   return (
     <>
-      {isLoading || !selectedItem ? (
+      {isLoading || !selectedItem || !imageReady ? (
         <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
         </View>

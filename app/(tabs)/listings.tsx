@@ -22,6 +22,7 @@ import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -34,17 +35,26 @@ export default function ListingsScreen() {
   const textSec = themeColor("textSecondary");
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
   const { userData } = useUserData();
   const queryClient = useQueryClient();
-  const { data: listings = [], isLoading: listingsLoading } = useGetListings(
-    undefined,
-    userData?.id,
-    undefined
-  );
-  const { data: requests, isLoading: requestLoading } =
-    useIncomingBorrowRequests();
-  const { data: pendingRequests, isLoading: pendingRequestsLoading } =
-    useBorrowerPendingRequests();
+
+  const {
+    data: listings = [],
+    isLoading: listingsLoading,
+    refetch: refetchListings,
+  } = useGetListings(undefined, userData?.id, undefined);
+  const {
+    data: requests,
+    isLoading: requestLoading,
+    refetch: refetchRequests,
+  } = useIncomingBorrowRequests();
+  const {
+    data: pendingRequests,
+    isLoading: pendingRequestsLoading,
+    refetch: refetchPendingRequests,
+  } = useBorrowerPendingRequests();
 
   const isAnyLoading =
     requestLoading || listingsLoading || pendingRequestsLoading;
@@ -65,6 +75,21 @@ export default function ListingsScreen() {
   };
 
   const closeModal = () => setModalVisible(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        refetchListings(),
+        refetchRequests(),
+        refetchPendingRequests(),
+      ]);
+    } catch (error) {
+      console.error("Refresh failed", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchListings, refetchRequests, refetchPendingRequests]);
 
   useFocusEffect(
     useCallback(() => {
@@ -116,6 +141,14 @@ export default function ListingsScreen() {
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingBottom: 80 }]}
         showsVerticalScrollIndicator={true}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[Colors.light.primary]}
+            tintColor={Colors.light.primary}
+          />
+        }
       >
         <InnerContainer style={{ gap: 16, flex: 1 }}>
           <View>

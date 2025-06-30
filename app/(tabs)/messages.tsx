@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   FlatList,
   Keyboard,
+  RefreshControl,
   SafeAreaView,
   StyleSheet,
   TextInput,
@@ -27,17 +28,35 @@ export default function MessagesScreen() {
   const bg = themeColor("background");
   const text = themeColor("text");
   const textTertiery = themeColor("textTertiery");
-  const { data: conversations, isLoading } = useConversations();
+
   const queryClient = useQueryClient();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedInput, setFocusedInput] = useState<null | "search">(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const {
+    data: conversations,
+    isLoading,
+    refetch: refetchConversations,
+  } = useConversations();
 
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     }, [queryClient])
   );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refetchConversations();
+    } catch (error) {
+      console.error("Refresh failed", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchConversations]);
 
   const filteredConversations = useMemo(() => {
     if (!conversations) return [];
@@ -138,6 +157,14 @@ export default function MessagesScreen() {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => <PreviewCard item={item} />}
               contentContainerStyle={{ paddingVertical: 16 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors.light.primary]}
+                  tintColor={Colors.light.primary}
+                />
+              }
               ListEmptyComponent={
                 <View style={styles.emptyState}>
                   <CustomText

@@ -9,10 +9,11 @@ import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { themeColor } from "@/utils";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Platform,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -23,20 +24,39 @@ import { t } from "../../localization/t";
 
 export default function HomeScreen() {
   const bg = themeColor("background");
-  const { data: Listings, isLoading } = useGetListings();
+  const {
+    data: Listings,
+    isLoading,
+    refetch: refetchListings,
+  } = useGetListings();
   const { data: location } = useGetLocation();
-  const { data: featuredListings, isLoading: featuredLoading } =
-    useGetFeaturedListings(location);
-  const { data: ListingByLoc, isLoading: loadingLoc } = useGetListings(
-    location,
-    undefined,
-    undefined
-  );
+  const {
+    data: featuredListings,
+    isLoading: featuredLoading,
+    refetch: refetchFeatured,
+  } = useGetFeaturedListings(location);
+  const {
+    data: ListingByLoc,
+    isLoading: loadingLoc,
+    refetch: refetchByLoc,
+  } = useGetListings(location, undefined, undefined);
   const { data: Categories, isLoading: catLoading } = useGetCategories();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const isAnyLoading = isLoading || loadingLoc || catLoading || featuredLoading;
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([refetchListings(), refetchFeatured(), refetchByLoc()]);
+    } catch (e) {
+      console.error("Refresh failed", e);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchListings, refetchFeatured, refetchByLoc]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
@@ -60,6 +80,14 @@ export default function HomeScreen() {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.light.primary]}
+              tintColor={Colors.light.primary}
+            />
+          }
         >
           {Listings && Listings.length > 0 && (
             <ItemSection heading={t("home.recently")} data={Listings} />

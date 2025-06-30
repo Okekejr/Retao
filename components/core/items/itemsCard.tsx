@@ -10,7 +10,7 @@ import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -51,6 +51,9 @@ export const ItemsCard: FC<ItemsCardProps> = ({
   const { userData } = useUserData();
   const router = useRouter();
   const hideFavorite = userData.id === owner?.id || ownerId;
+  const imageUrl = image[0];
+
+  const [isImageReady, setIsImageReady] = useState(false);
 
   const { data: isFavorited, isLoading: isLoadingFavorite } = useIsFavorited(
     userData.id,
@@ -79,10 +82,28 @@ export const ItemsCard: FC<ItemsCardProps> = ({
     });
   };
 
+  useEffect(() => {
+    if (imageUrl) {
+      Image.prefetch(imageUrl).then(() => {
+        setIsImageReady(true);
+      });
+    }
+  }, [imageUrl]);
+
   return (
     <TouchableOpacity onPress={handlePress} style={styles.card}>
       <View style={styles.imageWrapper}>
-        <Image source={image[0]} style={styles.image} contentFit="cover" />
+        {isImageReady ? (
+          <Image
+            source={imageUrl}
+            style={styles.image}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
+        ) : (
+          <ActivityIndicator size="large" color="#ccc" style={styles.image} />
+        )}
+
         {userSub && <SubscriptionBadge plan={userSub} />}
         {!hideFavorite && (
           <TouchableOpacity
