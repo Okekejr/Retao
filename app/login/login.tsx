@@ -3,7 +3,7 @@ import CustomHeading from "@/components/ui/customHeading";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { AppName } from "@/constants/random";
+import { AppName, BASE_URL } from "@/constants/random";
 import { useNetwork } from "@/context/networkContext";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
@@ -16,7 +16,9 @@ import {
   themeColor,
   validateEmail,
 } from "@/utils";
+import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -32,6 +34,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
+  const { updateUserForm } = useUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailExist, setEmailExist] = useState(true);
@@ -230,6 +233,74 @@ export default function LoginScreen() {
             </TouchableOpacity>
 
             <CustomDivider text="OR" />
+
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+              }
+              buttonStyle={
+                AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+              }
+              cornerRadius={8}
+              style={{
+                width: "100%",
+                height: 54,
+                marginVertical: 20,
+              }}
+              onPress={async () => {
+                try {
+                  const credential = await AppleAuthentication.signInAsync({
+                    requestedScopes: [
+                      AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                      AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    ],
+                  });
+
+                  console.log("Apple credential:", credential);
+
+                  if (!credential.identityToken) {
+                    alert("Apple login failed: No token received");
+                    return;
+                  }
+
+                  const res = await fetch(`${BASE_URL}users/auth/apple`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      identityToken: credential.identityToken,
+                    }),
+                  });
+
+                  if (!res.ok) {
+                    const text = await res.text(); // fallback error body
+                    console.error("Raw backend response:", text);
+                    alert("Login failed.");
+                    return;
+                  }
+
+                  const data = await res.json();
+
+                  await SecureStore.setItemAsync("token", data.token);
+                  await SecureStore.setItemAsync("id", data.userId);
+                  await refreshData(); // reuse your existing logic
+
+                  if (data.isNew) {
+                    updateUserForm("id", data.userId);
+                    updateUserForm("email", credential.email ?? "");
+                    router.replace("/signup/intro"); // Start onboarding flow
+                  } else {
+                    router.replace("/home");
+                  }
+                } catch (error: any) {
+                  if (error.code === "ERR_CANCELED") {
+                    console.log("Apple login canceled");
+                  } else {
+                    console.error("Apple login failed", error);
+                    alert("Apple login failed");
+                  }
+                }
+              }}
+            />
 
             <TouchableOpacity
               style={[styles.nextButton, { backgroundColor: textTertiery }]}
