@@ -111,6 +111,7 @@ export default function SignupFormScreen() {
               <CustomListingHeader
                 heading={t("signUpForm.heading")}
                 subHeading={t("signUpForm.subHeading")}
+                style={{ color: Colors.light.text }}
               />
 
               {/* Name Input */}

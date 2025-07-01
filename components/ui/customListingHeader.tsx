@@ -7,12 +7,14 @@ interface CustomLisitngHeaderProps {
   heading: string;
   subHeading: string;
   style?: StyleProp<TextStyle>;
+  stylesub?: StyleProp<TextStyle>;
 }
 
 export const CustomListingHeader = ({
   heading,
   subHeading,
   style,
+  stylesub,
 }: CustomLisitngHeaderProps) => {
   const textSec = themeColor("textSecondary");
   const text = themeColor("text");
@@ -22,7 +24,7 @@ export const CustomListingHeader = ({
       <CustomText style={[styles.heading, h2, { color: text }, style]}>
         {heading}
       </CustomText>
-      <CustomText style={[styles.subheading, { color: textSec }, style]}>
+      <CustomText style={[styles.subheading, { color: textSec }, stylesub]}>
         {subHeading}
       </CustomText>
     </View>

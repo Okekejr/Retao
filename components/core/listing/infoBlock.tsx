@@ -1,21 +1,33 @@
 import CustomText from "@/components/ui/customText";
 import { themeColor } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface InfoBlockProps {
   label: string;
   value: string;
   editFunc?: () => void;
+  style?: StyleProp<TextStyle>;
 }
 
-export const InfoBlock = ({ label, value, editFunc }: InfoBlockProps) => {
+export const InfoBlock = ({
+  label,
+  value,
+  editFunc,
+  style,
+}: InfoBlockProps) => {
   const textSec = themeColor("textSecondary");
   const text = themeColor("text");
 
   const Content = (
     <View style={styles.editContainer}>
-      <CustomText style={[styles.value, { color: text }]}>
+      <CustomText style={[styles.value, { color: text }, style]}>
         {value || "—"}
       </CustomText>
       {editFunc && <Ionicons name="create-outline" size={16} color={text} />}

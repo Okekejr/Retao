@@ -116,6 +116,7 @@ export default function SignupReviewScreen() {
             <CustomListingHeader
               heading={t("signupReview.heading")}
               subHeading={t("signupReview.subHeading")}
+              style={{ color: Colors.light.text }}
             />
 
             <View>
@@ -127,16 +128,26 @@ export default function SignupReviewScreen() {
             </View>
 
             <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
-              <InfoBlock label={t("userProfile.name")} value={userData.name} />
+              <InfoBlock
+                label={t("userProfile.name")}
+                value={userData.name}
+                style={{ color: Colors.light.text }}
+              />
               <InfoBlock
                 label={t("userProfile.handle")}
                 value={userData.handle}
+                style={{ color: Colors.light.text }}
               />
               <InfoBlock
                 label={t("userProfile.location")}
                 value={userData.location}
+                style={{ color: Colors.light.text }}
               />
-              <InfoBlock label={t("userProfile.bio")} value={userData.bio} />
+              <InfoBlock
+                label={t("userProfile.bio")}
+                value={userData.bio}
+                style={{ color: Colors.light.text }}
+              />
             </ScrollView>
           </View>
 

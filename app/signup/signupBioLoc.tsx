@@ -97,6 +97,7 @@ export default function SignupBioLocScreen() {
             <CustomListingHeader
               heading={t("SignUpBioLoc.heading")}
               subHeading={t("SignUpBioLoc.subHeading")}
+              style={{ color: Colors.light.text }}
             />
 
             {/* Bio Input */}

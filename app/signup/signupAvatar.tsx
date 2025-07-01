@@ -66,6 +66,7 @@ export default function SignupAvatarScreen() {
             <CustomListingHeader
               heading={t("signupAvatar.heading")}
               subHeading={t("signupAvatar.subHeading")}
+              style={{ color: Colors.light.text }}
             />
 
             <View style={styles.avatarRow}>
