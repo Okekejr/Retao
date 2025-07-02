@@ -2,7 +2,7 @@
   "expo": {
     "name": "Retao",
     "slug": "Retao",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "retao",
@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.dylanokeks.retao",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -65,6 +65,9 @@
         {
           "photosPermission": "Retao accesses your photos to let you share them for Listings."
         }
+      ],
+      [
+        "expo-apple-authentication"
       ],
       "expo-localization",
       "expo-web-browser",
