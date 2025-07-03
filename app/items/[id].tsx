@@ -5,10 +5,13 @@ import {
   StatusBadge,
 } from "@/components/core/items/itemsDetails";
 import { RatingModal } from "@/components/core/items/rating/ratingModal";
+import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
+import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
 import { BorrowersCard } from "@/components/core/profile/borrowerCard";
 import { SubscriptionBadge } from "@/components/core/profile/subscriptionBadge";
 import { BackButton } from "@/components/ui/backButton";
 import CustomHeading from "@/components/ui/customHeading";
+import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Colors } from "@/constants/Colors";
 import { h2, h3, UserRole } from "@/constants/random";
@@ -48,13 +51,19 @@ export default function ItemScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { userData } = useUserData();
-  const { data: selectedItem, isLoading } = useGetListingById(id as string);
+  const {
+    data: selectedItem,
+    isLoading,
+    refetch,
+  } = useGetListingById(id as string);
   const { data: borrowRequestData } = useBorrowRequestByItem(id as string);
   const { mutate: requestToBorrow } = useRequestToBorrow();
   const { mutate: markAsReturnedMutation, isPending } =
     useUpdateBorrowRequest();
   const { data: borrwerHistory } = useBorrowerHistory(id as string);
   const [showRatingModal, setShowRatingModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [content, setContent] = useState("");
   const { mutate: submitRatingMutation, isPending: pendingRating } =
     useSubmitRatings();
   const slideAnim = useRef(new Animated.Value(height)).current;
@@ -84,6 +93,12 @@ export default function ItemScreen() {
     }
   }, [selectedItem]);
 
+  useEffect(() => {
+    if (userData.isLoggedIn) {
+      refetch();
+    }
+  }, [userData.isLoggedIn]);
+
   const userRole: UserRole =
     userData.id === selectedItem?.owner.id
       ? "owner"
@@ -99,7 +114,16 @@ export default function ItemScreen() {
     router.push({ pathname: "/listings/editListings", params: { id: itemId } });
   };
 
+  const openModal = (content: string) => {
+    setModalVisible(true);
+    setContent(content);
+  };
+
   const handleMessageOwner = async () => {
+    if (!userData.isLoggedIn) {
+      openModal("Login");
+      return;
+    }
     router.push({
       pathname: "/message/chatScreen",
       params: {
@@ -109,6 +133,10 @@ export default function ItemScreen() {
   };
 
   const handleRequestToBorrow = () => {
+    if (!userData.isLoggedIn) {
+      openModal("Login");
+      return;
+    }
     requestToBorrow({ itemId: id as string });
   };
 
@@ -117,14 +145,14 @@ export default function ItemScreen() {
       "Borrower at time of mark:",
       selectedItem && selectedItem.borrower
     );
-    if (!selectedItem?.borrower?.id) return;
+    if (!selectedItem?.borrower?.id || !userData.isLoggedIn) return;
 
     setBorrowerForRating(selectedItem);
     setShowRatingModal(true);
   };
 
   const handleSubmitRating = (rating: number) => {
-    if (!borrowerForRating?.borrower?.id) return;
+    if (!borrowerForRating?.borrower?.id || !userData.isLoggedIn) return;
 
     // First submit rating
     submitRatingMutation(
@@ -151,6 +179,8 @@ export default function ItemScreen() {
       params: { userId: selectedItem.owner.id },
     });
   };
+
+  const closeModal = () => setModalVisible(false);
 
   return (
     <>
@@ -273,6 +303,16 @@ export default function ItemScreen() {
             onClose={() => setShowRatingModal(false)}
             onSubmit={handleSubmitRating}
           />
+
+          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+            {content === "Login" && (
+              <GetLoggedInModal closeModal={closeModal} func={openModal} />
+            )}
+
+            {content === "Signup" && (
+              <GetSiggnedUp closeModal={closeModal} func={openModal} />
+            )}
+          </CustomModal>
         </>
       )}
     </>

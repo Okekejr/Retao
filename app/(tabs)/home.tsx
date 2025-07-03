@@ -1,15 +1,19 @@
 import { CategoriesSection } from "@/components/core/categories/categoriesSection";
 import { ItemSection } from "@/components/core/items/itemSection";
+import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
+import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
 import { SearchBar } from "@/components/core/searchBar";
 import { SearchModal } from "@/components/core/searchModal";
+import { CustomModal } from "@/components/ui/customModal";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { themeColor } from "@/utils";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -23,7 +27,7 @@ import {
 import { t } from "../../localization/t";
 
 export default function HomeScreen() {
-  const bg = themeColor("background");
+  const { userData } = useUserData();
   const {
     data: Listings,
     isLoading,
@@ -42,7 +46,10 @@ export default function HomeScreen() {
   } = useGetListings(location, undefined, undefined);
   const { data: Categories, isLoading: catLoading } = useGetCategories();
 
+  const bg = themeColor("background");
   const [modalVisible, setModalVisible] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [content, setContent] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
   const isAnyLoading = isLoading || loadingLoc || catLoading || featuredLoading;
@@ -58,63 +65,92 @@ export default function HomeScreen() {
     }
   }, [refetchListings, refetchFeatured, refetchByLoc]);
 
+  useEffect(() => {
+    if (!userData.isLoggedIn) {
+      setContent("Login");
+      setModal(true);
+    }
+  }, [userData.isLoggedIn]);
+
+  const openModal = (content: string) => {
+    setModalVisible(true);
+    setContent(content);
+  };
+
+  const closeModal = () => setModal(false);
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      {isAnyLoading && (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
-        </View>
-      )}
-      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle={t("home.title")} />
+    <>
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        {isAnyLoading && (
+          <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
+            <ActivityIndicator size="large" color={Colors.light.primary} />
+          </View>
+        )}
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header headerTitle={t("home.title")} />
 
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <SearchBar placeholder={t("home.searchBar")} />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <SearchBar placeholder={t("home.searchBar")} />
+          </TouchableOpacity>
 
-        <SearchModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-        />
+          <SearchModal
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+          />
 
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[Colors.light.primary]}
-              tintColor={Colors.light.primary}
-            />
-          }
-        >
-          {Listings && Listings.length > 0 && (
-            <ItemSection heading={t("home.recently")} data={Listings} />
-          )}
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors.light.primary]}
+                tintColor={Colors.light.primary}
+              />
+            }
+          >
+            {Listings && Listings.length > 0 && (
+              <ItemSection heading={t("home.recently")} data={Listings} />
+            )}
 
-          {featuredListings && featuredListings?.length > 0 && (
-            <ItemSection
-              heading={t("home.featured")}
-              data={featuredListings}
-              feat
-            />
-          )}
+            {featuredListings && featuredListings?.length > 0 && (
+              <ItemSection
+                heading={t("home.featured")}
+                data={featuredListings}
+                feat
+              />
+            )}
 
-          {ListingByLoc && ListingByLoc.length > 0 && location && (
-            <ItemSection
-              heading={t("home.location", { location: location })}
-              data={ListingByLoc}
-              loc={location}
-            />
-          )}
+            {ListingByLoc && ListingByLoc.length > 0 && location && (
+              <ItemSection
+                heading={t("home.location", { location: location })}
+                data={ListingByLoc}
+                loc={location}
+              />
+            )}
 
-          {Categories && (
-            <CategoriesSection title={t("home.categories")} data={Categories} />
-          )}
-        </ScrollView>
-      </InnerContainer>
-    </SafeAreaView>
+            {Categories && (
+              <CategoriesSection
+                title={t("home.categories")}
+                data={Categories}
+              />
+            )}
+          </ScrollView>
+        </InnerContainer>
+      </SafeAreaView>
+
+      <CustomModal modalVisible={modal} closeModal={closeModal}>
+        {content === "Login" && (
+          <GetLoggedInModal closeModal={closeModal} func={openModal} />
+        )}
+
+        {content === "Signup" && (
+          <GetSiggnedUp closeModal={closeModal} func={openModal} />
+        )}
+      </CustomModal>
+    </>
   );
 }
 

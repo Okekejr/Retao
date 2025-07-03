@@ -1,30 +1,39 @@
 import { ListAnItemBtn } from "@/components/core/listing/listAnItemBtn";
 import SelectCategory from "@/components/core/listing/selectCategory";
+import { NotLogged } from "@/components/core/notLogged";
+import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
+import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
 import { SelectPlans } from "@/components/core/plans/selectPlans";
 import { IdentityCard } from "@/components/core/profile/identityCard";
 import { ProfileSection } from "@/components/core/profile/profileSection";
 import { Settings } from "@/components/core/profile/settings";
+import { CustomDivider } from "@/components/ui/customDivider";
 import { CustomModal } from "@/components/ui/customModal";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
-import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
 import { t } from "@/localization/t";
-import { getProfileItems, showToast, themeColor } from "@/utils";
+import {
+  getLoggedOutProfileItems,
+  getProfileItems,
+  showToast,
+  themeColor,
+} from "@/utils";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
+  Dimensions,
   FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
 } from "react-native";
+
+const { height } = Dimensions.get("window");
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -51,25 +60,6 @@ export default function ProfileScreen() {
     });
   };
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      if (userData.id === "") {
-        try {
-          setLoading(true);
-          await refreshData();
-        } catch (error) {
-          console.log("Error refreshing userData:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadUserData();
-  }, [userData.id]);
-
-  const profileItems = getProfileItems();
-
   const handleOpenLink = async (href: string) => {
     const supported = await Linking.canOpenURL(href);
     if (supported) {
@@ -77,8 +67,8 @@ export default function ProfileScreen() {
     } else {
       showToast({
         type: "error",
-        text1: "Link invalid",
-        message: "Can't open this link",
+        text1: t("profile.toasts.invalidLink.title"),
+        message: t("profile.toasts.invalidLink.message"),
       });
     }
   };
@@ -95,78 +85,161 @@ export default function ProfileScreen() {
     } else {
       showToast({
         type: "error",
-        text1: "Cant open Email",
-        message: "No email app found to send the email",
+        text1: t("profile.toasts.emailError.title"),
+        message: t("profile.toasts.emailError.message"),
       });
     }
   };
 
+  useEffect(() => {
+    if (userData.isLoggedIn || userData.id === "") {
+      try {
+        setLoading(true);
+        refreshData();
+      } catch (error) {
+        console.log("Error refreshing userData", error);
+        showToast({
+          type: "error",
+          text1: t("profile.toasts.refreshError.title"),
+          message: t("profile.toasts.refreshError.message"),
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [userData.isLoggedIn]);
+
+  const profileItems = userData.isLoggedIn
+    ? getProfileItems()
+    : getLoggedOutProfileItems();
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      {loading && (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
-        </View>
-      )}
-
-      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle={t("profile.title")} style={{ marginBottom: 12 }} />
-
-        <ScrollView style={{ gap: 12 }}>
-          {userData.id !== "" && (
-            <TouchableOpacity onPress={handleViewOwnerProfile}>
-              <IdentityCard
-                user={userData}
-                func={() => openModal("plans")}
-                showPlan
-              />
-            </TouchableOpacity>
-          )}
-
-          {userData.subscription_plan === "unlimited" ||
-          userData.stats.listed < userData.listing_limit ? (
-            <ListAnItemBtn openModal={() => openModal("createListing")} />
-          ) : (
-            <ListAnItemBtn
-              openModal={() => openModal("plans")}
-              title={t("listings.listLimitTitle")}
-              subText={t("listings.listLimitSubTitle")}
-              icon="checkmark-done-circle-outline"
-              limitReached
-            />
-          )}
-
-          <FlatList
-            data={profileItems}
-            keyExtractor={(item) => item.label}
-            scrollEnabled={false}
-            contentContainerStyle={{ gap: 10 }}
-            renderItem={({ item }) => (
-              <ProfileSection
-                icon={item.icon}
-                label={item.label}
-                onPress={() => {
-                  if (item.func) logout();
-                  else if (item.content) openModal(item.content);
-                  else if (item.hrefLink) router.push(item.hrefLink);
-                  else if (item.mail) handleOpenEmail();
-                  else if (item.href) handleOpenLink(item.href);
-                }}
-              />
-            )}
+      {(!userData.isLoggedIn || !loading) && (
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("profile.title")}
+            style={{ marginBottom: 12 }}
           />
 
-          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-            {content === "createListing" && (
-              <SelectCategory closeModal={closeModal} />
+          <ScrollView style={{ gap: 12, paddingBottom: height }}>
+            {!userData.isLoggedIn ? (
+              <>
+                <NotLogged
+                  title={t("profile.notLoggedIn.title")}
+                  subTitle={t("profile.notLoggedIn.subTitle")}
+                  btnText={t("profile.notLoggedIn.btnText")}
+                  func={() => openModal("Login")}
+                />
+
+                <CustomModal
+                  modalVisible={modalVisible}
+                  closeModal={closeModal}
+                >
+                  {content === "Login" && (
+                    <GetLoggedInModal
+                      closeModal={closeModal}
+                      func={openModal}
+                    />
+                  )}
+
+                  {content === "Signup" && (
+                    <GetSiggnedUp closeModal={closeModal} func={openModal} />
+                  )}
+
+                  {content === "settings" && (
+                    <Settings closeModal={closeModal} />
+                  )}
+                </CustomModal>
+
+                <CustomDivider style={{ marginVertical: 30 }} />
+
+                <FlatList
+                  data={profileItems}
+                  keyExtractor={(item) => item.label}
+                  scrollEnabled={false}
+                  contentContainerStyle={{ gap: 10 }}
+                  renderItem={({ item }) => (
+                    <ProfileSection
+                      icon={item.icon}
+                      label={item.label}
+                      onPress={() => {
+                        if (item.func) logout();
+                        else if (item.content) openModal(item.content);
+                        else if (item.hrefLink) router.push(item.hrefLink);
+                        else if (item.mail) handleOpenEmail();
+                        else if (item.href) handleOpenLink(item.href);
+                      }}
+                    />
+                  )}
+                />
+              </>
+            ) : (
+              <>
+                {userData.id !== "" && (
+                  <TouchableOpacity onPress={handleViewOwnerProfile}>
+                    <IdentityCard
+                      user={userData}
+                      func={() => openModal("plans")}
+                      showPlan
+                    />
+                  </TouchableOpacity>
+                )}
+
+                {userData.subscription_plan === "unlimited" ||
+                userData.stats.listed < userData.listing_limit ? (
+                  <ListAnItemBtn openModal={() => openModal("createListing")} />
+                ) : (
+                  <ListAnItemBtn
+                    openModal={() => openModal("plans")}
+                    title={t("listings.listLimitTitle")}
+                    subText={t("listings.listLimitSubTitle")}
+                    icon="checkmark-done-circle-outline"
+                    limitReached
+                  />
+                )}
+
+                <FlatList
+                  data={profileItems}
+                  keyExtractor={(item) => item.label}
+                  scrollEnabled={false}
+                  contentContainerStyle={{ gap: 10 }}
+                  renderItem={({ item }) => (
+                    <ProfileSection
+                      icon={item.icon}
+                      label={item.label}
+                      onPress={() => {
+                        if (item.func) logout();
+                        else if (item.content) openModal(item.content);
+                        else if (item.hrefLink) router.push(item.hrefLink);
+                        else if (item.mail) handleOpenEmail();
+                        else if (item.href) handleOpenLink(item.href);
+                      }}
+                    />
+                  )}
+                />
+
+                <CustomModal
+                  modalVisible={modalVisible}
+                  closeModal={closeModal}
+                >
+                  {content === "createListing" && (
+                    <SelectCategory closeModal={closeModal} />
+                  )}
+
+                  {content === "settings" && (
+                    <Settings closeModal={closeModal} />
+                  )}
+
+                  {content === "plans" && (
+                    <SelectPlans closeModal={closeModal} />
+                  )}
+                </CustomModal>
+              </>
             )}
-
-            {content === "settings" && <Settings closeModal={closeModal} />}
-
-            {content === "plans" && <SelectPlans closeModal={closeModal} />}
-          </CustomModal>
-        </ScrollView>
-      </InnerContainer>
+          </ScrollView>
+        </InnerContainer>
+      )}
     </SafeAreaView>
   );
 }

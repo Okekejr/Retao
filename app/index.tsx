@@ -15,7 +15,7 @@ export default function IndexScreen() {
   const router = useRouter();
   const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
-  const { userData } = useUserData();
+  const { userData, updateUserForm } = useUserData();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -34,17 +34,19 @@ export default function IndexScreen() {
 
       const token = await SecureStore.getItemAsync("token");
       if (!token) {
-        router.replace("/login/login");
+        updateUserForm("isLoggedIn", false); // 👈 set guest
+        router.replace("/home"); // let them explore freely
         return;
       }
 
       try {
-        await refreshData(); // updates context
-        setIsChecking(false); // ready to evaluate userData
+        await refreshData();
+        updateUserForm("isLoggedIn", true);
+        setIsChecking(false);
       } catch (error) {
         console.error("Auth check failed:", error);
         await SecureStore.deleteItemAsync("token");
-        router.replace("/login/login");
+        router.replace("/home");
       }
     };
 

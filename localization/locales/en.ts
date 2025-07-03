@@ -23,6 +23,10 @@ const en: TranslationKeys = {
     borrowedListings: "Borrowed",
     requests: "Requests",
     myPending: "My Pending Requests",
+    notLoggedIn: {
+      title: "No Listings yet",
+      subTitle: "Login to create listings, edit, view request and many more.",
+    },
   },
   selectCategories: {
     title: "What type of item are you listing?",
@@ -38,16 +42,25 @@ const en: TranslationKeys = {
     delete: "Delete",
     back: "Back",
     save: "Save",
+    login: "Log in",
   },
   wishList: {
     title: "Wishlist",
     loadingText: "Loading favorites...",
     noFavs: "No favorited items available yet.",
+    notLoggedIn: {
+      title: "Log in to view your wishlists",
+      subTitle: "You can view and edit your wishlist once you have logged in",
+    },
   },
   messages: {
     title: "Messages",
     noMsgs: "No conversations found",
     searchMsg: "Try searching by name.",
+    notLoggedIn: {
+      title: "Log in to see messages",
+      subTitle: "You can view messages from people in the community.",
+    },
   },
   profile: {
     title: "Profile",
@@ -59,6 +72,26 @@ const en: TranslationKeys = {
     help: "Help & FAQs",
     support: "Contact Support",
     logout: "Log Out",
+    toasts: {
+      invalidLink: {
+        title: "Link invalid",
+        message: "Can't open this link",
+      },
+      emailError: {
+        title: "Cant open Email",
+        message: "No email app found to send the email",
+      },
+      refreshError: {
+        title: "Error",
+        message: "Error refreshing profile",
+      },
+    },
+    notLoggedIn: {
+      title: "Manage profile",
+      subTitle: "Login to take more control of your experience.",
+      btnText: "Log in or sign up",
+      signup: "Sign up",
+    },
   },
   accountSettings: {
     personal: "Personal information",
@@ -74,6 +107,11 @@ const en: TranslationKeys = {
     deactivateSubTitle: "This cannot be undone",
     deactivating: "Deactivating..",
     deactivate: "Deactivate",
+    confirmAlert: {
+      title: "Confirm",
+      message: "There's no going back, Are you sure?",
+      cancel: "Cancel",
+    },
     errors: {
       currentPasswordRequired: "Current password is required",
       invalidNewPassword:
@@ -294,6 +332,12 @@ const en: TranslationKeys = {
   },
   plans: {
     header: "Choose Your Plan",
+  },
+  logout: {
+    confirmTitle: "Confirm",
+    confirmMessage: "You are signing out, Are you sure?",
+    cancel: "Cancel",
+    signOut: "Sign Out",
   },
 };
 

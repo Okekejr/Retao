@@ -21,6 +21,10 @@ export type TranslationKeys = {
     borrowedListings: string;
     requests: string;
     myPending: string;
+    notLoggedIn: {
+      title: string;
+      subTitle: string;
+    };
   };
   selectCategories: {
     title: string;
@@ -36,16 +40,25 @@ export type TranslationKeys = {
     delete: string;
     back: string;
     save: string;
+    login: string;
   };
   wishList: {
     title: string;
     loadingText: string;
     noFavs: string;
+    notLoggedIn: {
+      title: string;
+      subTitle: string;
+    };
   };
   messages: {
     title: string;
     noMsgs: string;
     searchMsg: string;
+    notLoggedIn: {
+      title: string;
+      subTitle: string;
+    };
   };
   profile: {
     title: string;
@@ -57,6 +70,26 @@ export type TranslationKeys = {
     help: string;
     support: string;
     logout: string;
+    toasts: {
+      invalidLink: {
+        title: string;
+        message: string;
+      };
+      emailError: {
+        title: string;
+        message: string;
+      };
+      refreshError: {
+        title: string;
+        message: string;
+      };
+    };
+    notLoggedIn: {
+      title: string;
+      subTitle: string;
+      btnText: string;
+      signup: string;
+    };
   };
   accountSettings: {
     personal: string;
@@ -72,6 +105,11 @@ export type TranslationKeys = {
     deactivateSubTitle: string;
     deactivating: string;
     deactivate: string;
+    confirmAlert: {
+      title: string;
+      message: string;
+      cancel: string;
+    };
     errors: {
       currentPasswordRequired: string;
       invalidNewPassword: string;
@@ -276,5 +314,11 @@ export type TranslationKeys = {
   };
   plans: {
     header: string;
+  };
+  logout: {
+    confirmTitle: string;
+    confirmMessage: string;
+    cancel: string;
+    signOut: string;
   };
 };

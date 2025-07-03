@@ -1,6 +1,7 @@
 import { createContext, FC, useContext, useState } from "react";
 
 export interface userProfile {
+  isLoggedIn: boolean;
   id: string;
   email: string;
   name: string;
@@ -38,6 +39,7 @@ export interface userProfile {
 }
 
 const initialState: userProfile = {
+  isLoggedIn: false,
   id: "",
   email: "",
   name: "",

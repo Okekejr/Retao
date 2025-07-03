@@ -25,7 +25,7 @@ const ColorSwitcher = () => {
   };
 
   return (
-    <View style={{ paddingBottom: 50 }}>
+    <View>
       <View style={[styles.categoryBox, { backgroundColor: bg }]}>
         <Ionicons
           name={theme === "dark" ? "moon-outline" : "sunny-outline"}

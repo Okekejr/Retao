@@ -23,6 +23,11 @@ const es: TranslationKeys = {
     borrowedListings: "Prestados",
     requests: "Solicitudes",
     myPending: "Mis Solicitudes Pendientes",
+    notLoggedIn: {
+      title: "Aún no hay Articulos",
+      subTitle:
+        "Inicia sesión para crear articulos, editar, ver solicitudes y mucho más.",
+    },
   },
   selectCategories: {
     title: "¿Qué tipo de artículo estás listando?",
@@ -38,16 +43,26 @@ const es: TranslationKeys = {
     delete: "Eliminar",
     save: "Guardar",
     back: "Volver",
+    login: "Iniciar sesión",
   },
   wishList: {
     title: "Lista de deseos",
     loadingText: "Cargando favoritos...",
     noFavs: "No hay artículos favoritos disponibles aún.",
+    notLoggedIn: {
+      title: "Inicia sesión para ver tus listas de deseos",
+      subTitle:
+        "Puedes ver y editar tu lista de deseos una vez que hayas iniciado sesión",
+    },
   },
   messages: {
     title: "Mensajes",
     noMsgs: "No se encontraron conversaciones",
     searchMsg: "Intenta buscar por nombre.",
+    notLoggedIn: {
+      title: "Inicia sesión para ver mensajes",
+      subTitle: "Puedes ver mensajes de personas en la comunidad.",
+    },
   },
   profile: {
     title: "Perfil",
@@ -59,6 +74,27 @@ const es: TranslationKeys = {
     help: "Ayuda y Preguntas Frecuentes",
     support: "Contactar Soporte",
     logout: "Cerrar sesión",
+    toasts: {
+      invalidLink: {
+        title: "Enlace inválido",
+        message: "No se puede abrir este enlace",
+      },
+      emailError: {
+        title: "No se puede abrir el correo",
+        message:
+          "No se encontró una aplicación de correo para enviar el correo",
+      },
+      refreshError: {
+        title: "Error",
+        message: "Error al actualizar el perfil",
+      },
+    },
+    notLoggedIn: {
+      title: "Administrar perfil",
+      subTitle: "Inicia sesión para tener más control de tu experiencia.",
+      btnText: "Iniciar sesión o registrarse",
+      signup: "Regístrate",
+    },
   },
   accountSettings: {
     personal: "Información personal",
@@ -74,6 +110,11 @@ const es: TranslationKeys = {
     deactivateSubTitle: "Esto no se puede deshacer",
     deactivating: "Desactivando...",
     deactivate: "Desactivar",
+    confirmAlert: {
+      title: "Confirmar",
+      message: "No hay vuelta atrás, ¿estás seguro?",
+      cancel: "Cancelar",
+    },
     errors: {
       currentPasswordRequired: "Se requiere la contraseña actual",
       invalidNewPassword:
@@ -127,7 +168,7 @@ const es: TranslationKeys = {
   itemDetails: {
     edit: "Editar artículo",
     returned: "Marcar como Devuelto",
-    request: "Solicitar Préstamo",
+    request: "Solicitar Préstar",
     at: "a las",
     on: "el",
     dueBy: "Devolver antes de",
@@ -295,6 +336,12 @@ const es: TranslationKeys = {
   },
   plans: {
     header: "Elige tu plan",
+  },
+  logout: {
+    confirmTitle: "Confirmar",
+    confirmMessage: "Estás por cerrar sesión, ¿estás seguro?",
+    cancel: "Cancelar",
+    signOut: "Cerrar sesión",
   },
 };
 

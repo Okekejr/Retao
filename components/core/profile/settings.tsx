@@ -1,13 +1,16 @@
 import ColorSwitcher from "@/components/ui/colorSwitcher";
+import { CustomDivider } from "@/components/ui/customDivider";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import LanguageSwitcher from "@/components/ui/languageSwitcher";
 import { h3 } from "@/constants/random";
+import { useUserData } from "@/context/userContext";
 import { t } from "@/localization/t";
 import { getAccountSettings, themeColor } from "@/utils";
 import { useRouter } from "expo-router";
 import { FC } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import { AppVersion } from "../appVersion";
 import { ProfileSection } from "./profileSection";
 
 interface SettingsProps {
@@ -16,6 +19,7 @@ interface SettingsProps {
 
 export const Settings: FC<SettingsProps> = ({ closeModal }) => {
   const router = useRouter();
+  const { userData } = useUserData();
   const text = themeColor("text");
 
   const AccountSettings = getAccountSettings();
@@ -28,25 +32,31 @@ export const Settings: FC<SettingsProps> = ({ closeModal }) => {
         </CustomText>
       </View>
 
-      <FlatList
-        data={AccountSettings}
-        keyExtractor={(item) => item.label}
-        scrollEnabled={false}
-        contentContainerStyle={{ gap: 10 }}
-        renderItem={({ item }) => (
-          <ProfileSection
-            icon={item.icon}
-            label={item.label}
-            onPress={() => {
-              item.hrefLink && closeModal(), router.push(item.hrefLink);
-            }}
-          />
-        )}
-      />
+      {userData.isLoggedIn && (
+        <FlatList
+          data={AccountSettings}
+          keyExtractor={(item) => item.label}
+          scrollEnabled={false}
+          contentContainerStyle={{ gap: 10 }}
+          renderItem={({ item }) => (
+            <ProfileSection
+              icon={item.icon}
+              label={item.label}
+              onPress={() => {
+                item.hrefLink && closeModal(), router.push(item.hrefLink);
+              }}
+            />
+          )}
+        />
+      )}
 
       <LanguageSwitcher onClose={closeModal} />
 
       <ColorSwitcher />
+
+      <CustomDivider style={{ marginVertical: 30 }} />
+
+      <AppVersion style={{ paddingBottom: 50 }} />
     </InnerContainer>
   );
 };

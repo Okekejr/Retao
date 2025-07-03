@@ -1,4 +1,5 @@
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { Alert } from "react-native";
@@ -8,10 +9,10 @@ export const useLogout = () => {
   const { resetUserData } = useUserData();
 
   const logout = async () => {
-    Alert.alert("Confirm", `You are signing out, Are you sure?`, [
-      { text: "Cancel", style: "cancel" }, // Cancel action
+    Alert.alert(t("logout.confirmTitle"), t("logout.confirmMessage"), [
+      { text: t("logout.cancel"), style: "cancel" },
       {
-        text: "Sign Out",
+        text: t("logout.signOut"),
         style: "destructive",
         onPress: async () => {
           try {
@@ -22,7 +23,7 @@ export const useLogout = () => {
             resetUserData();
 
             // Redirect to the login screen
-            router.replace("/login/login");
+            router.replace("/home");
           } catch (error) {
             console.error("Logout failed:", error);
           }

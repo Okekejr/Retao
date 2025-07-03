@@ -82,7 +82,7 @@ export default function SignupFormScreen() {
     try {
       await SecureStore.deleteItemAsync("token");
       resetUserData();
-      router.replace({ pathname: "/login/login" });
+      router.replace({ pathname: "/home" });
     } catch (error) {
       console.log(error);
     }

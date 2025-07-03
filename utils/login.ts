@@ -1,5 +1,6 @@
 import { BASE_URL } from "@/constants/random";
 import * as SecureStore from "expo-secure-store";
+import { showToast } from "./showToast";
 import { validateEmail } from "./validate";
 
 export const LoginFunc = async (email: string, password: string) => {
@@ -20,6 +21,11 @@ export const LoginFunc = async (email: string, password: string) => {
     return { success: true };
   } catch (error: any) {
     console.error("Login error:", error.message);
+    showToast({
+      type: "error",
+      text1: "Login Error",
+      message: `${error.message}`,
+    });
     return { success: false, error: error.message };
   }
 };

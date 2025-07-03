@@ -49,6 +49,24 @@ export const getProfileItems = (): profileItemsT => [
   },
 ];
 
+export const getLoggedOutProfileItems = (): profileItemsT => [
+  {
+    label: t("profile.accountSettings"),
+    icon: "settings-outline",
+    content: "settings",
+  },
+  {
+    label: t("profile.help"),
+    icon: "help-circle-outline",
+    href: "https://www.okekedev.com",
+  },
+  {
+    label: t("profile.support"),
+    icon: "chatbubble-ellipses-outline",
+    mail: true,
+  },
+];
+
 export const getAccountSettings = (): profileItemsT => [
   {
     label: t("accountSettings.personal"),

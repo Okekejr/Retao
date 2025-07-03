@@ -1,14 +1,15 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import CustomText from "./customText";
 
 interface Props {
   text?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const CustomDivider = ({ text }: Props) => {
+export const CustomDivider = ({ text, style }: Props) => {
   return (
-    <View style={styles.dividerContainer}>
+    <View style={[styles.dividerContainer, style]}>
       <View style={styles.line} />
       {text && <CustomText style={styles.text}>{text}</CustomText>}
       <View style={styles.line} />

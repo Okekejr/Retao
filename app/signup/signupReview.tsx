@@ -11,6 +11,7 @@ import { avatarsT } from "@/types";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { useState } from "react";
 import {
   DimensionValue,
   SafeAreaView,
@@ -27,6 +28,7 @@ const avatars: avatarsT = [
 export default function SignupReviewScreen() {
   const router = useRouter();
   const { userData, updateUserForm } = useUserData();
+  const [loading, setLoading] = useState(false);
 
   const avatar = avatars.find((a) => a.id === userData.avatar);
 
@@ -40,6 +42,7 @@ export default function SignupReviewScreen() {
   };
 
   const handleNext = async () => {
+    setLoading(true);
     try {
       // make API CALL to save data here, if successful send to success screen
       const res = await fetch(`${BASE_URL}users/profile`, {
@@ -103,6 +106,8 @@ export default function SignupReviewScreen() {
       router.replace("/signup/loadingScreen");
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,6 +157,7 @@ export default function SignupReviewScreen() {
           </View>
 
           <ListingButtons
+            disabled={loading}
             handleBack={handleBack}
             handleNext={handleNext}
             nextBtnTitle={t("btnTexts.submit")}

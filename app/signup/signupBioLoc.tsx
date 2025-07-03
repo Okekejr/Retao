@@ -105,6 +105,7 @@ export default function SignupBioLocScreen() {
               <CustomText style={styles.label}>Bio</CustomText>
               <TextInput
                 style={[styles.input, styles.textArea]}
+                placeholderTextColor={Colors.light.muted}
                 placeholder={t("SignUpBioLoc.placeholders.bio")}
                 multiline
                 maxLength={160}
@@ -123,6 +124,7 @@ export default function SignupBioLocScreen() {
 
               <TextInput
                 style={styles.input}
+                placeholderTextColor={Colors.light.muted}
                 placeholder={t("SignUpBioLoc.placeholders.location")}
                 value={location}
                 onChangeText={handleLocationChange}

@@ -114,7 +114,7 @@ export const RenderButton = ({
   if (userRole === "viewer") {
     return (
       <>
-        {isListed && (
+        {(isListed || isBorrowed) && (
           <TouchableOpacity
             style={[styles.primaryButton, styles.buttonHover]}
             onPress={func.handleRequestToBorrow}

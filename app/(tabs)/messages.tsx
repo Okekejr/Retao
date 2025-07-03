@@ -1,8 +1,13 @@
 import { PreviewCard } from "@/components/core/chat/previewCard";
+import { NotLogged } from "@/components/core/notLogged";
+import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
+import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
+import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { useConversations } from "@/hooks/useChat";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
@@ -10,9 +15,9 @@ import { Feather } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { AnimatePresence, MotiView } from "moti";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
+  Dimensions,
   FlatList,
   Keyboard,
   RefreshControl,
@@ -24,16 +29,22 @@ import {
   View,
 } from "react-native";
 
-export default function MessagesScreen() {
-  const bg = themeColor("background");
-  const text = themeColor("text");
-  const textTertiery = themeColor("textTertiery");
+const { height } = Dimensions.get("window");
 
-  const queryClient = useQueryClient();
+export default function MessagesScreen() {
+  const { userData } = useUserData();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedInput, setFocusedInput] = useState<null | "search">(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [content, setContent] = useState("");
+
+  const queryClient = useQueryClient();
+
+  const bg = themeColor("background");
+  const text = themeColor("text");
+  const textTertiery = themeColor("textTertiery");
 
   const {
     data: conversations,
@@ -43,7 +54,9 @@ export default function MessagesScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      if (userData.isLoggedIn) {
+        queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      }
     }, [queryClient])
   );
 
@@ -65,123 +78,160 @@ export default function MessagesScreen() {
     );
   }, [searchQuery, conversations]);
 
+  const openModal = (content: string) => {
+    setModalVisible(true);
+    setContent(content);
+  };
+
+  const closeModal = () => setModalVisible(false);
+
+  useEffect(() => {
+    if (userData.isLoggedIn) {
+      onRefresh();
+    }
+  }, [userData.isLoggedIn]);
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      {isLoading && (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
-        </View>
-      )}
-
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header
-            headerTitle={t("messages.title")}
-            style={{ marginBottom: 12 }}
-          >
-            {!searchOpen && (
-              <TouchableOpacity
-                style={{
-                  padding: 8,
-                  borderRadius: 100,
-                  backgroundColor: Colors.light.muted,
-                }}
-                onPress={() => setSearchOpen(true)}
+    <>
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        {(!userData.isLoggedIn || !isLoading) && (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+              <Header
+                headerTitle={t("messages.title")}
+                style={{ marginBottom: 12 }}
               >
-                <Feather name="search" size={22} color="#333" />
-              </TouchableOpacity>
-            )}
-          </Header>
-
-          <AnimatePresence>
-            {searchOpen && (
-              <MotiView
-                from={{ opacity: 0, translateX: 50 }}
-                animate={{ opacity: 1, translateX: 0 }}
-                exit={{ opacity: 0, translateX: 50 }}
-                style={styles.searchContainer}
-              >
-                <View
-                  style={[
-                    styles.searchInputWrapper,
-                    focusedInput === "search" && styles.focusedInput,
-                  ]}
-                >
-                  <Feather
-                    name="search"
-                    size={18}
-                    color="#000"
-                    style={{ marginRight: 8 }}
-                  />
-                  <TextInput
-                    style={styles.searchInput}
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    placeholder="Search by name"
-                    placeholderTextColor={Colors.light.textSecondary}
-                    selectionColor="#000"
-                    autoFocus
-                    autoCorrect={false}
-                    onFocus={() => setFocusedInput("search")}
-                    onBlur={() => setFocusedInput(null)}
-                  />
-
-                  {searchQuery.length > 0 && (
-                    <TouchableOpacity
-                      onPress={() => setSearchQuery("")}
-                      style={[styles.closeButton, { backgroundColor: bg }]}
-                    >
-                      <Feather name="x" size={16} color={text} />
-                    </TouchableOpacity>
-                  )}
-                </View>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearchOpen(false);
-                    setSearchQuery("");
-                  }}
-                >
-                  <CustomText style={[styles.backText, { color: text }]}>
-                    {t("btnTexts.cancel")}
-                  </CustomText>
-                </TouchableOpacity>
-              </MotiView>
-            )}
-          </AnimatePresence>
-
-          <View>
-            <FlatList
-              data={filteredConversations}
-              showsVerticalScrollIndicator
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => <PreviewCard item={item} />}
-              contentContainerStyle={{ paddingVertical: 16 }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={[Colors.light.primary]}
-                  tintColor={Colors.light.primary}
-                />
-              }
-              ListEmptyComponent={
-                <View style={styles.emptyState}>
-                  <CustomText
-                    style={[styles.emptyText, { color: textTertiery }]}
+                {!searchOpen && userData.isLoggedIn && (
+                  <TouchableOpacity
+                    style={{
+                      padding: 8,
+                      borderRadius: 100,
+                      backgroundColor: Colors.light.muted,
+                    }}
+                    onPress={() => setSearchOpen(true)}
                   >
-                    {t("messages.noMsgs")}
-                  </CustomText>
-                  <CustomText style={styles.emptySubText}>
-                    {t("messages.searchMsg")}
-                  </CustomText>
-                </View>
-              }
-            />
-          </View>
-        </InnerContainer>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+                    <Feather name="search" size={22} color="#333" />
+                  </TouchableOpacity>
+                )}
+              </Header>
+
+              {!userData.isLoggedIn ? (
+                <NotLogged
+                  title={t("messages.notLoggedIn.title")}
+                  subTitle={t("messages.notLoggedIn.subTitle")}
+                  func={() => openModal("Login")}
+                />
+              ) : (
+                <>
+                  <AnimatePresence>
+                    {searchOpen && (
+                      <MotiView
+                        from={{ opacity: 0, translateX: 50 }}
+                        animate={{ opacity: 1, translateX: 0 }}
+                        exit={{ opacity: 0, translateX: 50 }}
+                        style={styles.searchContainer}
+                      >
+                        <View
+                          style={[
+                            styles.searchInputWrapper,
+                            focusedInput === "search" && styles.focusedInput,
+                          ]}
+                        >
+                          <Feather
+                            name="search"
+                            size={18}
+                            color="#000"
+                            style={{ marginRight: 8 }}
+                          />
+                          <TextInput
+                            style={styles.searchInput}
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            placeholder="Search by name"
+                            placeholderTextColor={Colors.light.textSecondary}
+                            selectionColor="#000"
+                            autoFocus
+                            autoCorrect={false}
+                            onFocus={() => setFocusedInput("search")}
+                            onBlur={() => setFocusedInput(null)}
+                          />
+
+                          {searchQuery.length > 0 && (
+                            <TouchableOpacity
+                              onPress={() => setSearchQuery("")}
+                              style={[
+                                styles.closeButton,
+                                { backgroundColor: bg },
+                              ]}
+                            >
+                              <Feather name="x" size={16} color={text} />
+                            </TouchableOpacity>
+                          )}
+                        </View>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSearchOpen(false);
+                            setSearchQuery("");
+                          }}
+                        >
+                          <CustomText
+                            style={[styles.backText, { color: text }]}
+                          >
+                            {t("btnTexts.cancel")}
+                          </CustomText>
+                        </TouchableOpacity>
+                      </MotiView>
+                    )}
+                  </AnimatePresence>
+
+                  <View>
+                    <FlatList
+                      data={filteredConversations}
+                      showsVerticalScrollIndicator
+                      keyExtractor={(item) => item.id}
+                      renderItem={({ item }) => <PreviewCard item={item} />}
+                      contentContainerStyle={{ paddingVertical: 16 }}
+                      style={{ paddingBottom: height }}
+                      refreshControl={
+                        <RefreshControl
+                          refreshing={refreshing}
+                          onRefresh={onRefresh}
+                          colors={[Colors.light.primary]}
+                          tintColor={Colors.light.primary}
+                        />
+                      }
+                      ListEmptyComponent={
+                        <View style={styles.emptyState}>
+                          <CustomText
+                            style={[styles.emptyText, { color: textTertiery }]}
+                          >
+                            {t("messages.noMsgs")}
+                          </CustomText>
+                          <CustomText style={styles.emptySubText}>
+                            {t("messages.searchMsg")}
+                          </CustomText>
+                        </View>
+                      }
+                    />
+                  </View>
+                </>
+              )}
+            </InnerContainer>
+          </TouchableWithoutFeedback>
+        )}
+      </SafeAreaView>
+
+      <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+        {content === "Login" && (
+          <GetLoggedInModal closeModal={closeModal} func={openModal} />
+        )}
+
+        {content === "Signup" && (
+          <GetSiggnedUp closeModal={closeModal} func={openModal} />
+        )}
+      </CustomModal>
+    </>
   );
 }
 
