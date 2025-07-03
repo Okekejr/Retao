@@ -6,12 +6,14 @@ import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
+import SkeletonWishlistLoader from "@/components/ui/skeletonLoaders/skeletonWishlistLoader";
 import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
+import { useFocusEffect } from "expo-router";
 import { MotiView } from "moti";
-import { useEffect, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function WishlistScreen() {
@@ -23,77 +25,123 @@ export default function WishlistScreen() {
     isLoading,
     refetch,
   } = useFavorites(userData.id);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
+
+  const firstFocusRun = useRef(true);
 
   const openModal = (content: string) => {
     setModalVisible(true);
     setContent(content);
   };
 
-  const closeModal = () => setModalVisible(false);
+  const closeModal = useCallback(() => setModalVisible(false), []);
 
-  useEffect(() => {
-    if (userData.isLoggedIn === true) {
-      refetch();
+  const refreshFavorites = useCallback(async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error("Failed to refresh favorites", error);
     }
-  }, [userData.isLoggedIn]);
+  }, [refetch]);
 
-  return (
-    <>
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        {(!userData.isLoggedIn || !isLoading) && (
+  useFocusEffect(
+    useCallback(() => {
+      if (firstFocusRun.current) {
+        firstFocusRun.current = false;
+        return;
+      }
+      if (userData.isLoggedIn === true) {
+        refreshFavorites();
+      }
+    }, [userData.isLoggedIn, refreshFavorites])
+  );
+
+  if (!userData.isLoggedIn) {
+    return (
+      <>
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header
               headerTitle={t("wishList.title")}
               style={{ marginBottom: 12 }}
             />
-
-            {!userData.isLoggedIn ? (
-              <NotLogged
-                title={t("wishList.notLoggedIn.title")}
-                subTitle={t("wishList.notLoggedIn.subTitle")}
-                func={() => openModal("Login")}
-              />
-            ) : isLoading ? (
-              <CustomText style={[styles.emptyText, { color: textSec }]}>
-                {t("wishList.loadingText")}
-              </CustomText>
-            ) : (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.grid}>
-                  {favorited.length > 0 ? (
-                    favorited.map((item, index) => (
-                      <MotiView
-                        key={item.id}
-                        from={{ opacity: 0, translateY: 10 }}
-                        animate={{ opacity: 1, translateY: 0 }}
-                        transition={{
-                          delay: 400 + index * 80,
-                          type: "timing",
-                          duration: 400,
-                        }}
-                      >
-                        <ItemsCard {...item} />
-                      </MotiView>
-                    ))
-                  ) : (
-                    <CustomText style={[styles.emptyText, { color: textSec }]}>
-                      {t("wishList.noFavs")}
-                    </CustomText>
-                  )}
-                </View>
-              </ScrollView>
-            )}
+            <NotLogged
+              title={t("wishList.notLoggedIn.title")}
+              subTitle={t("wishList.notLoggedIn.subTitle")}
+              func={() => openModal("Login")}
+            />
           </InnerContainer>
-        )}
+        </SafeAreaView>
+
+        <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+          {content === "Login" && (
+            <GetLoggedInModal closeModal={closeModal} func={openModal} />
+          )}
+          {content === "Signup" && (
+            <GetSiggnedUp closeModal={closeModal} func={openModal} />
+          )}
+        </CustomModal>
+      </>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+          <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+            <Header
+              headerTitle={t("wishList.title")}
+              style={{ marginBottom: 12 }}
+            />
+            <SkeletonWishlistLoader />
+          </InnerContainer>
+        </SafeAreaView>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("wishList.title")}
+            style={{ marginBottom: 12 }}
+          />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.grid}>
+              {favorited.length > 0 ? (
+                favorited.map((item, index) => (
+                  <MotiView
+                    key={item.id}
+                    from={{ opacity: 0, translateY: 10 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{
+                      delay: 400 + index * 80,
+                      type: "timing",
+                      duration: 400,
+                    }}
+                  >
+                    <ItemsCard {...item} />
+                  </MotiView>
+                ))
+              ) : (
+                <CustomText style={[styles.emptyText, { color: textSec }]}>
+                  {t("wishList.noFavs")}
+                </CustomText>
+              )}
+            </View>
+          </ScrollView>
+        </InnerContainer>
       </SafeAreaView>
 
       <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
         {content === "Login" && (
           <GetLoggedInModal closeModal={closeModal} func={openModal} />
         )}
-
         {content === "Signup" && (
           <GetSiggnedUp closeModal={closeModal} func={openModal} />
         )}

@@ -21,8 +21,9 @@ import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   RefreshControl,
   SafeAreaView,
@@ -30,6 +31,8 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+
+const { height } = Dimensions.get("window");
 
 export default function ListingsScreen() {
   const bg = themeColor("background");
@@ -111,177 +114,197 @@ export default function ListingsScreen() {
     }, [queryClient])
   );
 
-  useEffect(() => {
-    if (userData.isLoggedIn) {
-      onRefresh();
-    }
-  }, [userData.isLoggedIn]);
-
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      {(!userData.isLoggedIn || !isAnyLoading) && (
+  if (!userData.isLoggedIn) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
           <Header
             headerTitle={t("listings.title")}
             style={{ marginBottom: 12 }}
           />
 
-          {!userData.isLoggedIn ? (
-            <>
-              <NotLogged
-                title={t("listings.notLoggedIn.title")}
-                subTitle={t("listings.notLoggedIn.subTitle")}
-                func={() => openModal("Login")}
-              />
+          <>
+            <NotLogged
+              title={t("listings.notLoggedIn.title")}
+              subTitle={t("listings.notLoggedIn.subTitle")}
+              func={() => openModal("Login")}
+            />
 
-              <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-                {content === "Login" && (
-                  <GetLoggedInModal closeModal={closeModal} func={openModal} />
-                )}
-
-                {content === "Signup" && (
-                  <GetSiggnedUp closeModal={closeModal} func={openModal} />
-                )}
-              </CustomModal>
-            </>
-          ) : (
-            <>
-              {userData.subscription_plan === "unlimited" ||
-              userData.stats.listed < userData.listing_limit ? (
-                <ListAnItemBtn openModal={() => openModal("createListing")} />
-              ) : (
-                <ListAnItemBtn
-                  openModal={() => openModal("Plans")}
-                  title={t("listings.listLimitTitle")}
-                  subText={t("listings.listLimitSubTitle")}
-                  icon="checkmark-done-circle-outline"
-                  limitReached
-                />
+            <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+              {content === "Login" && (
+                <GetLoggedInModal closeModal={closeModal} func={openModal} />
               )}
 
-              <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-                {content === "createListing" && (
-                  <SelectCategory closeModal={closeModal} />
-                )}
-              </CustomModal>
-
-              <ScrollView
-                contentContainerStyle={[
-                  styles.scrollContent,
-                  { paddingBottom: 80 },
-                ]}
-                showsVerticalScrollIndicator={true}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    colors={[Colors.light.primary]}
-                    tintColor={Colors.light.primary}
-                  />
-                }
-              >
-                <View style={{ gap: 16 }}>
-                  <View>
-                    <CustomText style={[styles.heading, h3, { color: text }]}>
-                      {t("listings.myListings")}
-                    </CustomText>
-                    {listedItems.length > 0 ? (
-                      <FlatList
-                        data={listedItems}
-                        keyExtractor={(item) => item.title}
-                        scrollEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.listContent}
-                        renderItem={({ item }) => (
-                          <ItemsCard
-                            id={item.id}
-                            image={item.image}
-                            title={item.title}
-                            description={item.description}
-                            distance={item.distance}
-                            owner={item.owner}
-                          />
-                        )}
-                      />
-                    ) : (
-                      <CustomText style={{ color: textSec }}>
-                        {t("listings.noListings")}
-                      </CustomText>
-                    )}
-                  </View>
-
-                  {borrowedItems.length > 0 && (
-                    <View>
-                      <CustomText style={[styles.heading, h3, { color: text }]}>
-                        {t("listings.borrowedListings")}
-                      </CustomText>
-                      <FlatList
-                        data={borrowedItems}
-                        keyExtractor={(item) => item.title}
-                        scrollEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.listContent}
-                        renderItem={({ item }) => (
-                          <ItemsCard
-                            id={item.id}
-                            image={item.image}
-                            title={item.title}
-                            description={item.description}
-                            distance={item.distance}
-                            owner={item.owner}
-                          />
-                        )}
-                      />
-                    </View>
-                  )}
-
-                  {filterRequests && filterRequests.length > 0 && (
-                    <View>
-                      <CustomText style={[styles.heading, h3, { color: text }]}>
-                        {t("listings.requests")}
-                      </CustomText>
-
-                      <FlatList
-                        data={filterRequests}
-                        keyExtractor={(item) => item.id}
-                        scrollEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.listContent}
-                        renderItem={({ item }) => (
-                          <RequestCard {...item} mode="owner" />
-                        )}
-                      />
-                    </View>
-                  )}
-
-                  {pendingRequests && pendingRequests.length > 0 && (
-                    <View>
-                      <CustomText style={[styles.heading, h3, { color: text }]}>
-                        {t("listings.myPending")}
-                      </CustomText>
-
-                      <FlatList
-                        data={pendingRequests}
-                        keyExtractor={(item) => item.id}
-                        scrollEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.listContent}
-                        renderItem={({ item }) => (
-                          <RequestCard {...item} mode="borrower" />
-                        )}
-                      />
-                    </View>
-                  )}
-                </View>
-              </ScrollView>
-            </>
-          )}
+              {content === "Signup" && (
+                <GetSiggnedUp closeModal={closeModal} func={openModal} />
+              )}
+            </CustomModal>
+          </>
         </InnerContainer>
-      )}
+      </SafeAreaView>
+    );
+  }
+
+  if (isAnyLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("listings.title")}
+            style={{ marginBottom: 12 }}
+          />
+
+          <CustomText style={{ fontSize: 24, fontFamily: "Satoshi-Bold" }}>
+            ....loading
+          </CustomText>
+        </InnerContainer>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+        <Header
+          headerTitle={t("listings.title")}
+          style={{ marginBottom: 12 }}
+        />
+
+        <>
+          {userData.subscription_plan === "unlimited" ||
+          userData.stats.listed < userData.listing_limit ? (
+            <ListAnItemBtn openModal={() => openModal("createListing")} />
+          ) : (
+            <ListAnItemBtn
+              openModal={() => openModal("Plans")}
+              title={t("listings.listLimitTitle")}
+              subText={t("listings.listLimitSubTitle")}
+              icon="checkmark-done-circle-outline"
+              limitReached
+            />
+          )}
+
+          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+            {content === "createListing" && (
+              <SelectCategory closeModal={closeModal} />
+            )}
+          </CustomModal>
+
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingBottom: 250 },
+            ]}
+            showsVerticalScrollIndicator={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors.light.primary]}
+                tintColor={Colors.light.primary}
+              />
+            }
+          >
+            <View style={{ gap: 16 }}>
+              <View>
+                <CustomText style={[styles.heading, h3, { color: text }]}>
+                  {t("listings.myListings")}
+                </CustomText>
+                {listedItems.length > 0 ? (
+                  <FlatList
+                    data={listedItems}
+                    keyExtractor={(item) => item.title}
+                    scrollEnabled
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                      <ItemsCard
+                        id={item.id}
+                        image={item.image}
+                        title={item.title}
+                        description={item.description}
+                        distance={item.distance}
+                        owner={item.owner}
+                      />
+                    )}
+                  />
+                ) : (
+                  <CustomText style={{ color: textSec }}>
+                    {t("listings.noListings")}
+                  </CustomText>
+                )}
+              </View>
+
+              {borrowedItems.length > 0 && (
+                <View>
+                  <CustomText style={[styles.heading, h3, { color: text }]}>
+                    {t("listings.borrowedListings")}
+                  </CustomText>
+                  <FlatList
+                    data={borrowedItems}
+                    keyExtractor={(item) => item.title}
+                    scrollEnabled
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                      <ItemsCard
+                        id={item.id}
+                        image={item.image}
+                        title={item.title}
+                        description={item.description}
+                        distance={item.distance}
+                        owner={item.owner}
+                      />
+                    )}
+                  />
+                </View>
+              )}
+
+              {filterRequests && filterRequests.length > 0 && (
+                <View>
+                  <CustomText style={[styles.heading, h3, { color: text }]}>
+                    {t("listings.requests")}
+                  </CustomText>
+
+                  <FlatList
+                    data={filterRequests}
+                    keyExtractor={(item) => item.id}
+                    scrollEnabled
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                      <RequestCard {...item} mode="owner" />
+                    )}
+                  />
+                </View>
+              )}
+
+              {pendingRequests && pendingRequests.length > 0 && (
+                <View>
+                  <CustomText style={[styles.heading, h3, { color: text }]}>
+                    {t("listings.myPending")}
+                  </CustomText>
+
+                  <FlatList
+                    data={pendingRequests}
+                    keyExtractor={(item) => item.id}
+                    scrollEnabled
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                      <RequestCard {...item} mode="borrower" />
+                    )}
+                  />
+                </View>
+              )}
+            </View>
+          </ScrollView>
+        </>
+      </InnerContainer>
     </SafeAreaView>
   );
 }
