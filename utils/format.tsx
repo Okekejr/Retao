@@ -44,3 +44,20 @@ export const formatTimeChat = (isoDate: string) => {
   if (hours < 24) return `${hours}h ago`;
   return `${Math.floor(hours / 24)}d ago`;
 };
+
+export const formatSubscriptionPeriod = (period?: string | null): string => {
+  switch (period) {
+    case "P1W":
+      return "Billed weekly";
+    case "P1M":
+      return "Billed monthly";
+    case "P3M":
+      return "Billed quarterly";
+    case "P6M":
+      return "Billed every 6 months";
+    case "P1Y":
+      return "Billed annually";
+    default:
+      return "Subscription";
+  }
+};

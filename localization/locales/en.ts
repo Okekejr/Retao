@@ -70,6 +70,8 @@ const en: TranslationKeys = {
     accountSettings: "Account Settings",
     history: "History",
     help: "Help & FAQs",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
     support: "Contact Support",
     logout: "Log Out",
     toasts: {

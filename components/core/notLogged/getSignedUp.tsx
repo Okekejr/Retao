@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#000",
     height: 45.5,
+    fontSize: 16,
   },
   error: {
     color: "red",

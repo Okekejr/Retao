@@ -153,6 +153,7 @@ export default function SignupFormScreen() {
               handleNext={handleNext}
               disabled={invalid}
               backBtnTitle={t("btnTexts.cancel")}
+              styleBackText={{ color: "#000" }}
             />
           </View>
         </TouchableWithoutFeedback>

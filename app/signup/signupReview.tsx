@@ -46,7 +46,7 @@ export default function SignupReviewScreen() {
     try {
       // make API CALL to save data here, if successful send to success screen
       const res = await fetch(`${BASE_URL}users/profile`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: userData.id,
@@ -103,6 +103,7 @@ export default function SignupReviewScreen() {
         console.error("Failed to authenticate user:", error.message);
       }
 
+      updateUserForm("isLoggedIn", true);
       router.replace("/signup/loadingScreen");
     } catch (error) {
       console.log("Error", error);

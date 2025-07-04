@@ -2,7 +2,7 @@
   "expo": {
     "name": "Retao",
     "slug": "Retao",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "retao",
@@ -12,9 +12,13 @@
       "supportsTablet": true,
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.dylanokeks.retao",
-      "buildNumber": "12",
+      "buildNumber": "13",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Retao uses your location to show nearby items available for borrowing and to improve listing relevance based on your area.",
+        "NSCameraUsageDescription": "Retao uses your camera to let you take photos of items you want to list for borrowing.",
+        "NSPhotoLibraryUsageDescription": "Retao accesses your photo library so you can upload photos of items for your listings.",
+        "NSCalendarsUsageDescription": "Retao uses your calendar to let you schedule item availability and reminders."
       }
     },
     "android": {
@@ -51,19 +55,19 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "Retao needs to access your calendar."
+          "calendarPermission": "Retao uses your calendar to let you schedule item availability and reminders."
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Retao to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Retao uses your location to show nearby items available for borrowing and to improve listing relevance based on your area."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Retao accesses your photos to let you share them for Listings."
+          "photosPermission": "Retao accesses your photo library so you can upload photos of items for your listings."
         }
       ],
       [

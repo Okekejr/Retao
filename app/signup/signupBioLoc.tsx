@@ -142,6 +142,7 @@ export default function SignupBioLocScreen() {
             handleBack={handleBack}
             handleNext={handleNext}
             disabled={invalid}
+            styleBackText={{ color: "#000" }}
           />
         </View>
       </InnerContainer>

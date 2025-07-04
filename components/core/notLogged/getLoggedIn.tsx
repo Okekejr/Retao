@@ -261,6 +261,10 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
 
                 console.log("Apple credential:", credential);
 
+                const fullName = `${credential.fullName?.givenName ?? ""} ${
+                  credential.fullName?.familyName ?? ""
+                }`.trim();
+
                 if (!credential.identityToken) {
                   alert("Apple login failed: No token received");
                   return;
@@ -271,6 +275,7 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     identityToken: credential.identityToken,
+                    fullName,
                   }),
                 });
 
@@ -291,8 +296,10 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
                 if (data.isNew) {
                   updateUserForm("id", data.userId);
                   updateUserForm("email", credential.email ?? "");
+                  updateUserForm("name", data.name);
+                  updateUserForm("handle", data.handle);
                   updateUserForm("isLoggedIn", true);
-                  router.replace("/signup/intro"); // Start onboarding flow
+                  router.replace("/signup/signupAvatar"); // Start onboarding flow
                 } else {
                   closeModal();
                 }

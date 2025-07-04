@@ -154,7 +154,12 @@ export default function ListingsScreen() {
             style={{ marginBottom: 12 }}
           />
 
-          <CustomText style={{ fontSize: 24, fontFamily: "Satoshi-Bold" }}>
+          <CustomText
+            style={[
+              { fontSize: 24, fontFamily: "Satoshi-Bold" },
+              { color: text },
+            ]}
+          >
             ....loading
           </CustomText>
         </InnerContainer>

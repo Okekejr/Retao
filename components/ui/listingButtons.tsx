@@ -1,7 +1,13 @@
 import { Colors } from "@/constants/Colors";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import CustomText from "./customText";
 
 interface ListingButtonsProps {
@@ -10,6 +16,7 @@ interface ListingButtonsProps {
   disabled?: boolean;
   nextBtnTitle?: string;
   backBtnTitle?: string;
+  styleBackText?: StyleProp<TextStyle>;
 }
 
 export const ListingButtons = ({
@@ -18,13 +25,14 @@ export const ListingButtons = ({
   disabled,
   nextBtnTitle = t("btnTexts.next"),
   backBtnTitle = t("btnTexts.back"),
+  styleBackText,
 }: ListingButtonsProps) => {
   const text = themeColor("text");
 
   return (
     <View style={styles.btnContainer}>
       <TouchableOpacity onPress={handleBack}>
-        <CustomText style={[styles.backText, { color: text }]}>
+        <CustomText style={[styles.backText, { color: text }, styleBackText]}>
           {backBtnTitle}
         </CustomText>
       </TouchableOpacity>

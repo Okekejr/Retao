@@ -93,6 +93,7 @@ export default function SignupAvatarScreen() {
             handleBack={handleBack}
             handleNext={handleNext}
             disabled={selected === null}
+            styleBackText={{ color: "#000" }}
           />
         </View>
       </InnerContainer>

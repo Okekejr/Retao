@@ -5,7 +5,13 @@ import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { useRevenueCatPlans } from "@/hooks/usePlans";
 import { t } from "@/localization/t";
-import { getPlanColor, themeColor } from "@/utils";
+import {
+  formatSubscriptionPeriod,
+  getPlanColor,
+  showToast,
+  themeColor,
+} from "@/utils";
+import * as Linking from "expo-linking";
 import {
   ActivityIndicator,
   FlatList,
@@ -32,6 +38,19 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
   const { userData } = useUserData();
   const bg = themeColor("background");
   const text = themeColor("text");
+
+  const handleOpenLink = async (href: string) => {
+    const supported = await Linking.canOpenURL(href);
+    if (supported) {
+      await Linking.openURL(href);
+    } else {
+      showToast({
+        type: "error",
+        text1: t("profile.toasts.invalidLink.title"),
+        message: t("profile.toasts.invalidLink.message"),
+      });
+    }
+  };
 
   return (
     <InnerContainer>
@@ -78,6 +97,11 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
               <CustomText style={[styles.price, { color: text }]}>
                 {item.product.priceString}
               </CustomText>
+              <CustomText
+                style={{ fontSize: 13, color: text, marginBottom: 10 }}
+              >
+                {formatSubscriptionPeriod(item.product.subscriptionPeriod)}
+              </CustomText>
 
               <TouchableOpacity
                 onPress={() => handleSubscribe(item)}
@@ -105,6 +129,53 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
           );
         }}
       />
+
+      <View
+        style={{
+          marginVertical: 24,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 12,
+          gap: 8,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            handleOpenLink(
+              "https://docs.google.com/document/d/1PbrlztJt6Rkb2lUXm7vAXWbaVM1SU8FAOSLHJLc0U9g/edit"
+            )
+          }
+        >
+          <CustomText
+            style={{
+              textDecorationLine: "underline",
+              color: Colors.light.primary,
+              fontSize: 13,
+            }}
+          >
+            Privacy Policy
+          </CustomText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() =>
+            handleOpenLink(
+              "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+            )
+          }
+        >
+          <CustomText
+            style={{
+              textDecorationLine: "underline",
+              color: Colors.light.primary,
+              fontSize: 13,
+            }}
+          >
+            Terms of Use
+          </CustomText>
+        </TouchableOpacity>
+      </View>
     </InnerContainer>
   );
 };
@@ -121,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 10,
   },
-  container: { paddingBottom: 80 },
+  container: { paddingBottom: 24 },
   card: {
     padding: 16,
     borderRadius: 12,

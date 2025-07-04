@@ -72,6 +72,8 @@ const es: TranslationKeys = {
     accountSettings: "Configuración de la cuenta",
     history: "Historial",
     help: "Ayuda y Preguntas Frecuentes",
+    privacyPolicy: "Política de Privacidad",
+    termsOfUse: "Términos de Uso",
     support: "Contactar Soporte",
     logout: "Cerrar sesión",
     toasts: {

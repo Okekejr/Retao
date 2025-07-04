@@ -151,6 +151,7 @@ export default function ProfileScreen() {
                 keyExtractor={(item) => item.label}
                 scrollEnabled={false}
                 contentContainerStyle={{ gap: 10 }}
+                style={{ paddingBottom: 120 }}
                 renderItem={({ item }) => (
                   <ProfileSection
                     icon={item.icon}
@@ -183,26 +184,6 @@ export default function ProfileScreen() {
 
           <ScrollView style={{ gap: 12, paddingBottom: height }}>
             <SkeletonProfileLoader />
-
-            <FlatList
-              data={profileItems}
-              keyExtractor={(item) => item.label}
-              scrollEnabled={false}
-              contentContainerStyle={{ gap: 10 }}
-              renderItem={({ item }) => (
-                <ProfileSection
-                  icon={item.icon}
-                  label={item.label}
-                  onPress={() => {
-                    if (item.func) logout();
-                    else if (item.content) openModal(item.content);
-                    else if (item.hrefLink) router.push(item.hrefLink);
-                    else if (item.mail) handleOpenEmail();
-                    else if (item.href) handleOpenLink(item.href);
-                  }}
-                />
-              )}
-            />
           </ScrollView>
         </InnerContainer>
       </SafeAreaView>
@@ -243,6 +224,7 @@ export default function ProfileScreen() {
             keyExtractor={(item) => item.label}
             scrollEnabled={false}
             contentContainerStyle={{ gap: 10 }}
+            style={{ paddingBottom: 270 }}
             renderItem={({ item }) => (
               <ProfileSection
                 icon={item.icon}

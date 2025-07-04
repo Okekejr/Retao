@@ -1,15 +1,5 @@
 import { t } from "@/localization/t";
 import { Ionicons } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
-
-export const getToken = async (): Promise<string | null> => {
-  try {
-    return await SecureStore.getItemAsync("token");
-  } catch (error) {
-    console.log("Error getting token:", error);
-    return null;
-  }
-};
 
 export type profileItemsT = {
   label: string;
@@ -38,6 +28,16 @@ export const getProfileItems = (): profileItemsT => [
     href: "https://www.okekedev.com",
   },
   {
+    label: t("profile.privacyPolicy"),
+    icon: "document-text-outline",
+    href: "https://docs.google.com/document/d/1PbrlztJt6Rkb2lUXm7vAXWbaVM1SU8FAOSLHJLc0U9g/edit?tab=t.0",
+  },
+  {
+    label: t("profile.termsOfUse"),
+    icon: "document-outline",
+    href: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  },
+  {
     label: t("profile.support"),
     icon: "chatbubble-ellipses-outline",
     mail: true,
@@ -59,6 +59,16 @@ export const getLoggedOutProfileItems = (): profileItemsT => [
     label: t("profile.help"),
     icon: "help-circle-outline",
     href: "https://www.okekedev.com",
+  },
+  {
+    label: t("profile.privacyPolicy"),
+    icon: "document-text-outline",
+    href: "https://docs.google.com/document/d/1PbrlztJt6Rkb2lUXm7vAXWbaVM1SU8FAOSLHJLc0U9g/edit?tab=t.0",
+  },
+  {
+    label: t("profile.termsOfUse"),
+    icon: "document-outline",
+    href: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
   },
   {
     label: t("profile.support"),

@@ -68,6 +68,8 @@ export type TranslationKeys = {
     accountSettings: string;
     history: string;
     help: string;
+    privacyPolicy: string;
+    termsOfUse: string;
     support: string;
     logout: string;
     toasts: {
