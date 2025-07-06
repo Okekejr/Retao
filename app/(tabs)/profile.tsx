@@ -114,7 +114,28 @@ export default function ProfileScreen() {
     ? getProfileItems()
     : getLoggedOutProfileItems();
 
-  if (!userData.isLoggedIn) {
+  if (
+    userData.isLoggedIn === undefined ||
+    userData.isLoggedIn === null ||
+    (userData.isLoggedIn && loading)
+  ) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("profile.title")}
+            style={{ marginBottom: 12 }}
+          />
+
+          <ScrollView style={{ gap: 12, paddingBottom: height }}>
+            <SkeletonProfileLoader />
+          </ScrollView>
+        </InnerContainer>
+      </SafeAreaView>
+    );
+  }
+
+  if (userData.isLoggedIn === false) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -168,23 +189,6 @@ export default function ProfileScreen() {
                 )}
               />
             </>
-          </ScrollView>
-        </InnerContainer>
-      </SafeAreaView>
-    );
-  }
-
-  if (loading) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header
-            headerTitle={t("messages.title")}
-            style={{ marginBottom: 12 }}
-          />
-
-          <ScrollView style={{ gap: 12, paddingBottom: height }}>
-            <SkeletonProfileLoader />
           </ScrollView>
         </InnerContainer>
       </SafeAreaView>

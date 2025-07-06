@@ -11,9 +11,8 @@ import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
-import { useFocusEffect } from "expo-router";
 import { MotiView } from "moti";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function WishlistScreen() {
@@ -28,8 +27,6 @@ export default function WishlistScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
-
-  const firstFocusRun = useRef(true);
 
   const openModal = (content: string) => {
     setModalVisible(true);
@@ -46,19 +43,33 @@ export default function WishlistScreen() {
     }
   }, [refetch]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (firstFocusRun.current) {
-        firstFocusRun.current = false;
-        return;
-      }
-      if (userData.isLoggedIn === true) {
-        refreshFavorites();
-      }
-    }, [userData.isLoggedIn, refreshFavorites])
-  );
+  useEffect(() => {
+    if (userData.isLoggedIn === true) {
+      refreshFavorites();
+    }
+  }, [userData.isLoggedIn]);
 
-  if (!userData.isLoggedIn) {
+  if (
+    userData.isLoggedIn === undefined ||
+    userData.isLoggedIn === null ||
+    (userData.isLoggedIn && isLoading)
+  ) {
+    return (
+      <>
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+          <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+            <Header
+              headerTitle={t("wishList.title")}
+              style={{ marginBottom: 12 }}
+            />
+            <SkeletonWishlistLoader />
+          </InnerContainer>
+        </SafeAreaView>
+      </>
+    );
+  }
+
+  if (userData.isLoggedIn === false) {
     return (
       <>
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
@@ -74,7 +85,6 @@ export default function WishlistScreen() {
             />
           </InnerContainer>
         </SafeAreaView>
-
         <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
           {content === "Login" && (
             <GetLoggedInModal closeModal={closeModal} func={openModal} />
@@ -83,22 +93,6 @@ export default function WishlistScreen() {
             <GetSiggnedUp closeModal={closeModal} func={openModal} />
           )}
         </CustomModal>
-      </>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-          <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-            <Header
-              headerTitle={t("wishList.title")}
-              style={{ marginBottom: 12 }}
-            />
-            <SkeletonWishlistLoader />
-          </InnerContainer>
-        </SafeAreaView>
       </>
     );
   }

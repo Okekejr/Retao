@@ -20,8 +20,7 @@ import { useGetListings } from "@/hooks/useGetListings";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -96,25 +95,30 @@ export default function ListingsScreen() {
     }
   }, [refetchListings, refetchRequests, refetchPendingRequests]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (userData.isLoggedIn) {
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            [
-              "favorites",
-              "listings",
-              "listing",
-              "isFavorited",
-              "incomingBorrowRequests",
-              "borrowerRequests",
-            ].includes(query.queryKey[0] as string),
-        });
-      }
-    }, [queryClient])
-  );
+  useEffect(() => {
+    if (userData.isLoggedIn === true) {
+      onRefresh();
+    }
+  }, [userData.isLoggedIn]);
 
-  if (!userData.isLoggedIn) {
+  if (
+    userData.isLoggedIn === undefined ||
+    userData.isLoggedIn === null ||
+    (userData.isLoggedIn && isAnyLoading)
+  ) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("listings.title")}
+            style={{ marginBottom: 12 }}
+          />
+        </InnerContainer>
+      </SafeAreaView>
+    );
+  }
+
+  if (userData.isLoggedIn === false) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -140,19 +144,6 @@ export default function ListingsScreen() {
               )}
             </CustomModal>
           </>
-        </InnerContainer>
-      </SafeAreaView>
-    );
-  }
-
-  if (isAnyLoading) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header
-            headerTitle={t("listings.title")}
-            style={{ marginBottom: 12 }}
-          />
         </InnerContainer>
       </SafeAreaView>
     );

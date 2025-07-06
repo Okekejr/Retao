@@ -70,9 +70,10 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NetworkProvider>
-        <LanguageProvider>
-          <ThemeProvider>
+      <ThemeProvider>
+        <StatusBar style={theme === "dark" ? "light" : "dark"} />
+        <NetworkProvider>
+          <LanguageProvider>
             <NotificationProvider>
               <WebSocketInitializer />
               <ListingProvider>
@@ -92,11 +93,10 @@ export default function RootLayout() {
                 </UserProvider>
               </ListingProvider>
             </NotificationProvider>
-            <StatusBar style={theme === "dark" ? "light" : "dark"} />
-          </ThemeProvider>
-        </LanguageProvider>
-      </NetworkProvider>
-      <Toast config={toastConfig} />
+          </LanguageProvider>
+        </NetworkProvider>
+        <Toast config={toastConfig} />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

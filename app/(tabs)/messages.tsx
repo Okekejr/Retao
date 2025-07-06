@@ -13,10 +13,8 @@ import { useConversations, useDeleteConversation } from "@/hooks/useChat";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { useFocusEffect } from "expo-router";
 import { AnimatePresence, MotiView } from "moti";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -41,8 +39,6 @@ export default function MessagesScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
 
-  const queryClient = useQueryClient();
-
   const bg = themeColor("background");
   const text = themeColor("text");
   const textTertiery = themeColor("textTertiery");
@@ -54,14 +50,6 @@ export default function MessagesScreen() {
   } = useConversations();
 
   const { mutate: deleteConversation } = useDeleteConversation();
-
-  useFocusEffect(
-    useCallback(() => {
-      if (userData.isLoggedIn) {
-        queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      }
-    }, [queryClient])
-  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -88,38 +76,17 @@ export default function MessagesScreen() {
 
   const closeModal = () => setModalVisible(false);
 
-  if (!userData.isLoggedIn) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header
-            headerTitle={t("messages.title")}
-            style={{ marginBottom: 12 }}
-          />
+  useEffect(() => {
+    if (userData.isLoggedIn === true) {
+      onRefresh();
+    }
+  }, [userData.isLoggedIn]);
 
-          <NotLogged
-            title={t("messages.notLoggedIn.title")}
-            subTitle={t("messages.notLoggedIn.subTitle")}
-            func={() => openModal("Login")}
-          />
-        </InnerContainer>
-
-        <>
-          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-            {content === "Login" && (
-              <GetLoggedInModal closeModal={closeModal} func={openModal} />
-            )}
-
-            {content === "Signup" && (
-              <GetSiggnedUp closeModal={closeModal} func={openModal} />
-            )}
-          </CustomModal>
-        </>
-      </SafeAreaView>
-    );
-  }
-
-  if (isLoading) {
+  if (
+    userData.isLoggedIn === undefined ||
+    userData.isLoggedIn === null ||
+    (userData.isLoggedIn && isLoading)
+  ) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -129,6 +96,34 @@ export default function MessagesScreen() {
           />
           <SkeletonConversationsLoader />
         </InnerContainer>
+      </SafeAreaView>
+    );
+  }
+
+  if (userData.isLoggedIn === false) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("messages.title")}
+            style={{ marginBottom: 12 }}
+          />
+          <NotLogged
+            title={t("messages.notLoggedIn.title")}
+            subTitle={t("messages.notLoggedIn.subTitle")}
+            func={() => openModal("Login")}
+          />
+        </InnerContainer>
+        <>
+          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+            {content === "Login" && (
+              <GetLoggedInModal closeModal={closeModal} func={openModal} />
+            )}
+            {content === "Signup" && (
+              <GetSiggnedUp closeModal={closeModal} func={openModal} />
+            )}
+          </CustomModal>
+        </>
       </SafeAreaView>
     );
   }
