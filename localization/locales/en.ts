@@ -61,6 +61,12 @@ const en: TranslationKeys = {
       title: "Log in to see messages",
       subTitle: "You can view messages from people in the community.",
     },
+    deleteAlert: {
+      title: "Delete Conversation",
+      message: "Are you sure you want to delete this conversation?",
+      cancel: "Cancel",
+      confirm: "Delete",
+    },
   },
   profile: {
     title: "Profile",

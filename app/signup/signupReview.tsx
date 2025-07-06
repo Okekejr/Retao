@@ -162,6 +162,7 @@ export default function SignupReviewScreen() {
             handleBack={handleBack}
             handleNext={handleNext}
             nextBtnTitle={t("btnTexts.submit")}
+            styleBackText={{ color: "#000" }}
           />
         </View>
       </InnerContainer>

@@ -9,7 +9,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import SkeletonConversationsLoader from "@/components/ui/skeletonLoaders/skeletonConversationsLoader";
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
-import { useConversations } from "@/hooks/useChat";
+import { useConversations, useDeleteConversation } from "@/hooks/useChat";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
@@ -52,6 +52,8 @@ export default function MessagesScreen() {
     isLoading,
     refetch: refetchConversations,
   } = useConversations();
+
+  const { mutate: deleteConversation } = useDeleteConversation();
 
   useFocusEffect(
     useCallback(() => {
@@ -217,7 +219,9 @@ export default function MessagesScreen() {
                   data={filteredConversations}
                   showsVerticalScrollIndicator
                   keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <PreviewCard item={item} />}
+                  renderItem={({ item }) => (
+                    <PreviewCard item={item} onDelete={deleteConversation} />
+                  )}
                   contentContainerStyle={{ paddingVertical: 16 }}
                   style={{ paddingBottom: height }}
                   refreshControl={

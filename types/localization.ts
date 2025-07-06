@@ -59,6 +59,12 @@ export type TranslationKeys = {
       title: string;
       subTitle: string;
     };
+    deleteAlert: {
+      title: string;
+      message: string;
+      cancel: string;
+      confirm: string;
+    };
   };
   profile: {
     title: string;

@@ -63,6 +63,12 @@ const es: TranslationKeys = {
       title: "Inicia sesión para ver mensajes",
       subTitle: "Puedes ver mensajes de personas en la comunidad.",
     },
+    deleteAlert: {
+      title: "Eliminar conversación",
+      message: "¿Estás seguro de que deseas eliminar esta conversación?",
+      cancel: "Cancelar",
+      confirm: "Eliminar",
+    },
   },
   profile: {
     title: "Perfil",

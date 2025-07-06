@@ -1,15 +1,17 @@
 import CustomText from "@/components/ui/customText";
 import { useUserData } from "@/context/userContext";
+import { t } from "@/localization/t";
 import { avatarsT, Conversation } from "@/types";
 import { formatTimeChat } from "@/utils";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { FC } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInRight } from "react-native-reanimated";
 
 interface PreviewCardProps {
   item: Conversation;
+  onDelete: (id: string) => void;
 }
 
 const avatars: avatarsT = [
@@ -17,7 +19,7 @@ const avatars: avatarsT = [
   { id: "avatar2", src: require("../../../assets/img/avatar2.png") },
 ];
 
-export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
+export const PreviewCard: FC<PreviewCardProps> = ({ item, onDelete }) => {
   const { userData } = useUserData();
   const router = useRouter();
 
@@ -30,6 +32,21 @@ export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
       params: { conversationId: item.id, recipientId: item.otherUserId },
     });
 
+  const handleLongPress = () => {
+    Alert.alert(
+      t("messages.deleteAlert.title"),
+      t("messages.deleteAlert.message"),
+      [
+        { text: t("messages.deleteAlert.cancel"), style: "cancel" },
+        {
+          text: t("messages.deleteAlert.confirm"),
+          style: "destructive",
+          onPress: () => onDelete(item.id),
+        },
+      ]
+    );
+  };
+
   return (
     <Animated.View entering={FadeInRight.springify()}>
       <TouchableOpacity
@@ -38,6 +55,8 @@ export const PreviewCard: FC<PreviewCardProps> = ({ item }) => {
           { backgroundColor: item.unread ? "#F0F8FF" : "#fff" },
         ]}
         onPress={handleMessageOwner}
+        onLongPress={handleLongPress}
+        delayLongPress={500}
       >
         <View style={styles.avatarContainer}>
           <Image source={otherUser?.src} style={styles.avatar} />

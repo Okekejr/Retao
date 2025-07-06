@@ -151,6 +151,7 @@ export default function ProfileScreen() {
                 keyExtractor={(item) => item.label}
                 scrollEnabled={false}
                 contentContainerStyle={{ gap: 10 }}
+                showsVerticalScrollIndicator={false}
                 style={{ paddingBottom: 120 }}
                 renderItem={({ item }) => (
                   <ProfileSection
@@ -224,6 +225,7 @@ export default function ProfileScreen() {
             keyExtractor={(item) => item.label}
             scrollEnabled={false}
             contentContainerStyle={{ gap: 10 }}
+            showsVerticalScrollIndicator={false}
             style={{ paddingBottom: 270 }}
             renderItem={({ item }) => (
               <ProfileSection

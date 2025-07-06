@@ -153,15 +153,6 @@ export default function ListingsScreen() {
             headerTitle={t("listings.title")}
             style={{ marginBottom: 12 }}
           />
-
-          <CustomText
-            style={[
-              { fontSize: 24, fontFamily: "Satoshi-Bold" },
-              { color: text },
-            ]}
-          >
-            ....loading
-          </CustomText>
         </InnerContainer>
       </SafeAreaView>
     );
