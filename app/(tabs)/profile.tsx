@@ -93,7 +93,7 @@ export default function ProfileScreen() {
   };
 
   useEffect(() => {
-    if (userData.isLoggedIn || userData.id === "") {
+    if (userData.isLoggedIn === true) {
       try {
         setLoading(true);
         refreshData();
@@ -114,11 +114,7 @@ export default function ProfileScreen() {
     ? getProfileItems()
     : getLoggedOutProfileItems();
 
-  if (
-    userData.isLoggedIn === undefined ||
-    userData.isLoggedIn === null ||
-    (userData.isLoggedIn && loading)
-  ) {
+  if (userData.isLoggedIn && loading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -135,37 +131,103 @@ export default function ProfileScreen() {
     );
   }
 
-  if (userData.isLoggedIn === false) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header
-            headerTitle={t("profile.title")}
-            style={{ marginBottom: 12 }}
-          />
+  return (
+    <>
+      {!userData || !userData.isLoggedIn ? (
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+          <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+            <Header
+              headerTitle={t("profile.title")}
+              style={{ marginBottom: 12 }}
+            />
 
-          <ScrollView style={{ gap: 12, paddingBottom: height }}>
-            <>
-              <NotLogged
-                title={t("profile.notLoggedIn.title")}
-                subTitle={t("profile.notLoggedIn.subTitle")}
-                btnText={t("profile.notLoggedIn.btnText")}
-                func={() => openModal("Login")}
-              />
+            <ScrollView style={{ gap: 12, paddingBottom: height }}>
+              <>
+                <NotLogged
+                  title={t("profile.notLoggedIn.title")}
+                  subTitle={t("profile.notLoggedIn.subTitle")}
+                  btnText={t("profile.notLoggedIn.btnText")}
+                  func={() => openModal("Login")}
+                />
 
-              <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-                {content === "Login" && (
-                  <GetLoggedInModal closeModal={closeModal} func={openModal} />
-                )}
+                <CustomModal
+                  modalVisible={modalVisible}
+                  closeModal={closeModal}
+                >
+                  {content === "Login" && (
+                    <GetLoggedInModal
+                      closeModal={closeModal}
+                      func={openModal}
+                    />
+                  )}
 
-                {content === "Signup" && (
-                  <GetSiggnedUp closeModal={closeModal} func={openModal} />
-                )}
+                  {content === "Signup" && (
+                    <GetSiggnedUp closeModal={closeModal} func={openModal} />
+                  )}
 
-                {content === "settings" && <Settings closeModal={closeModal} />}
-              </CustomModal>
+                  {content === "settings" && (
+                    <Settings closeModal={closeModal} />
+                  )}
+                </CustomModal>
 
-              <CustomDivider style={{ marginVertical: 30 }} />
+                <CustomDivider style={{ marginVertical: 30 }} />
+
+                <FlatList
+                  data={profileItems}
+                  keyExtractor={(item) => item.label}
+                  scrollEnabled={false}
+                  contentContainerStyle={{ gap: 10 }}
+                  showsVerticalScrollIndicator={false}
+                  style={{ paddingBottom: 120 }}
+                  renderItem={({ item }) => (
+                    <ProfileSection
+                      icon={item.icon}
+                      label={item.label}
+                      onPress={() => {
+                        if (item.func) logout();
+                        else if (item.content) openModal(item.content);
+                        else if (item.hrefLink) router.push(item.hrefLink);
+                        else if (item.mail) handleOpenEmail();
+                        else if (item.href) handleOpenLink(item.href);
+                      }}
+                    />
+                  )}
+                />
+              </>
+            </ScrollView>
+          </InnerContainer>
+        </SafeAreaView>
+      ) : (
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+          <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+            <Header
+              headerTitle={t("profile.title")}
+              style={{ marginBottom: 12 }}
+            />
+
+            <ScrollView style={{ gap: 12, paddingBottom: height }}>
+              {userData.id !== "" && (
+                <TouchableOpacity onPress={handleViewOwnerProfile}>
+                  <IdentityCard
+                    user={userData}
+                    func={() => openModal("plans")}
+                    showPlan
+                  />
+                </TouchableOpacity>
+              )}
+
+              {userData.subscription_plan === "unlimited" ||
+              userData.stats.listed < userData.listing_limit ? (
+                <ListAnItemBtn openModal={() => openModal("createListing")} />
+              ) : (
+                <ListAnItemBtn
+                  openModal={() => openModal("plans")}
+                  title={t("listings.listLimitTitle")}
+                  subText={t("listings.listLimitSubTitle")}
+                  icon="checkmark-done-circle-outline"
+                  limitReached
+                />
+              )}
 
               <FlatList
                 data={profileItems}
@@ -173,7 +235,7 @@ export default function ProfileScreen() {
                 scrollEnabled={false}
                 contentContainerStyle={{ gap: 10 }}
                 showsVerticalScrollIndicator={false}
-                style={{ paddingBottom: 120 }}
+                style={{ paddingBottom: 270 }}
                 renderItem={({ item }) => (
                   <ProfileSection
                     icon={item.icon}
@@ -188,76 +250,21 @@ export default function ProfileScreen() {
                   />
                 )}
               />
-            </>
-          </ScrollView>
-        </InnerContainer>
-      </SafeAreaView>
-    );
-  }
 
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-        <Header headerTitle={t("profile.title")} style={{ marginBottom: 12 }} />
+              <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+                {content === "createListing" && (
+                  <SelectCategory closeModal={closeModal} />
+                )}
 
-        <ScrollView style={{ gap: 12, paddingBottom: height }}>
-          {userData.id !== "" && (
-            <TouchableOpacity onPress={handleViewOwnerProfile}>
-              <IdentityCard
-                user={userData}
-                func={() => openModal("plans")}
-                showPlan
-              />
-            </TouchableOpacity>
-          )}
+                {content === "settings" && <Settings closeModal={closeModal} />}
 
-          {userData.subscription_plan === "unlimited" ||
-          userData.stats.listed < userData.listing_limit ? (
-            <ListAnItemBtn openModal={() => openModal("createListing")} />
-          ) : (
-            <ListAnItemBtn
-              openModal={() => openModal("plans")}
-              title={t("listings.listLimitTitle")}
-              subText={t("listings.listLimitSubTitle")}
-              icon="checkmark-done-circle-outline"
-              limitReached
-            />
-          )}
-
-          <FlatList
-            data={profileItems}
-            keyExtractor={(item) => item.label}
-            scrollEnabled={false}
-            contentContainerStyle={{ gap: 10 }}
-            showsVerticalScrollIndicator={false}
-            style={{ paddingBottom: 270 }}
-            renderItem={({ item }) => (
-              <ProfileSection
-                icon={item.icon}
-                label={item.label}
-                onPress={() => {
-                  if (item.func) logout();
-                  else if (item.content) openModal(item.content);
-                  else if (item.hrefLink) router.push(item.hrefLink);
-                  else if (item.mail) handleOpenEmail();
-                  else if (item.href) handleOpenLink(item.href);
-                }}
-              />
-            )}
-          />
-
-          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-            {content === "createListing" && (
-              <SelectCategory closeModal={closeModal} />
-            )}
-
-            {content === "settings" && <Settings closeModal={closeModal} />}
-
-            {content === "plans" && <SelectPlans closeModal={closeModal} />}
-          </CustomModal>
-        </ScrollView>
-      </InnerContainer>
-    </SafeAreaView>
+                {content === "plans" && <SelectPlans closeModal={closeModal} />}
+              </CustomModal>
+            </ScrollView>
+          </InnerContainer>
+        </SafeAreaView>
+      )}
+    </>
   );
 }
 

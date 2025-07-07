@@ -29,9 +29,9 @@ import { avatarsT, Listing } from "@/types";
 import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
   Dimensions,
   FlatList,
@@ -39,6 +39,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 
 const { height, width } = Dimensions.get("window");
 
@@ -185,8 +186,20 @@ export default function ItemScreen() {
   return (
     <>
       {isLoading || !selectedItem || !imageReady ? (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+        <View
+          style={[
+            { flex: 1, justifyContent: "center", alignItems: "center" },
+            { backgroundColor: bg },
+          ]}
+        >
+          <Animatable.View animation="bounceIn">
+            <LottieView
+              source={require("../../assets/loading.json")}
+              autoPlay
+              loop={false}
+              style={styles.lottie}
+            />
+          </Animatable.View>
         </View>
       ) : (
         <>
@@ -324,11 +337,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 40,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
+  lottie: {
+    width: 200,
+    height: 200,
   },
   imageContainer: {
     width: "100%",
