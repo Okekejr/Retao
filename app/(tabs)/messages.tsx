@@ -264,12 +264,6 @@ const styles = StyleSheet.create({
     color: "#888",
     marginTop: 4,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
-  },
   animatedSearch: {
     flexDirection: "row",
     alignItems: "center",

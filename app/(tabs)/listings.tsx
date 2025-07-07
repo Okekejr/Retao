@@ -315,10 +315,4 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingTop: 20,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
-  },
 });

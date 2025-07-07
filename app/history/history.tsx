@@ -2,19 +2,19 @@ import { HistoryCard } from "@/components/core/profile/historyCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
-import { Colors } from "@/constants/Colors";
 import { h2 } from "@/constants/random";
 import { useUserHistory } from "@/hooks/useUserHistory";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
+import LottieView from "lottie-react-native";
 import {
-  ActivityIndicator,
   FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 
 export default function HistoryScreen() {
   const { data: history = [], isLoading } = useUserHistory();
@@ -25,8 +25,20 @@ export default function HistoryScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
       {isLoading && (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+        <View
+          style={[
+            { flex: 1, justifyContent: "center", alignItems: "center" },
+            { backgroundColor: bg },
+          ]}
+        >
+          <Animatable.View animation="bounceIn">
+            <LottieView
+              source={require("../../assets/loading.json")}
+              autoPlay
+              loop={false}
+              style={styles.lottie}
+            />
+          </Animatable.View>
         </View>
       )}
 
@@ -143,10 +155,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "100%",
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
+  lottie: {
+    width: 200,
+    height: 200,
   },
 });

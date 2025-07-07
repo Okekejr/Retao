@@ -6,8 +6,10 @@ import { themeColor } from "@/utils";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { useLocalSearchParams } from "expo-router";
+import LottieView from "lottie-react-native";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
+import * as Animatable from "react-native-animatable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 
@@ -16,11 +18,11 @@ const screen = Dimensions.get("window");
 export default function SectionListedScreen() {
   const { heading, location } = useLocalSearchParams();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["10%", "52%", "88%"], []);
+  const snapPoints = useMemo(() => ["25%", "52%", "88%"], []);
   const [coords, setCoords] = useState<{ lat: number; lon: number }>();
   const bg = themeColor("background");
 
-  const { data: ListingByLoc } = useGetListings(
+  const { data: ListingByLoc, isLoading: locLoading } = useGetListings(
     location as string,
     undefined,
     undefined
@@ -81,7 +83,23 @@ export default function SectionListedScreen() {
         handleIndicatorStyle={styles.handleIndicator}
       >
         <BottomSheetView style={styles.contentContainer}>
-          {ListingByLoc && (
+          {!ListingByLoc || locLoading ? (
+            <View
+              style={[
+                { flex: 1, justifyContent: "center", alignItems: "center" },
+                { backgroundColor: bg },
+              ]}
+            >
+              <Animatable.View animation="bounceIn">
+                <LottieView
+                  source={require("../../assets/loading.json")}
+                  autoPlay
+                  loop={false}
+                  style={styles.lottie}
+                />
+              </Animatable.View>
+            </View>
+          ) : (
             <Section heading={heading as string} data={ListingByLoc} />
           )}
         </BottomSheetView>
@@ -114,5 +132,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 80,
+  },
+  lottie: {
+    width: 200,
+    height: 200,
   },
 });

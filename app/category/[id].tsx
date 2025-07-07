@@ -2,7 +2,6 @@ import { ItemsCard } from "@/components/core/items/itemsCard";
 import { BackButton } from "@/components/ui/backButton";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
-import { Colors } from "@/constants/Colors";
 import { categoriesIcon, h3 } from "@/constants/random";
 import {
   useGetCategoryById,
@@ -12,14 +11,10 @@ import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
+import LottieView from "lottie-react-native";
 import { MotiView } from "moti";
-import {
-  ActivityIndicator,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import * as Animatable from "react-native-animatable";
 
 const { height } = Dimensions.get("window");
 
@@ -36,8 +31,20 @@ export default function CategoryScreen() {
   return (
     <>
       {isLoading || !listings || !category ? (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+        <View
+          style={[
+            { flex: 1, justifyContent: "center", alignItems: "center" },
+            { backgroundColor: bg },
+          ]}
+        >
+          <Animatable.View animation="bounceIn">
+            <LottieView
+              source={require("../../assets/loading.json")}
+              autoPlay
+              loop={false}
+              style={styles.lottie}
+            />
+          </Animatable.View>
         </View>
       ) : (
         <View style={[styles.container, { backgroundColor: bg }]}>
@@ -101,11 +108,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 40,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
+  lottie: {
+    width: 200,
+    height: 200,
   },
   imageContainer: {
     width: "100%",

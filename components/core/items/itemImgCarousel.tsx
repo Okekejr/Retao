@@ -49,7 +49,12 @@ export const ItemImagesCarousel = ({ images }: ItemImagesCarouselProps) => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <Image source={item} style={styles.image} contentFit="cover" />
+          <Image
+            source={item}
+            style={styles.image}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
         )}
         onViewableItemsChanged={onViewRef.current}
         viewabilityConfig={viewConfigRef.current}

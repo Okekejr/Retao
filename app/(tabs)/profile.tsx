@@ -272,12 +272,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
-  },
   upgradeButton: {
     backgroundColor: "#fce4ec",
     padding: 12,

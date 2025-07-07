@@ -153,10 +153,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "100%",
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
-  },
 });

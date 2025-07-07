@@ -3,7 +3,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
-import { useRevenueCatPlans } from "@/hooks/usePlans";
+import { useGetPlans, useRevenueCatPlans } from "@/hooks/usePlans";
 import { t } from "@/localization/t";
 import {
   formatSubscriptionPeriod,
@@ -12,14 +12,16 @@ import {
   themeColor,
 } from "@/utils";
 import * as Linking from "expo-linking";
+import LottieView from "lottie-react-native";
 import {
-  ActivityIndicator,
   FlatList,
   Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
+import { PreviewPlans } from "./previewPlans";
 
 interface SelectPlansProps {
   closeModal: () => void;
@@ -34,6 +36,8 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
     handleSubscribe,
     handleRestore,
   } = useRevenueCatPlans();
+
+  const { data: plans, isLoading: loadingPlans } = useGetPlans();
 
   const { userData } = useUserData();
   const bg = themeColor("background");
@@ -54,19 +58,39 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
 
   return (
     <InnerContainer>
-      {isLoading && (
-        <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
-        </View>
-      )}
+      {isLoading ||
+        (loadingPlans && (
+          <View
+            style={[
+              { flex: 1, justifyContent: "center", alignItems: "center" },
+              { backgroundColor: bg },
+            ]}
+          >
+            <Animatable.View animation="bounceIn">
+              <LottieView
+                source={require("../../../assets/loading.json")}
+                autoPlay
+                loop={false}
+                style={styles.lottie}
+              />
+            </Animatable.View>
+          </View>
+        ))}
 
-      <View style={styles.modalHeader}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <CustomText style={[h3, { color: text }]}>
           {t("plans.header")}
         </CustomText>
 
         {Platform.OS === "ios" && (
-          <TouchableOpacity onPress={handleRestore} style={styles.restoreBtn}>
+          <TouchableOpacity onPress={handleRestore}>
             <CustomText style={styles.restoreText}>
               Restore Purchases
             </CustomText>
@@ -74,65 +98,69 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         )}
       </View>
 
-      <FlatList
-        data={offerings?.availablePackages || []}
-        keyExtractor={(item) => item.identifier}
-        contentContainerStyle={styles.container}
-        renderItem={({ item }) => {
-          const isCurrent = userData.subscription_plan === item.identifier;
+      {isPreviewMode ? (
+        <PreviewPlans userData={userData} plans={plans} />
+      ) : (
+        <FlatList
+          data={offerings?.availablePackages || []}
+          keyExtractor={(item) => item.identifier}
+          contentContainerStyle={styles.container}
+          renderItem={({ item }) => {
+            const isCurrent = userData.subscription_plan === item.identifier;
 
-          return (
-            <View
-              style={[
-                styles.card,
-                { borderColor: getPlanColor(item.identifier) },
-              ]}
-            >
-              <CustomText style={[styles.name, { color: text }]}>
-                {item.product.title}
-              </CustomText>
-              <CustomText style={styles.feature} numberOfLines={2}>
-                {item.product.description}
-              </CustomText>
-              <CustomText style={[styles.price, { color: text }]}>
-                {item.product.priceString}
-              </CustomText>
-              <CustomText
-                style={{ fontSize: 13, color: text, marginBottom: 10 }}
-              >
-                {formatSubscriptionPeriod(item.product.subscriptionPeriod)}
-              </CustomText>
-
-              <TouchableOpacity
-                onPress={() => handleSubscribe(item)}
-                disabled={isCurrent || isPending || isPreviewMode}
+            return (
+              <View
                 style={[
-                  styles.nextButton,
-                  {
-                    backgroundColor: isCurrent
-                      ? "#ddd"
-                      : getPlanColor(item.identifier),
-                  },
+                  styles.card,
+                  { borderColor: getPlanColor(item.identifier) },
                 ]}
               >
-                <CustomText style={styles.buttonText}>
-                  {isCurrent
-                    ? "Current Plan"
-                    : isPending
-                    ? "Subscribing..."
-                    : isPreviewMode
-                    ? "Preview Mode"
-                    : "Select Plan"}
+                <CustomText style={[styles.name, { color: text }]}>
+                  {item.product.title}
                 </CustomText>
-              </TouchableOpacity>
-            </View>
-          );
-        }}
-      />
+                <CustomText style={styles.feature} numberOfLines={2}>
+                  {item.product.description}
+                </CustomText>
+                <CustomText style={[styles.price, { color: text }]}>
+                  {item.product.priceString}
+                </CustomText>
+                <CustomText
+                  style={{ fontSize: 13, color: text, marginBottom: 10 }}
+                >
+                  {formatSubscriptionPeriod(item.product.subscriptionPeriod)}
+                </CustomText>
+
+                <TouchableOpacity
+                  onPress={() => handleSubscribe(item)}
+                  disabled={isCurrent || isPending || isPreviewMode}
+                  style={[
+                    styles.nextButton,
+                    {
+                      backgroundColor: isCurrent
+                        ? "#ddd"
+                        : getPlanColor(item.identifier),
+                    },
+                  ]}
+                >
+                  <CustomText style={styles.buttonText}>
+                    {isCurrent
+                      ? "Current Plan"
+                      : isPending
+                      ? "Subscribing..."
+                      : isPreviewMode
+                      ? "Preview Mode"
+                      : "Select Plan"}
+                  </CustomText>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
+        />
+      )}
 
       <View
         style={{
-          marginVertical: 24,
+          marginBottom: 24,
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -181,16 +209,9 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
 };
 
 const styles = StyleSheet.create({
-  modalHeader: { paddingBottom: 20 },
-  loaderOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 10,
+  lottie: {
+    width: 200,
+    height: 200,
   },
   container: { paddingBottom: 24 },
   card: {
@@ -204,7 +225,6 @@ const styles = StyleSheet.create({
   price: { fontSize: 16, fontFamily: "Satoshi-Bold", marginBottom: 10 },
   nextButton: { paddingVertical: 10, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "white", fontFamily: "Satoshi-Bold" },
-  restoreBtn: { marginTop: 8 },
   restoreText: {
     fontSize: 14,
     textDecorationLine: "underline",

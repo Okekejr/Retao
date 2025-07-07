@@ -13,9 +13,9 @@ import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { themeColor } from "@/utils";
+import LottieView from "lottie-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Platform,
   RefreshControl,
   SafeAreaView,
@@ -24,6 +24,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 import { t } from "../../localization/t";
 
 export default function HomeScreen() {
@@ -38,7 +39,7 @@ export default function HomeScreen() {
     data: featuredListings,
     isLoading: featuredLoading,
     refetch: refetchFeatured,
-  } = useGetFeaturedListings(location);
+  } = useGetFeaturedListings();
   const {
     data: ListingByLoc,
     isLoading: loadingLoc,
@@ -83,8 +84,20 @@ export default function HomeScreen() {
     <>
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         {isAnyLoading && (
-          <View style={[styles.loaderOverlay, { backgroundColor: bg }]}>
-            <ActivityIndicator size="large" color={Colors.light.primary} />
+          <View
+            style={[
+              { flex: 1, justifyContent: "center", alignItems: "center" },
+              { backgroundColor: bg },
+            ]}
+          >
+            <Animatable.View animation="bounceIn">
+              <LottieView
+                source={require("../../assets/loading.json")}
+                autoPlay
+                loop={false}
+                style={styles.lottie}
+              />
+            </Animatable.View>
           </View>
         )}
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -161,10 +174,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: Platform.OS === "ios" ? 30 : 30,
   },
-  loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
+  lottie: {
+    width: 200,
+    height: 200,
   },
 });
