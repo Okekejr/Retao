@@ -5,21 +5,10 @@ import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
 import { useGetPlans, useRevenueCatPlans } from "@/hooks/usePlans";
 import { t } from "@/localization/t";
-import {
-  formatSubscriptionPeriod,
-  getPlanColor,
-  showToast,
-  themeColor,
-} from "@/utils";
+import { showToast, themeColor } from "@/utils";
 import * as Linking from "expo-linking";
 import LottieView from "lottie-react-native";
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { PreviewPlans } from "./previewPlans";
 
@@ -98,10 +87,9 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         )}
       </View>
 
-      {isPreviewMode ? (
-        <PreviewPlans userData={userData} plans={plans} />
-      ) : (
-        <FlatList
+      <PreviewPlans userData={userData} plans={plans} />
+
+      {/* <FlatList
           data={offerings?.availablePackages || []}
           keyExtractor={(item) => item.identifier}
           contentContainerStyle={styles.container}
@@ -155,8 +143,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
               </View>
             );
           }}
-        />
-      )}
+        /> */}
 
       <View
         style={{
