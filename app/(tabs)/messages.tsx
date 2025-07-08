@@ -47,7 +47,7 @@ export default function MessagesScreen() {
     data: conversations,
     isLoading,
     refetch: refetchConversations,
-  } = useConversations();
+  } = useConversations(userData.isLoggedIn);
 
   const { mutate: deleteConversation } = useDeleteConversation();
 

@@ -43,17 +43,17 @@ export default function ListingsScreen() {
     data: listings = [],
     isLoading: listingsLoading,
     refetch: refetchListings,
-  } = useGetListings(undefined, userData?.id, undefined);
+  } = useGetListings(userData.isLoggedIn, undefined, userData?.id, undefined);
   const {
     data: requests,
     isLoading: requestLoading,
     refetch: refetchRequests,
-  } = useIncomingBorrowRequests();
+  } = useIncomingBorrowRequests(userData.isLoggedIn);
   const {
     data: pendingRequests,
     isLoading: pendingRequestsLoading,
     refetch: refetchPendingRequests,
-  } = useBorrowerPendingRequests();
+  } = useBorrowerPendingRequests(userData.isLoggedIn);
 
   const isAnyLoading =
     requestLoading || listingsLoading || pendingRequestsLoading;

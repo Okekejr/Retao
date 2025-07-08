@@ -23,7 +23,7 @@ export default function WishlistScreen() {
     data: favorited = [],
     isLoading,
     refetch,
-  } = useFavorites(userData.id);
+  } = useFavorites(userData.isLoggedIn, userData.id);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");

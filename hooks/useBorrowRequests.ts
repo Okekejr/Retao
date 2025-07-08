@@ -13,7 +13,7 @@ const getAuthHeaders = async () => {
   };
 };
 
-export const useIncomingBorrowRequests = () => {
+export const useIncomingBorrowRequests = (isLoggedIn: boolean) => {
   return useQuery<BorrowRequestsResponse["data"]>({
     queryKey: ["incomingBorrowRequests"],
     queryFn: async () => {
@@ -23,6 +23,7 @@ export const useIncomingBorrowRequests = () => {
       const data = await res.json();
       return data.data;
     },
+    enabled: isLoggedIn,
   });
 };
 
@@ -120,7 +121,7 @@ export const useUpdateBorrowRequest = () => {
   });
 };
 
-export const useBorrowerPendingRequests = () => {
+export const useBorrowerPendingRequests = (isLoggedIn: boolean) => {
   return useQuery<BorrowRequestsResponse["data"]>({
     queryKey: ["borrowerRequests"],
     queryFn: async () => {
@@ -132,6 +133,7 @@ export const useBorrowerPendingRequests = () => {
       const data = await res.json();
       return data.data;
     },
+    enabled: isLoggedIn,
   });
 };
 

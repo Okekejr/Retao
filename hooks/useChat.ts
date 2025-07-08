@@ -6,7 +6,7 @@ import { sendMessage } from "@/utils/api/sendMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 
-export const useConversations = () => {
+export const useConversations = (isLoggedIn: boolean) => {
   return useQuery<Conversations>({
     queryKey: ["conversations"],
     queryFn: async () => {
@@ -23,6 +23,7 @@ export const useConversations = () => {
       return res.json();
     },
     refetchInterval: 60000,
+    enabled: isLoggedIn,
   });
 };
 

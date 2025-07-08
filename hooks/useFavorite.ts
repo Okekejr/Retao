@@ -15,14 +15,14 @@ const fetchJSON = async (input: RequestInfo, init?: RequestInit) => {
 };
 
 // ✅ Get all favorites for a user
-export const useFavorites = (userId?: string) => {
+export const useFavorites = (isLoggedIn: boolean, userId?: string) => {
   return useQuery<ListingsT, Error>({
     queryKey: ["favorites", userId],
     queryFn: async () => {
       if (!userId) return [];
       return fetchJSON(`${FAVORITES_BASE_URL}/${userId}`);
     },
-    enabled: !!userId,
+    enabled: isLoggedIn && !!userId,
   });
 };
 
