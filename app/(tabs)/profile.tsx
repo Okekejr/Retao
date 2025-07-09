@@ -93,7 +93,7 @@ export default function ProfileScreen() {
   };
 
   useEffect(() => {
-    if (userData.isLoggedIn === true) {
+    if (userData.id !== "") {
       try {
         setLoading(true);
         refreshData();
@@ -108,13 +108,13 @@ export default function ProfileScreen() {
         setLoading(false);
       }
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
-  const profileItems = userData.isLoggedIn
+  const profileItems = userData.id
     ? getProfileItems()
     : getLoggedOutProfileItems();
 
-  if (userData.isLoggedIn && loading) {
+  if (userData.id && loading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -133,7 +133,7 @@ export default function ProfileScreen() {
 
   return (
     <>
-      {!userData || !userData.isLoggedIn ? (
+      {!userData || userData.id === "" ? (
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header
@@ -216,7 +216,7 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
               )}
 
-              {userData.subscription_plan === "unlimited" ||
+              {userData.subscription_plan === "retao_unlimited_monthly" ||
               userData.stats.listed < userData.listing_limit ? (
                 <ListAnItemBtn openModal={() => openModal("createListing")} />
               ) : (

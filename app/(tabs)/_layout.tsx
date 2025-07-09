@@ -13,7 +13,7 @@ export default function TabLayout() {
   const { userData } = useUserData();
   const messages = notifications.messages;
 
-  const { data: requests } = useIncomingBorrowRequests(userData.isLoggedIn);
+  const { data: requests } = useIncomingBorrowRequests(userData.id);
 
   const filterRequests = requests?.filter((item) => item.status === "pending");
   const hasPendingRequests = (filterRequests?.length || 0) > 0;

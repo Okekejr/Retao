@@ -32,7 +32,7 @@ export const Settings: FC<SettingsProps> = ({ closeModal }) => {
         </CustomText>
       </View>
 
-      {userData.isLoggedIn && (
+      {userData.id !== "" && (
         <FlatList
           data={AccountSettings}
           keyExtractor={(item) => item.label}

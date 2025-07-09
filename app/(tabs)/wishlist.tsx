@@ -23,7 +23,7 @@ export default function WishlistScreen() {
     data: favorited = [],
     isLoading,
     refetch,
-  } = useFavorites(userData.isLoggedIn, userData.id);
+  } = useFavorites(userData.id);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState("");
@@ -44,12 +44,12 @@ export default function WishlistScreen() {
   }, [refetch]);
 
   useEffect(() => {
-    if (userData.isLoggedIn === true) {
+    if (userData.id !== "") {
       refreshFavorites();
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
-  if (userData.isLoggedIn && isLoading) {
+  if (userData.id && isLoading) {
     return (
       <>
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
@@ -67,7 +67,7 @@ export default function WishlistScreen() {
 
   return (
     <>
-      {!userData || !userData.isLoggedIn ? (
+      {!userData || userData.id === "" ? (
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header

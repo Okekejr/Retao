@@ -33,7 +33,7 @@ export default function HomeScreen() {
     data: Listings,
     isLoading,
     refetch: refetchListings,
-  } = useGetListings(userData.isLoggedIn);
+  } = useGetListings(true);
   const { data: location } = useGetLocation();
   const {
     data: featuredListings,
@@ -44,7 +44,7 @@ export default function HomeScreen() {
     data: ListingByLoc,
     isLoading: loadingLoc,
     refetch: refetchByLoc,
-  } = useGetListings(userData.isLoggedIn, location, undefined, undefined);
+  } = useGetListings(true, location);
   const { data: Categories, isLoading: catLoading } = useGetCategories();
 
   const bg = themeColor("background");
@@ -67,11 +67,11 @@ export default function HomeScreen() {
   }, [refetchListings, refetchFeatured, refetchByLoc]);
 
   useEffect(() => {
-    if (!userData.isLoggedIn) {
+    if (userData.id === "") {
       setContent("Login");
       setModal(true);
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
   const openModal = (content: string) => {
     setModalVisible(true);

@@ -34,14 +34,12 @@ export default function IndexScreen() {
 
       const token = await SecureStore.getItemAsync("token");
       if (!token) {
-        updateUserForm("isLoggedIn", false); // 👈 set guest
         router.replace("/home"); // let them explore freely
         return;
       }
 
       try {
         await refreshData();
-        updateUserForm("isLoggedIn", true);
         setIsChecking(false);
       } catch (error) {
         console.error("Auth check failed:", error);

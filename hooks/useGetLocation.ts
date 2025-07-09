@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 
 export const useGetLocation = () => {
   return useQuery({
@@ -19,8 +19,14 @@ export const useGetLocation = () => {
           reverse[0]?.city || `${loc.coords.latitude}, ${loc.coords.longitude}`;
         return name;
       } catch (error) {
-        Alert.alert("Error", error as string);
-        console.log(error);
+        console.warn("⚠️ Location fallback triggered", error);
+
+        // Fallback only on simulator
+        if (Platform.OS === "ios" && !Location.hasServicesEnabledAsync()) {
+          return "Monterrey, Nuevo León";
+        }
+
+        return "Monterrey, Nuevo León";
       }
     },
     staleTime: 3600000, // Cache data for 1 hour

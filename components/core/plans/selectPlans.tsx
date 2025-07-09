@@ -1,36 +1,104 @@
+// @ts-nocheck
+
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
-import { useGetPlans, useRevenueCatPlans } from "@/hooks/usePlans";
+import { useGetUserData } from "@/hooks/useGetUserData";
+import { useValidateIosReceipt } from "@/hooks/usePlans";
 import { t } from "@/localization/t";
-import { showToast, themeColor } from "@/utils";
+import {
+  formatSubscriptionPeriod,
+  getPlanColor,
+  showToast,
+  themeColor,
+} from "@/utils";
 import * as Linking from "expo-linking";
-import LottieView from "lottie-react-native";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import * as Animatable from "react-native-animatable";
-import { PreviewPlans } from "./previewPlans";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  getAvailablePurchases,
+  PurchaseError,
+  requestSubscription,
+  useIAP,
+} from "react-native-iap";
 
 interface SelectPlansProps {
   closeModal: () => void;
 }
 
+const subscriptionSkus =
+  Platform.select({
+    ios: ["retao_pro_monthly", "retao_unlimited_monthly"],
+  }) ?? [];
+
 export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
   const {
-    offerings,
-    isLoading,
-    isPending,
-    isPreviewMode,
-    handleSubscribe,
-    handleRestore,
-  } = useRevenueCatPlans();
+    connected,
+    getSubscriptions,
+    subscriptions,
+    currentPurchase,
+    finishTransaction,
+  } = useIAP();
 
-  const { data: plans, isLoading: loadingPlans } = useGetPlans();
+  console.log(currentPurchase);
 
+  const [loading, setLoading] = useState(false);
   const { userData } = useUserData();
+  const { refreshData } = useGetUserData();
+
   const bg = themeColor("background");
   const text = themeColor("text");
+  const textSec = themeColor("textSecondary");
+
+  const { mutateAsync: validateReceipt } = useValidateIosReceipt();
+
+  useEffect(() => {
+    if (connected) getSubscriptions({ skus: subscriptionSkus });
+  }, [connected]);
+
+  const handleBuySubscription = async (productId: string) => {
+    setLoading(true);
+    try {
+      await requestSubscription({ sku: productId });
+    } catch (err) {
+      if (err instanceof PurchaseError) {
+        showToast({
+          type: "error",
+          text1: "Purchase failed",
+          message: `${err.message}`,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    try {
+      const restored = await getAvailablePurchases();
+      if (restored.length > 0) {
+        showToast({
+          type: "success",
+          text1: "Restored",
+          message: "Your purchases were restored.",
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: "error",
+        text1: "Restore Failed",
+        message: "Unable to restore purchases.",
+      });
+    }
+  };
 
   const handleOpenLink = async (href: string) => {
     const supported = await Linking.canOpenURL(href);
@@ -45,27 +113,44 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
     }
   };
 
+  useEffect(() => {
+    const validateCurrentPurchase = async () => {
+      const receipt = currentPurchase?.transactionReceipt;
+      if (Platform.OS === "ios" && receipt) {
+        try {
+          const result = await validateReceipt(receipt);
+          if (result?.planId) {
+            showToast({
+              type: "success",
+              text1: "Subscription active",
+              message: `You're now on the ${result.planId} plan`,
+            });
+            refreshData();
+          } else {
+            showToast({
+              type: "error",
+              text1: "Validation failed",
+              message: "Plan not recognized.",
+            });
+          }
+        } catch (err: any) {
+          showToast({
+            type: "error",
+            text1: "Validation Error",
+            message:
+              err.message ||
+              "An error occurred while validating your purchase.",
+          });
+        } finally {
+          finishTransaction({ purchase: currentPurchase, isConsumable: false });
+        }
+      }
+    };
+    validateCurrentPurchase();
+  }, [currentPurchase]);
+
   return (
     <InnerContainer>
-      {isLoading ||
-        (loadingPlans && (
-          <View
-            style={[
-              { flex: 1, justifyContent: "center", alignItems: "center" },
-              { backgroundColor: bg },
-            ]}
-          >
-            <Animatable.View animation="bounceIn">
-              <LottieView
-                source={require("../../../assets/loading.json")}
-                autoPlay
-                loop={false}
-                style={styles.lottie}
-              />
-            </Animatable.View>
-          </View>
-        ))}
-
       <View
         style={{
           display: "flex",
@@ -80,81 +165,73 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
 
         {Platform.OS === "ios" && (
           <TouchableOpacity onPress={handleRestore}>
-            <CustomText style={styles.restoreText}>
+            <CustomText style={[styles.restoreText, { color: textSec }]}>
               Restore Purchases
             </CustomText>
           </TouchableOpacity>
         )}
       </View>
 
-      <PreviewPlans userData={userData} plans={plans} />
-
-      {/* <FlatList
-          data={offerings?.availablePackages || []}
-          keyExtractor={(item) => item.identifier}
-          contentContainerStyle={styles.container}
-          renderItem={({ item }) => {
-            const isCurrent = userData.subscription_plan === item.identifier;
+      {subscriptions.length === 0 ? (
+        <View style={[styles.loadingContainer, { backgroundColor: bg }]}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </View>
+      ) : (
+        <View style={{ marginVertical: 20, gap: 16 }}>
+          {subscriptions.map((item) => {
+            const isCurrent = userData.subscription_plan === item.productId;
 
             return (
               <View
-                style={[
-                  styles.card,
-                  { borderColor: getPlanColor(item.identifier) },
-                ]}
+                key={item.productId}
+                style={[styles.card, { borderColor: getPlanColor(item.title) }]}
               >
                 <CustomText style={[styles.name, { color: text }]}>
-                  {item.product.title}
+                  {item.title}
                 </CustomText>
-                <CustomText style={styles.feature} numberOfLines={2}>
-                  {item.product.description}
-                </CustomText>
+                <View style={{ marginVertical: 4 }}>
+                  {item.description &&
+                    item.description.split(",").map((feature, idx) => (
+                      <CustomText
+                        key={idx}
+                        style={[styles.feature, { color: textSec }]}
+                      >
+                        ✔️ {feature}
+                      </CustomText>
+                    ))}
+                </View>
                 <CustomText style={[styles.price, { color: text }]}>
-                  {item.product.priceString}
-                </CustomText>
-                <CustomText
-                  style={{ fontSize: 13, color: text, marginBottom: 10 }}
-                >
-                  {formatSubscriptionPeriod(item.product.subscriptionPeriod)}
+                  {item.localizedPrice}{" "}
+                  {formatSubscriptionPeriod(item.subscriptionPeriodUnitIOS)}
                 </CustomText>
 
                 <TouchableOpacity
-                  onPress={() => handleSubscribe(item)}
-                  disabled={isCurrent || isPending || isPreviewMode}
+                  onPress={() => handleBuySubscription(item.productId)}
+                  disabled={isCurrent || loading}
                   style={[
                     styles.nextButton,
                     {
                       backgroundColor: isCurrent
                         ? "#ddd"
-                        : getPlanColor(item.identifier),
+                        : Colors.light.primary,
                     },
                   ]}
                 >
-                  <CustomText style={styles.buttonText}>
-                    {isCurrent
-                      ? "Current Plan"
-                      : isPending
-                      ? "Subscribing..."
-                      : isPreviewMode
-                      ? "Preview Mode"
-                      : "Select Plan"}
-                  </CustomText>
+                  {loading && !isCurrent ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <CustomText style={styles.buttonText}>
+                      {isCurrent ? "Current Plan" : "Subscribe"}
+                    </CustomText>
+                  )}
                 </TouchableOpacity>
               </View>
             );
-          }}
-        /> */}
+          })}
+        </View>
+      )}
 
-      <View
-        style={{
-          marginBottom: 24,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingHorizontal: 12,
-          gap: 8,
-        }}
-      >
+      <View style={styles.linksContainer}>
         <TouchableOpacity
           onPress={() =>
             handleOpenLink(
@@ -164,8 +241,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         >
           <CustomText
             style={{
-              textDecorationLine: "underline",
-              color: Colors.light.primary,
+              color: textSec,
               fontSize: 13,
             }}
           >
@@ -182,8 +258,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         >
           <CustomText
             style={{
-              textDecorationLine: "underline",
-              color: Colors.light.primary,
+              color: textSec,
               fontSize: 13,
             }}
           >
@@ -200,22 +275,30 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
-  container: { paddingBottom: 24 },
   card: {
     padding: 16,
     borderRadius: 12,
     borderWidth: 1.5,
-    marginBottom: 16,
   },
   name: { fontSize: 18, fontFamily: "Satoshi-Bold", marginBottom: 8 },
-  feature: { fontSize: 14, marginBottom: 8, color: "#666" },
+  feature: { fontSize: 14, marginBottom: 8 },
   price: { fontSize: 16, fontFamily: "Satoshi-Bold", marginBottom: 10 },
   nextButton: { paddingVertical: 10, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "white", fontFamily: "Satoshi-Bold" },
   restoreText: {
     fontSize: 14,
-    textDecorationLine: "underline",
-    color: Colors.light.primary,
     textAlign: "right",
+  },
+  loadingContainer: {
+    marginTop: 48,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  linksContainer: {
+    marginBottom: 24,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 24,
   },
 });

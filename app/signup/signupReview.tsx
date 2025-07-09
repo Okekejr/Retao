@@ -103,7 +103,6 @@ export default function SignupReviewScreen() {
         console.error("Failed to authenticate user:", error.message);
       }
 
-      updateUserForm("isLoggedIn", true);
       router.replace("/signup/loadingScreen");
     } catch (error) {
       console.log("Error", error);

@@ -80,8 +80,8 @@ export const getStatusStyle = (status: string) => {
 
 const SUBSCRIPTION_PLANS = [
   { id: "free", label: "Free", color: "#4F46E5" },
-  { id: "pro", label: "Pro", color: "#000000" },
-  { id: "unlimited", label: "Unlimited", color: "#D4AF37" },
+  { id: "Pro Access", label: "Pro", color: "#4F46E5" },
+  { id: "Unlimited Access", label: "Unlimited", color: "#D4AF37" },
 ];
 
 export const getPlanColor = (planId: string): string => {

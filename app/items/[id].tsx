@@ -95,10 +95,10 @@ export default function ItemScreen() {
   }, [selectedItem]);
 
   useEffect(() => {
-    if (userData.isLoggedIn) {
+    if (userData.id) {
       refetch();
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
   const userRole: UserRole =
     userData.id === selectedItem?.owner.id
@@ -121,7 +121,7 @@ export default function ItemScreen() {
   };
 
   const handleMessageOwner = async () => {
-    if (!userData.isLoggedIn) {
+    if (!userData.id) {
       openModal("Login");
       return;
     }
@@ -134,7 +134,7 @@ export default function ItemScreen() {
   };
 
   const handleRequestToBorrow = () => {
-    if (!userData.isLoggedIn) {
+    if (!userData.id) {
       openModal("Login");
       return;
     }
@@ -146,14 +146,14 @@ export default function ItemScreen() {
       "Borrower at time of mark:",
       selectedItem && selectedItem.borrower
     );
-    if (!selectedItem?.borrower?.id || !userData.isLoggedIn) return;
+    if (!selectedItem?.borrower?.id || !userData.id) return;
 
     setBorrowerForRating(selectedItem);
     setShowRatingModal(true);
   };
 
   const handleSubmitRating = (rating: number) => {
-    if (!borrowerForRating?.borrower?.id || !userData.isLoggedIn) return;
+    if (!borrowerForRating?.borrower?.id || !userData.id) return;
 
     // First submit rating
     submitRatingMutation(

@@ -25,9 +25,9 @@ export default function SectionListedScreen() {
   const bg = themeColor("background");
 
   const { data: ListingByLoc, isLoading: locLoading } = useGetListings(
-    userData.isLoggedIn,
+    true,
     location as string,
-    undefined,
+    userData.id,
     undefined
   );
 

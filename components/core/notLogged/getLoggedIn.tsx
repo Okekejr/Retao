@@ -105,8 +105,6 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
 
     const { success, error } = await LoginFunc(email, password);
 
-    console.log(success, error, email);
-
     if (!success) {
       setErrors((prev) => ({
         ...prev,
@@ -118,25 +116,24 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
     try {
       setIsChecking(true);
       await refreshData();
+      closeModal();
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
+      setIsChecking(false);
     }
   };
 
   useEffect(() => {
-    if (!isChecking) return;
-
-    if (userData?.email) {
+    if (isChecking && userData?.email) {
       if (isProfileComplete(userData)) {
-        updateUserForm("isLoggedIn", true);
         closeModal();
       } else {
         const nextRoute = getNextIncompleteStep(userData.current_step || 0);
         router.replace(nextRoute);
       }
-      setIsChecking(false); // ✅ reset
+      setIsChecking(false); // ✅ always reset after handling
     }
-  }, [userData, isChecking]);
+  }, [userData?.email, isChecking]); // ensure this runs only when needed
 
   return (
     <InnerContainer>
@@ -291,14 +288,12 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
                 await SecureStore.setItemAsync("token", data.token);
                 await SecureStore.setItemAsync("id", data.userId);
                 await refreshData(); // reuse your existing logic
-                updateUserForm("isLoggedIn", true);
 
                 if (data.isNew) {
                   updateUserForm("id", data.userId);
                   updateUserForm("email", credential.email ?? "");
                   updateUserForm("name", data.name);
                   updateUserForm("handle", data.handle);
-                  updateUserForm("isLoggedIn", true);
                   router.replace("/signup/signupAvatar"); // Start onboarding flow
                 } else {
                   closeModal();

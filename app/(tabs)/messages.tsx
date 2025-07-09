@@ -47,7 +47,7 @@ export default function MessagesScreen() {
     data: conversations,
     isLoading,
     refetch: refetchConversations,
-  } = useConversations(userData.isLoggedIn);
+  } = useConversations(userData.id);
 
   const { mutate: deleteConversation } = useDeleteConversation();
 
@@ -77,12 +77,12 @@ export default function MessagesScreen() {
   const closeModal = () => setModalVisible(false);
 
   useEffect(() => {
-    if (userData.isLoggedIn === true) {
+    if (userData.id !== "") {
       onRefresh();
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
-  if (userData.isLoggedIn && isLoading) {
+  if (userData.id && isLoading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -98,7 +98,7 @@ export default function MessagesScreen() {
 
   return (
     <>
-      {!userData || !userData.isLoggedIn ? (
+      {!userData || userData.id !== "" ? (
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header
@@ -130,7 +130,7 @@ export default function MessagesScreen() {
                 headerTitle={t("messages.title")}
                 style={{ marginBottom: 12 }}
               >
-                {!searchOpen && userData.isLoggedIn && (
+                {!searchOpen && userData.id && (
                   <TouchableOpacity
                     style={{
                       padding: 8,

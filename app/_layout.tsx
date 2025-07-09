@@ -14,6 +14,7 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { withIAPContext } from "react-native-iap";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 
@@ -48,7 +49,7 @@ function WebSocketInitializer() {
   return null;
 }
 
-export default function RootLayout() {
+function RootLayout() {
   const { theme } = useTheme();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -100,3 +101,5 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
+
+export default withIAPContext(RootLayout);

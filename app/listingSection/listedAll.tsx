@@ -16,7 +16,9 @@ export default function ListedAllScreen() {
   const { userData } = useUserData();
   const { heading } = useLocalSearchParams();
   const { data: Listings, isLoading: listingLoading } = useGetListings(
-    userData.isLoggedIn
+    undefined,
+    userData.id,
+    undefined
   );
   const { data: location, isLoading: locLoading } = useGetLocation();
   const { data: featuredListings, isLoading: featuredLoading } =

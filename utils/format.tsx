@@ -1,3 +1,5 @@
+import { SubscriptionIosPeriod } from "react-native-iap";
+
 interface WordsT {
   text: string;
   wordsNum: number;
@@ -45,17 +47,17 @@ export const formatTimeChat = (isoDate: string) => {
   return `${Math.floor(hours / 24)}d ago`;
 };
 
-export const formatSubscriptionPeriod = (period?: string | null): string => {
+export const formatSubscriptionPeriod = (
+  period?: SubscriptionIosPeriod | null
+): string => {
   switch (period) {
-    case "P1W":
+    case "DAY":
+      return "Billed daily";
+    case "WEEK":
       return "Billed weekly";
-    case "P1M":
+    case "MONTH":
       return "Billed monthly";
-    case "P3M":
-      return "Billed quarterly";
-    case "P6M":
-      return "Billed every 6 months";
-    case "P1Y":
+    case "YEAR":
       return "Billed annually";
     default:
       return "Subscription";

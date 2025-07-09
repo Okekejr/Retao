@@ -40,21 +40,23 @@ export default function ListingsScreen() {
 
   const { userData } = useUserData();
 
+  const isLoggedIn = !!userData?.id;
+
   const {
     data: listings = [],
     isLoading: listingsLoading,
     refetch: refetchListings,
-  } = useGetListings(userData.isLoggedIn, undefined, userData?.id, undefined);
+  } = useGetListings(isLoggedIn, undefined, userData?.id, undefined);
   const {
     data: requests,
     isLoading: requestLoading,
     refetch: refetchRequests,
-  } = useIncomingBorrowRequests(userData.isLoggedIn);
+  } = useIncomingBorrowRequests(userData.id);
   const {
     data: pendingRequests,
     isLoading: pendingRequestsLoading,
     refetch: refetchPendingRequests,
-  } = useBorrowerPendingRequests(userData.isLoggedIn);
+  } = useBorrowerPendingRequests(userData.id);
 
   const isAnyLoading =
     requestLoading || listingsLoading || pendingRequestsLoading;
@@ -92,12 +94,12 @@ export default function ListingsScreen() {
   }, [refetchListings, refetchRequests, refetchPendingRequests]);
 
   useEffect(() => {
-    if (userData.isLoggedIn === true) {
+    if (userData.id !== "") {
       onRefresh();
     }
-  }, [userData.isLoggedIn]);
+  }, [userData.id]);
 
-  if (userData.isLoggedIn && isAnyLoading) {
+  if (userData.id && isAnyLoading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
@@ -112,7 +114,7 @@ export default function ListingsScreen() {
 
   return (
     <>
-      {!userData || !userData.isLoggedIn ? (
+      {!userData || userData.id === "" ? (
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header
@@ -148,12 +150,12 @@ export default function ListingsScreen() {
             />
 
             <>
-              {userData.subscription_plan === "unlimited" ||
+              {userData.subscription_plan === "retao_unlimited_monthly" ||
               userData.stats.listed < userData.listing_limit ? (
                 <ListAnItemBtn openModal={() => openModal("createListing")} />
               ) : (
                 <ListAnItemBtn
-                  openModal={() => openModal("Plans")}
+                  openModal={() => openModal("plans")}
                   title={t("listings.listLimitTitle")}
                   subText={t("listings.listLimitSubTitle")}
                   icon="checkmark-done-circle-outline"

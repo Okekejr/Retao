@@ -3,7 +3,7 @@ import { Listing, ListingsT, SearchListingsResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetListings = (
-  isLoggedIn: boolean,
+  enabled: boolean = true,
   location?: string,
   userId?: string,
   limit?: string
@@ -36,8 +36,8 @@ export const useGetListings = (
         return [];
       }
     },
+    enabled: enabled,
     refetchOnWindowFocus: false,
-    enabled: isLoggedIn && !!userId,
   });
 };
 
