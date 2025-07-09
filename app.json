@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.dylanokeks.retao",
-      "buildNumber": "21",
+      "buildNumber": "23",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "Retao uses your location to show nearby items available for borrowing and to improve listing relevance based on your area.",

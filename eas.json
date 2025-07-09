@@ -5,7 +5,12 @@
     },
     "build": {
         "production": {
-            "ios": {}
+            "ios": {
+                "distribution": "internal",
+                "autoIncrement": true,
+                "simulator": false,
+                "enterpriseProvisioning": "universal"
+            }
         }
     }
 }
