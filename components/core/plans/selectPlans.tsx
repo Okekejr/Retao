@@ -9,6 +9,7 @@ import { useGetUserData } from "@/hooks/useGetUserData";
 import { useValidateIosReceipt } from "@/hooks/usePlans";
 import { t } from "@/localization/t";
 import {
+  extractPlanKey,
   formatSubscriptionPeriod,
   getPlanColor,
   showToast,
@@ -151,7 +152,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
   }, [currentPurchase]);
 
   return (
-    <InnerContainer>
+    <InnerContainer style={{ marginHorizontal: 25 }}>
       <View
         style={{
           display: "flex",
@@ -180,7 +181,8 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
       ) : (
         <View style={{ marginVertical: 20, gap: 16 }}>
           {subscriptions.map((item) => {
-            const isCurrent = userData.subscription_plan === item.productId;
+            const planKey = extractPlanKey(item.productId);
+            const isCurrent = userData.subscription_plan === planKey;
 
             return (
               <View
@@ -207,7 +209,10 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
                 </CustomText>
 
                 <TouchableOpacity
-                  onPress={() => handleBuySubscription(item.productId)}
+                  onPress={() => {
+                    console.log(item.productId);
+                    handleBuySubscription(item.productId);
+                  }}
                   disabled={isCurrent || loadingProductId !== null}
                   style={[
                     styles.nextButton,
@@ -242,7 +247,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
             )
           }
         >
-          <CustomText style={styles.linkText}>
+          <CustomText style={[styles.linkText, { color: textSec }]}>
             {t("profile.privacyPolicy")}
           </CustomText>
         </TouchableOpacity>
@@ -254,7 +259,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
             )
           }
         >
-          <CustomText style={styles.linkText}>
+          <CustomText style={[styles.linkText, { color: textSec }]}>
             {t("profile.termsOfUse")}
           </CustomText>
         </TouchableOpacity>
@@ -295,7 +300,6 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   linkText: {
-    color: textSec,
     fontSize: 13,
   },
 });

@@ -18,6 +18,7 @@ import {
   useIncomingBorrowRequests,
 } from "@/hooks/useBorrowRequests";
 import { useGetListings } from "@/hooks/useGetListings";
+import { useMounted } from "@/hooks/useMounted";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
@@ -31,6 +32,7 @@ import {
 } from "react-native";
 
 export default function ListingsScreen() {
+  const { hasMounted } = useMounted();
   const bg = themeColor("background");
   const text = themeColor("text");
   const textSec = themeColor("textSecondary");
@@ -98,6 +100,8 @@ export default function ListingsScreen() {
       onRefresh();
     }
   }, [userData.id]);
+
+  if (!hasMounted) return null;
 
   if (userData.id && isAnyLoading) {
     return (

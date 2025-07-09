@@ -9,6 +9,7 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import SkeletonWishlistLoader from "@/components/ui/skeletonLoaders/skeletonWishlistLoader";
 import { useUserData } from "@/context/userContext";
 import { useFavorites } from "@/hooks/useFavorite";
+import { useMounted } from "@/hooks/useMounted";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { MotiView } from "moti";
@@ -16,6 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function WishlistScreen() {
+  const { hasMounted } = useMounted();
   const bg = themeColor("background");
   const textSec = themeColor("textSecondary");
   const { userData } = useUserData();
@@ -48,6 +50,8 @@ export default function WishlistScreen() {
       refreshFavorites();
     }
   }, [userData.id]);
+
+  if (!hasMounted) return null;
 
   if (userData.id && isLoading) {
     return (

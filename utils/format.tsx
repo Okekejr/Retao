@@ -63,3 +63,9 @@ export const formatSubscriptionPeriod = (
       return "Subscription";
   }
 };
+
+export const extractPlanKey = (productId: string) => {
+  if (productId.toLowerCase().includes("pro")) return "pro";
+  if (productId.toLowerCase().includes("unlimited")) return "unlimited";
+  return "free";
+};

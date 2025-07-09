@@ -98,7 +98,7 @@ export const IdentityCard = ({ user, showPlan, func }: IdentityCardProps) => {
                   { color: getPlanColor(user.subscription_plan) },
                 ]}
               >
-                {user.subscription_plan} plan
+                {user.subscription_plan}
               </CustomText>
             </TouchableOpacity>
           )}

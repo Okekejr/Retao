@@ -10,6 +10,7 @@ import SkeletonConversationsLoader from "@/components/ui/skeletonLoaders/skeleto
 import { Colors } from "@/constants/Colors";
 import { useUserData } from "@/context/userContext";
 import { useConversations, useDeleteConversation } from "@/hooks/useChat";
+import { useMounted } from "@/hooks/useMounted";
 import { t } from "@/localization/t";
 import { themeColor } from "@/utils";
 import { Feather } from "@expo/vector-icons";
@@ -31,6 +32,7 @@ import {
 const { height } = Dimensions.get("window");
 
 export default function MessagesScreen() {
+  const { hasMounted } = useMounted();
   const { userData } = useUserData();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +83,8 @@ export default function MessagesScreen() {
       onRefresh();
     }
   }, [userData.id]);
+
+  if (!hasMounted) return null;
 
   if (userData.id && isLoading) {
     return (

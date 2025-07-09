@@ -2,7 +2,7 @@
   "expo": {
     "name": "Retao",
     "slug": "Retao",
-    "version": "1.0.21",
+    "version": "1.0.23",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "retao",
@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.dylanokeks.retao",
-      "buildNumber": "25",
+      "buildNumber": "27",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "Retao uses your location to show nearby items available for borrowing and to improve listing relevance based on your area.",

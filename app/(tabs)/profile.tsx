@@ -15,6 +15,7 @@ import SkeletonProfileLoader from "@/components/ui/skeletonLoaders/skeletonProfi
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
 import { useLogout } from "@/hooks/useLogout";
+import { useMounted } from "@/hooks/useMounted";
 import { t } from "@/localization/t";
 import {
   getLoggedOutProfileItems,
@@ -37,6 +38,7 @@ import {
 const { height } = Dimensions.get("window");
 
 export default function ProfileScreen() {
+  const { hasMounted } = useMounted();
   const router = useRouter();
   const { userData } = useUserData();
   const { refreshData } = useGetUserData();
@@ -113,6 +115,8 @@ export default function ProfileScreen() {
   const profileItems = userData.id
     ? getProfileItems()
     : getLoggedOutProfileItems();
+
+  if (!hasMounted) return null;
 
   if (userData.id && loading) {
     return (
