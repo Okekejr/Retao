@@ -1,6 +1,7 @@
 import { Section } from "@/components/core/items/section";
 import { BackButton } from "@/components/ui/backButton";
 import { Colors } from "@/constants/Colors";
+import { useUserData } from "@/context/userContext";
 import { useGetListings } from "@/hooks/useGetListings";
 import { themeColor } from "@/utils";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -17,12 +18,14 @@ const screen = Dimensions.get("window");
 
 export default function SectionListedScreen() {
   const { heading, location } = useLocalSearchParams();
+  const { userData } = useUserData();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["25%", "52%", "88%"], []);
   const [coords, setCoords] = useState<{ lat: number; lon: number }>();
   const bg = themeColor("background");
 
   const { data: ListingByLoc, isLoading: locLoading } = useGetListings(
+    userData.isLoggedIn,
     location as string,
     undefined,
     undefined

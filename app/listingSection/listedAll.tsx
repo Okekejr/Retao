@@ -15,7 +15,9 @@ export default function ListedAllScreen() {
   const bg = themeColor("background");
   const { userData } = useUserData();
   const { heading } = useLocalSearchParams();
-  const { data: Listings, isLoading: listingLoading } = useGetListings();
+  const { data: Listings, isLoading: listingLoading } = useGetListings(
+    userData.isLoggedIn
+  );
   const { data: location, isLoading: locLoading } = useGetLocation();
   const { data: featuredListings, isLoading: featuredLoading } =
     useGetFeaturedListings(location);

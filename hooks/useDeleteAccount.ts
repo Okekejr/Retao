@@ -20,6 +20,7 @@ export const useDeactivateAccount = () => {
         { text: t("loginsecurity.confirmAlert.cancel"), style: "cancel" },
         {
           text: t("loginsecurity.deactivate"),
+          style: "destructive",
           onPress: async () => {
             setLoading(true);
             setError(null);

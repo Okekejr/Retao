@@ -33,7 +33,7 @@ export default function HomeScreen() {
     data: Listings,
     isLoading,
     refetch: refetchListings,
-  } = useGetListings();
+  } = useGetListings(userData.isLoggedIn);
   const { data: location } = useGetLocation();
   const {
     data: featuredListings,
@@ -44,7 +44,7 @@ export default function HomeScreen() {
     data: ListingByLoc,
     isLoading: loadingLoc,
     refetch: refetchByLoc,
-  } = useGetListings(location, undefined, undefined);
+  } = useGetListings(userData.isLoggedIn, location, undefined, undefined);
   const { data: Categories, isLoading: catLoading } = useGetCategories();
 
   const bg = themeColor("background");

@@ -5,6 +5,7 @@ import SelectCategory from "@/components/core/listing/selectCategory";
 import { NotLogged } from "@/components/core/notLogged";
 import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
 import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
+import { SelectPlans } from "@/components/core/plans/selectPlans";
 import { CustomModal } from "@/components/ui/customModal";
 import CustomText from "@/components/ui/customText";
 import { Header } from "@/components/ui/header";
@@ -164,6 +165,8 @@ export default function ListingsScreen() {
                 {content === "createListing" && (
                   <SelectCategory closeModal={closeModal} />
                 )}
+
+                {content === "plans" && <SelectPlans closeModal={closeModal} />}
               </CustomModal>
 
               <ScrollView

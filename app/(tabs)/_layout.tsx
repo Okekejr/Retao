@@ -1,4 +1,5 @@
 import { useNotifications } from "@/context/notificationContext";
+import { useUserData } from "@/context/userContext";
 import { useIncomingBorrowRequests } from "@/hooks/useBorrowRequests";
 import { getIconName, themeColor } from "@/utils";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
@@ -9,9 +10,10 @@ import { StyleSheet, Text, View } from "react-native";
 export default function TabLayout() {
   const bg = themeColor("background");
   const { notifications } = useNotifications();
+  const { userData } = useUserData();
   const messages = notifications.messages;
 
-  const { data: requests } = useIncomingBorrowRequests();
+  const { data: requests } = useIncomingBorrowRequests(userData.isLoggedIn);
 
   const filterRequests = requests?.filter((item) => item.status === "pending");
   const hasPendingRequests = (filterRequests?.length || 0) > 0;
