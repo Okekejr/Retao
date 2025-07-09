@@ -98,7 +98,7 @@ export default function MessagesScreen() {
 
   return (
     <>
-      {!userData || userData.id !== "" ? (
+      {!userData || userData.id === "" ? (
         <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
           <InnerContainer style={{ gap: 12, marginTop: 20 }}>
             <Header

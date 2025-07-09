@@ -205,7 +205,10 @@ export default function ProfileScreen() {
               style={{ marginBottom: 12 }}
             />
 
-            <ScrollView style={{ gap: 12, paddingBottom: height }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ gap: 12, paddingBottom: height }}
+            >
               {userData.id !== "" && (
                 <TouchableOpacity onPress={handleViewOwnerProfile}>
                   <IdentityCard

@@ -50,7 +50,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
 
   console.log(currentPurchase);
 
-  const [loading, setLoading] = useState(false);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const { userData } = useUserData();
   const { refreshData } = useGetUserData();
 
@@ -65,7 +65,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
   }, [connected]);
 
   const handleBuySubscription = async (productId: string) => {
-    setLoading(true);
+    setLoadingProductId(productId);
     try {
       await requestSubscription({ sku: productId });
     } catch (err) {
@@ -77,7 +77,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         });
       }
     } finally {
-      setLoading(false);
+      setLoadingProductId(null);
     }
   };
 
@@ -207,7 +207,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
 
                 <TouchableOpacity
                   onPress={() => handleBuySubscription(item.productId)}
-                  disabled={isCurrent || loading}
+                  disabled={isCurrent || loadingProductId !== null}
                   style={[
                     styles.nextButton,
                     {
@@ -217,7 +217,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
                     },
                   ]}
                 >
-                  {loading && !isCurrent ? (
+                  {loadingProductId === item.productId && !isCurrent ? (
                     <ActivityIndicator size="small" color="#fff" />
                   ) : (
                     <CustomText style={styles.buttonText}>
@@ -245,7 +245,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
               fontSize: 13,
             }}
           >
-            Privacy Policy
+            {t("profile.privacyPolicy")}
           </CustomText>
         </TouchableOpacity>
 
@@ -262,7 +262,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
               fontSize: 13,
             }}
           >
-            Terms of Use
+            {t("profile.termsOfUse")}
           </CustomText>
         </TouchableOpacity>
       </View>
