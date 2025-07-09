@@ -72,8 +72,8 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
       if (err instanceof PurchaseError) {
         showToast({
           type: "error",
-          text1: "Purchase failed",
-          message: `${err.message}`,
+          text1: t("subscription.toast.purchaseFailed.title"),
+          message: err.message,
         });
       }
     } finally {
@@ -87,15 +87,15 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
       if (restored.length > 0) {
         showToast({
           type: "success",
-          text1: "Restored",
-          message: "Your purchases were restored.",
+          text1: t("subscription.toast.restored.title"),
+          message: t("subscription.toast.restored.message"),
         });
       }
     } catch (err) {
       showToast({
         type: "error",
-        text1: "Restore Failed",
-        message: "Unable to restore purchases.",
+        text1: t("subscription.toast.restoreFailed.title"),
+        message: t("subscription.toast.restoreFailed.message"),
       });
     }
   };
@@ -122,24 +122,25 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
           if (result?.planId) {
             showToast({
               type: "success",
-              text1: "Subscription active",
-              message: `You're now on the ${result.planId} plan`,
+              text1: t("subscription.toast.subscriptionActive.title"),
+              message: t("subscription.toast.subscriptionActive.message", {
+                planId: result.planId,
+              }),
             });
             refreshData();
           } else {
             showToast({
               type: "error",
-              text1: "Validation failed",
-              message: "Plan not recognized.",
+              text1: t("subscription.toast.validationFailed.title"),
+              message: t("subscription.toast.validationFailed.message"),
             });
           }
         } catch (err: any) {
           showToast({
             type: "error",
-            text1: "Validation Error",
+            text1: t("subscription.toast.validationError.title"),
             message:
-              err.message ||
-              "An error occurred while validating your purchase.",
+              err.message || t("subscription.toast.validationError.message"),
           });
         } finally {
           finishTransaction({ purchase: currentPurchase, isConsumable: false });
@@ -166,7 +167,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         {Platform.OS === "ios" && (
           <TouchableOpacity onPress={handleRestore}>
             <CustomText style={[styles.restoreText, { color: textSec }]}>
-              Restore Purchases
+              {t("subscription.restorePurchases")}
             </CustomText>
           </TouchableOpacity>
         )}
@@ -221,7 +222,9 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
                     <ActivityIndicator size="small" color="#fff" />
                   ) : (
                     <CustomText style={styles.buttonText}>
-                      {isCurrent ? "Current Plan" : "Subscribe"}
+                      {isCurrent
+                        ? t("subscription.currentPlan")
+                        : t("subscription.subscribe")}
                     </CustomText>
                   )}
                 </TouchableOpacity>
@@ -239,12 +242,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
             )
           }
         >
-          <CustomText
-            style={{
-              color: textSec,
-              fontSize: 13,
-            }}
-          >
+          <CustomText style={styles.linkText}>
             {t("profile.privacyPolicy")}
           </CustomText>
         </TouchableOpacity>
@@ -256,12 +254,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
             )
           }
         >
-          <CustomText
-            style={{
-              color: textSec,
-              fontSize: 13,
-            }}
-          >
+          <CustomText style={styles.linkText}>
             {t("profile.termsOfUse")}
           </CustomText>
         </TouchableOpacity>
@@ -300,5 +293,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 24,
+  },
+  linkText: {
+    color: textSec,
+    fontSize: 13,
   },
 });

@@ -150,7 +150,7 @@ export default function ListingsScreen() {
             />
 
             <>
-              {userData.subscription_plan === "retao_unlimited_monthly" ||
+              {userData.subscription_plan === "unlimited" ||
               userData.stats.listed < userData.listing_limit ? (
                 <ListAnItemBtn openModal={() => openModal("createListing")} />
               ) : (

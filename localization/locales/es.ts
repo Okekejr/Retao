@@ -351,6 +351,37 @@ const es: TranslationKeys = {
     cancel: "Cancelar",
     signOut: "Cerrar sesión",
   },
+  subscription: {
+    toast: {
+      purchaseFailed: {
+        title: "Compra fallida",
+        message: "{{error}}",
+      },
+      restored: {
+        title: "Restaurado",
+        message: "Tus compras han sido restauradas.",
+      },
+      restoreFailed: {
+        title: "Restauración fallida",
+        message: "No se pudieron restaurar las compras.",
+      },
+      subscriptionActive: {
+        title: "Suscripción activa",
+        message: "Ahora estás en el plan {{planId}}",
+      },
+      validationFailed: {
+        title: "Validación fallida",
+        message: "Plan no reconocido.",
+      },
+      validationError: {
+        title: "Error de validación",
+        message: "Ocurrió un error al validar tu compra.",
+      },
+    },
+    restorePurchases: "Restaurar compras",
+    currentPlan: "Plan actual",
+    subscribe: "Suscribirse",
+  },
 };
 
 export default es;

@@ -329,4 +329,35 @@ export type TranslationKeys = {
     cancel: string;
     signOut: string;
   };
+  subscription: {
+    toast: {
+      purchaseFailed: {
+        title: string;
+        message: string;
+      };
+      restored: {
+        title: string;
+        message: string;
+      };
+      restoreFailed: {
+        title: string;
+        message: string;
+      };
+      subscriptionActive: {
+        title: string;
+        message: string;
+      };
+      validationFailed: {
+        title: string;
+        message: string;
+      };
+      validationError: {
+        title: string;
+        message: string;
+      };
+    };
+    restorePurchases: string;
+    currentPlan: string;
+    subscribe: string;
+  };
 };

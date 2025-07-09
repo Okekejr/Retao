@@ -347,6 +347,37 @@ const en: TranslationKeys = {
     cancel: "Cancel",
     signOut: "Sign Out",
   },
+  subscription: {
+    toast: {
+      purchaseFailed: {
+        title: "Purchase failed",
+        message: "{{error}}",
+      },
+      restored: {
+        title: "Restored",
+        message: "Your purchases were restored.",
+      },
+      restoreFailed: {
+        title: "Restore Failed",
+        message: "Unable to restore purchases.",
+      },
+      subscriptionActive: {
+        title: "Subscription active",
+        message: "You're now on the {{planId}} plan",
+      },
+      validationFailed: {
+        title: "Validation failed",
+        message: "Plan not recognized.",
+      },
+      validationError: {
+        title: "Validation Error",
+        message: "An error occurred while validating your purchase.",
+      },
+    },
+    restorePurchases: "Restore Purchases",
+    currentPlan: "Current Plan",
+    subscribe: "Subscribe",
+  },
 };
 
 export default en;
