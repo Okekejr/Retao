@@ -1,6 +1,4 @@
-import { BASE_URL } from "@/constants/random";
-import * as SecureStore from "expo-secure-store";
-import { createContext, FC, useContext, useEffect, useState } from "react";
+import { createContext, FC, useContext, useState } from "react";
 
 export interface userProfile {
   id: string;
@@ -67,7 +65,6 @@ interface userContext {
     userData: userProfile;
     updateUserForm: (key: keyof userProfile, value: any) => void;
     resetUserData: () => void;
-    isUserReady: boolean;
   } | null;
 }
 
@@ -79,7 +76,6 @@ interface UserProviderProps {
 
 export const UserProvider: FC<UserProviderProps> = ({ children }) => {
   const [userData, setUserData] = useState<userProfile>(initialState);
-  const [isUserReady, setIsUserReady] = useState(false);
 
   const resetUserData = () => setUserData(initialState);
 
@@ -90,64 +86,12 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
     setUserData((prev) => ({ ...prev, [key]: value }));
   };
 
-  useEffect(() => {
-    const hydrateUser = async () => {
-      try {
-        const token = await SecureStore.getItemAsync("token");
-        if (!token) return setIsUserReady(true); // guest
-
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const res = await fetch(`${BASE_URL}auth/me`, { headers });
-        const data = await res.json();
-
-        if (res.ok) {
-          await SecureStore.setItemAsync("user_id", data.id);
-
-          const fields: (keyof userProfile)[] = [
-            "id",
-            "email",
-            "name",
-            "handle",
-            "avatar",
-            "bio",
-            "location",
-            "join_date",
-            "listing_limit",
-            "stats",
-            "subscription_plan",
-            "listings",
-            "borrowedItems",
-            "current_step",
-            "total_steps",
-          ];
-          fields.forEach((key) => {
-            if (data[key] !== undefined) {
-              updateUserForm(key, data[key]);
-            }
-          });
-        }
-      } catch (e) {
-        console.error("User hydration failed", e);
-      } finally {
-        setIsUserReady(true);
-      }
-    };
-
-    hydrateUser();
-  }, []);
-
-  if (!isUserReady) return null;
-
   return (
     <UserContext.Provider
       value={{
         userData,
         resetUserData,
         updateUserForm,
-        isUserReady,
       }}
     >
       {children}

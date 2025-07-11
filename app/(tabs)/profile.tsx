@@ -1,11 +1,13 @@
-import AuthGuard from "@/components/core/authGuard";
 import { ListAnItemBtn } from "@/components/core/listing/listAnItemBtn";
 import SelectCategory from "@/components/core/listing/selectCategory";
-import { RequireLoginProfile } from "@/components/core/notLogged/requireLogin";
+import { NotLogged } from "@/components/core/notLogged";
+import { GetLoggedInModal } from "@/components/core/notLogged/getLoggedIn";
+import { GetSiggnedUp } from "@/components/core/notLogged/getSignedUp";
 import { SelectPlans } from "@/components/core/plans/selectPlans";
 import { IdentityCard } from "@/components/core/profile/identityCard";
 import { ProfileSection } from "@/components/core/profile/profileSection";
 import { Settings } from "@/components/core/profile/settings";
+import { CustomDivider } from "@/components/ui/customDivider";
 import { CustomModal } from "@/components/ui/customModal";
 import { Header } from "@/components/ui/header";
 import { InnerContainer } from "@/components/ui/innerContainer";
@@ -22,6 +24,7 @@ import {
 } from "@/utils";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
+import { AnimatePresence, MotiView } from "moti";
 import { useCallback, useEffect, useState } from "react";
 import {
   Dimensions,
@@ -112,85 +115,105 @@ export default function ProfileScreen() {
     ? getProfileItems()
     : getLoggedOutProfileItems();
 
+  if (userData.id && loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          <Header
+            headerTitle={t("profile.title")}
+            style={{ marginBottom: 12 }}
+          />
+
+          <ScrollView style={{ gap: 12, paddingBottom: height }}>
+            <SkeletonProfileLoader />
+          </ScrollView>
+        </InnerContainer>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <>
-      <AuthGuard>
-        <RequireLoginProfile
-          title={t("profile.notLoggedIn.title")}
-          subTitle={t("profile.notLoggedIn.subTitle")}
-          btnText={t("profile.notLoggedIn.btnText")}
-          bgColor={bg}
-          headerTitle={t("profile.title")}
-          height={height}
-          modalVisible={modalVisible}
-          content={content}
-          openModal={openModal}
-          closeModal={closeModal}
-          notLoggedInProfileList={
-            <FlatList
-              data={profileItems}
-              keyExtractor={(item) => item.label}
-              scrollEnabled={false}
-              contentContainerStyle={{ gap: 10 }}
-              showsVerticalScrollIndicator={false}
-              style={{ paddingBottom: 270 }}
-              renderItem={({ item }) => (
-                <ProfileSection
-                  icon={item.icon}
-                  label={item.label}
-                  onPress={() => {
-                    if (item.func) logout();
-                    else if (item.content) openModal(item.content);
-                    else if (item.hrefLink) router.push(item.hrefLink);
-                    else if (item.mail) handleOpenEmail();
-                    else if (item.href) handleOpenLink(item.href);
-                  }}
-                />
-              )}
-            />
-          }
-        >
-          {!loading && (
-            <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-              <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
+          {!userData.id ? (
+            <>
+              <MotiView
+                from={{ opacity: 0, translateY: 10 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{
+                  delay: 400,
+                  type: "timing",
+                  duration: 400,
+                }}
+              >
                 <Header
                   headerTitle={t("profile.title")}
                   style={{ marginBottom: 12 }}
                 />
 
-                {loading ? (
-                  <ScrollView style={{ gap: 12, paddingBottom: height }}>
-                    <SkeletonProfileLoader />
-                  </ScrollView>
-                ) : (
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    style={{ gap: 12, paddingBottom: height }}
-                  >
-                    {userData.id !== "" && (
-                      <TouchableOpacity onPress={handleViewOwnerProfile}>
-                        <IdentityCard
-                          user={userData}
-                          func={() => openModal("plans")}
-                          showPlan
-                        />
-                      </TouchableOpacity>
-                    )}
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  style={{ gap: 12, paddingBottom: height }}
+                >
+                  <>
+                    <NotLogged
+                      title={t("profile.notLoggedIn.title")}
+                      subTitle={t("profile.notLoggedIn.subTitle")}
+                      btnText={t("profile.notLoggedIn.btnText")}
+                      func={() => openModal("Login")}
+                    />
 
-                    {userData.subscription_plan === "unlimited" ||
-                    userData.stats.listed < userData.listing_limit ? (
-                      <ListAnItemBtn
-                        openModal={() => openModal("createListing")}
-                      />
-                    ) : (
-                      <ListAnItemBtn
-                        openModal={() => openModal("plans")}
-                        title={t("listings.listLimitTitle")}
-                        subText={t("listings.listLimitSubTitle")}
-                        icon="checkmark-done-circle-outline"
-                        limitReached
-                      />
-                    )}
+                    <CustomModal
+                      modalVisible={modalVisible}
+                      closeModal={closeModal}
+                    >
+                      <AnimatePresence exitBeforeEnter>
+                        {content === "Login" && (
+                          <MotiView
+                            key="login"
+                            from={{ opacity: 0, translateY: 20 }}
+                            animate={{ opacity: 1, translateY: 0 }}
+                            exit={{ opacity: 0, translateY: -20 }}
+                            transition={{ type: "timing", duration: 300 }}
+                          >
+                            <GetLoggedInModal
+                              closeModal={closeModal}
+                              func={openModal}
+                            />
+                          </MotiView>
+                        )}
+
+                        {content === "Signup" && (
+                          <MotiView
+                            key="signup"
+                            from={{ opacity: 0, translateY: 20 }}
+                            animate={{ opacity: 1, translateY: 0 }}
+                            exit={{ opacity: 0, translateY: -20 }}
+                            transition={{ type: "timing", duration: 300 }}
+                          >
+                            <GetSiggnedUp
+                              closeModal={closeModal}
+                              func={openModal}
+                            />
+                          </MotiView>
+                        )}
+
+                        {content === "settings" && (
+                          <MotiView
+                            key="settings"
+                            from={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ type: "timing", duration: 300 }}
+                          >
+                            <Settings closeModal={closeModal} />
+                          </MotiView>
+                        )}
+                      </AnimatePresence>
+                    </CustomModal>
+
+                    <CustomDivider style={{ marginVertical: 30 }} />
 
                     <FlatList
                       data={profileItems}
@@ -198,7 +221,7 @@ export default function ProfileScreen() {
                       scrollEnabled={false}
                       contentContainerStyle={{ gap: 10 }}
                       showsVerticalScrollIndicator={false}
-                      style={{ paddingBottom: 270 }}
+                      style={{ paddingBottom: 120 }}
                       renderItem={({ item }) => (
                         <ProfileSection
                           icon={item.icon}
@@ -213,30 +236,113 @@ export default function ProfileScreen() {
                         />
                       )}
                     />
+                  </>
+                </ScrollView>
+              </MotiView>
+            </>
+          ) : (
+            <>
+              <Header
+                headerTitle={t("profile.title")}
+                style={{ marginBottom: 12 }}
+              />
 
-                    <CustomModal
-                      modalVisible={modalVisible}
-                      closeModal={closeModal}
-                    >
-                      {content === "createListing" && (
-                        <SelectCategory closeModal={closeModal} />
-                      )}
-
-                      {content === "settings" && (
-                        <Settings closeModal={closeModal} />
-                      )}
-
-                      {content === "plans" && (
-                        <SelectPlans closeModal={closeModal} />
-                      )}
-                    </CustomModal>
-                  </ScrollView>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{ gap: 12, paddingBottom: height }}
+              >
+                {userData.id !== "" && (
+                  <TouchableOpacity onPress={handleViewOwnerProfile}>
+                    <IdentityCard
+                      user={userData}
+                      func={() => openModal("plans")}
+                      showPlan
+                    />
+                  </TouchableOpacity>
                 )}
-              </InnerContainer>
-            </SafeAreaView>
+
+                {userData.subscription_plan === "unlimited" ||
+                userData.stats.listed < userData.listing_limit ? (
+                  <ListAnItemBtn openModal={() => openModal("createListing")} />
+                ) : (
+                  <ListAnItemBtn
+                    openModal={() => openModal("plans")}
+                    title={t("listings.listLimitTitle")}
+                    subText={t("listings.listLimitSubTitle")}
+                    icon="checkmark-done-circle-outline"
+                    limitReached
+                  />
+                )}
+
+                <FlatList
+                  data={profileItems}
+                  keyExtractor={(item) => item.label}
+                  scrollEnabled={false}
+                  contentContainerStyle={{ gap: 10 }}
+                  showsVerticalScrollIndicator={false}
+                  style={{ paddingBottom: 270 }}
+                  renderItem={({ item }) => (
+                    <ProfileSection
+                      icon={item.icon}
+                      label={item.label}
+                      onPress={() => {
+                        if (item.func) logout();
+                        else if (item.content) openModal(item.content);
+                        else if (item.hrefLink) router.push(item.hrefLink);
+                        else if (item.mail) handleOpenEmail();
+                        else if (item.href) handleOpenLink(item.href);
+                      }}
+                    />
+                  )}
+                />
+
+                <CustomModal
+                  modalVisible={modalVisible}
+                  closeModal={closeModal}
+                >
+                  <AnimatePresence exitBeforeEnter>
+                    {content === "createListing" && (
+                      <MotiView
+                        key="createListing"
+                        from={{ opacity: 0, translateY: 20 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        exit={{ opacity: 0, translateY: -20 }}
+                        transition={{ type: "timing", duration: 300 }}
+                      >
+                        <SelectCategory closeModal={closeModal} />
+                      </MotiView>
+                    )}
+
+                    {content === "settings" && (
+                      <MotiView
+                        key="settings"
+                        from={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ type: "timing", duration: 300 }}
+                      >
+                        <Settings closeModal={closeModal} />
+                      </MotiView>
+                    )}
+
+                    {content === "plans" && (
+                      <MotiView
+                        key="plans"
+                        from={{ opacity: 0, translateY: 30 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        exit={{ opacity: 0, translateY: -10 }}
+                        transition={{ type: "timing", duration: 300 }}
+                      >
+                        <SelectPlans closeModal={closeModal} />
+                      </MotiView>
+                    )}
+                  </AnimatePresence>
+                </CustomModal>
+              </ScrollView>
+            </>
           )}
-        </RequireLoginProfile>
-      </AuthGuard>
+        </InnerContainer>
+      </SafeAreaView>
     </>
   );
 }

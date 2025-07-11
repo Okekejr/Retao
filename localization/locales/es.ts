@@ -44,6 +44,7 @@ const es: TranslationKeys = {
     save: "Guardar",
     back: "Volver",
     login: "Iniciar sesión",
+    continue: "Continuar",
   },
   wishList: {
     title: "Lista de deseos",

@@ -14,14 +14,10 @@ export const RequireLogin = ({
   children,
   title,
   subTitle,
-  bgColor,
-  headerTitle,
 }: {
   children: React.ReactNode;
   title: string;
   subTitle: string;
-  bgColor: string;
-  headerTitle: string;
 }) => {
   const { userData } = useUserData();
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,24 +32,21 @@ export const RequireLogin = ({
 
   if (!userData || userData.id === "") {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: bgColor }}>
-        <InnerContainer style={{ gap: 12, marginTop: 20 }}>
-          <Header headerTitle={headerTitle} style={{ marginBottom: 12 }} />
-          <NotLogged
-            title={title}
-            subTitle={subTitle}
-            func={() => openModal("Login")}
-          />
-          <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
-            {content === "Login" && (
-              <GetLoggedInModal closeModal={closeModal} func={openModal} />
-            )}
-            {content === "Signup" && (
-              <GetSiggnedUp closeModal={closeModal} func={openModal} />
-            )}
-          </CustomModal>
-        </InnerContainer>
-      </SafeAreaView>
+      <>
+        <NotLogged
+          title={title}
+          subTitle={subTitle}
+          func={() => openModal("Login")}
+        />
+        <CustomModal modalVisible={modalVisible} closeModal={closeModal}>
+          {content === "Login" && (
+            <GetLoggedInModal closeModal={closeModal} func={openModal} />
+          )}
+          {content === "Signup" && (
+            <GetSiggnedUp closeModal={closeModal} func={openModal} />
+          )}
+        </CustomModal>
+      </>
     );
   }
 

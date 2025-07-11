@@ -13,6 +13,7 @@ import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { themeColor } from "@/utils";
+import { AnimatePresence, MotiView } from "moti";
 import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
@@ -136,13 +137,31 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       <CustomModal modalVisible={modal} closeModal={closeModal}>
-        {content === "Login" && (
-          <GetLoggedInModal closeModal={closeModal} func={openModal} />
-        )}
+        <AnimatePresence exitBeforeEnter>
+          {content === "Login" && (
+            <MotiView
+              key="login"
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -20 }}
+              transition={{ type: "timing", duration: 300 }}
+            >
+              <GetLoggedInModal closeModal={closeModal} func={openModal} />
+            </MotiView>
+          )}
 
-        {content === "Signup" && (
-          <GetSiggnedUp closeModal={closeModal} func={openModal} />
-        )}
+          {content === "Signup" && (
+            <MotiView
+              key="signup"
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -20 }}
+              transition={{ type: "timing", duration: 300 }}
+            >
+              <GetSiggnedUp closeModal={closeModal} func={openModal} />
+            </MotiView>
+          )}
+        </AnimatePresence>
       </CustomModal>
     </>
   );

@@ -44,13 +44,15 @@ interface CheckEmailProps {
   login?: boolean;
 }
 
-export const checkEmailExists = async ({
-  email,
-  setEmailUnique,
-  setErrors,
-  login = false,
-}: CheckEmailProps) => {
-  if (!validateEmail(email)) return;
+export const checkEmailExists = async (
+  email: string,
+  options: {
+    login?: boolean;
+    setEmailUnique?: (val: boolean) => void;
+    setErrors?: (val: (prev: any) => any) => void;
+  } = {} // default value makes it never undefined
+): Promise<boolean> => {
+  if (!validateEmail(email)) return false;
 
   try {
     const res = await fetch(`${BASE_URL}users/checkEmail`, {
@@ -69,22 +71,23 @@ export const checkEmailExists = async ({
 
     const { exists } = data;
 
-    if (login) {
-      // For login, email must exist
-      setEmailUnique(exists);
-      setErrors((prev) => ({
+    if (options.login) {
+      options.setEmailUnique?.(exists);
+      options.setErrors?.((prev) => ({
         ...prev,
         email: exists ? "" : "This email is not registered.",
       }));
     } else {
-      // For signup, email must be unique
-      setEmailUnique(!exists);
-      setErrors((prev) => ({
+      options.setEmailUnique?.(!exists);
+      options.setErrors?.((prev) => ({
         ...prev,
         email: exists ? "This email is already registered." : "",
       }));
     }
+
+    return options.login ? exists : !exists;
   } catch (error) {
     console.error("Error checking email uniqueness:", error);
+    return false;
   }
 };

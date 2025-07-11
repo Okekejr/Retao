@@ -24,7 +24,11 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-      {isLoading && (
+      <View style={styles.iconRow}>
+        <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+      </View>
+
+      {isLoading ? (
         <View
           style={[
             { flex: 1, justifyContent: "center", alignItems: "center" },
@@ -40,65 +44,63 @@ export default function HistoryScreen() {
             />
           </Animatable.View>
         </View>
-      )}
-
-      <View style={styles.iconRow}>
-        <BackButton style={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
-      </View>
-
-      <ScrollView
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: 80 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        <InnerContainer style={{ flex: 1, gap: 32 }}>
-          <View style={styles.modalHeader}>
-            <CustomText style={[h2, { color: text }]}>
-              {t("history.title")}
-            </CustomText>
-          </View>
-
-          {history && history.length > 0 ? (
-            <View>
-              <FlatList
-                data={history}
-                keyExtractor={(item) => item.date}
-                scrollEnabled={false}
-                contentContainerStyle={styles.listContent}
-                renderItem={({ item }) => (
-                  <View style={styles.dateGroup}>
-                    <View style={styles.centerWrapper}>
-                      <CustomText style={[styles.dateText, { color: textSec }]}>
-                        {item.date}
-                      </CustomText>
-                      <View
-                        style={[
-                          styles.verticalLine,
-                          { backgroundColor: textSec },
-                        ]}
-                      />
-                    </View>
-
-                    <View style={styles.cardsWrapper}>
-                      {item.actions.map((entry, index) => (
-                        <HistoryCard
-                          key={entry.item.id}
-                          item={entry.item}
-                          index={index}
-                          type={entry.type}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                )}
-              />
+      ) : (
+        <ScrollView
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: 80 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <InnerContainer style={{ flex: 1, gap: 32 }}>
+            <View style={styles.modalHeader}>
+              <CustomText style={[h2, { color: text }]}>
+                {t("history.title")}
+              </CustomText>
             </View>
-          ) : (
-            <CustomText style={[styles.emptyText, { color: textSec }]}>
-              {t("history.noHistory")}
-            </CustomText>
-          )}
-        </InnerContainer>
-      </ScrollView>
+
+            {history && history.length > 0 ? (
+              <View>
+                <FlatList
+                  data={history}
+                  keyExtractor={(item) => item.date}
+                  scrollEnabled={false}
+                  contentContainerStyle={styles.listContent}
+                  renderItem={({ item }) => (
+                    <View style={styles.dateGroup}>
+                      <View style={styles.centerWrapper}>
+                        <CustomText
+                          style={[styles.dateText, { color: textSec }]}
+                        >
+                          {item.date}
+                        </CustomText>
+                        <View
+                          style={[
+                            styles.verticalLine,
+                            { backgroundColor: textSec },
+                          ]}
+                        />
+                      </View>
+
+                      <View style={styles.cardsWrapper}>
+                        {item.actions.map((entry, index) => (
+                          <HistoryCard
+                            key={entry.item.id}
+                            item={entry.item}
+                            index={index}
+                            type={entry.type}
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  )}
+                />
+              </View>
+            ) : (
+              <CustomText style={[styles.emptyText, { color: textSec }]}>
+                {t("history.noHistory")}
+              </CustomText>
+            )}
+          </InnerContainer>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

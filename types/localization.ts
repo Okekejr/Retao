@@ -41,6 +41,7 @@ export type TranslationKeys = {
     back: string;
     save: string;
     login: string;
+    continue: string;
   };
   wishList: {
     title: string;

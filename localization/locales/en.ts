@@ -43,6 +43,7 @@ const en: TranslationKeys = {
     back: "Back",
     save: "Save",
     login: "Log in",
+    continue: "Continue",
   },
   wishList: {
     title: "Wishlist",

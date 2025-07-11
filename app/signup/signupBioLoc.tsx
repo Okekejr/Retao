@@ -130,7 +130,10 @@ export default function SignupBioLocScreen() {
                 onChangeText={handleLocationChange}
               />
 
-              <TouchableOpacity onPress={detectLocation}>
+              <TouchableOpacity
+                onPress={detectLocation}
+                style={{ alignSelf: "flex-start" }}
+              >
                 <CustomText style={styles.locationText}>
                   {t("editListing.currentLoc")}
                 </CustomText>

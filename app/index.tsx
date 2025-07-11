@@ -15,7 +15,7 @@ export default function IndexScreen() {
   const router = useRouter();
   const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
-  const { userData, updateUserForm } = useUserData();
+  const { userData } = useUserData();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import { CustomDivider } from "@/components/ui/customDivider";
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
-import { BASE_URL, h3 } from "@/constants/random";
+import { AppName, BASE_URL, h2, h3 } from "@/constants/random";
 import { useNetwork } from "@/context/networkContext";
 import { useUserData } from "@/context/userContext";
 import { useGetUserData } from "@/hooks/useGetUserData";
@@ -16,9 +16,12 @@ import {
   themeColor,
   validateEmail,
 } from "@/utils";
+import { Ionicons } from "@expo/vector-icons";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { AnimatePresence, MotiView } from "moti";
 import { FC, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -42,6 +45,7 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
   const { isConnected } = useNetwork();
   const { refreshData } = useGetUserData();
   const { updateUserForm } = useUserData();
+  const [step, setStep] = useState<1 | 2>(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailExist, setEmailExist] = useState(true);
@@ -144,93 +148,161 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
       </View>
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ justifyContent: "center", paddingBottom: 38 }}>
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={[styles.label, { color: text }]}>
-              {t("userProfile.email")}
-            </CustomText>
-            <TextInput
-              ref={emailInputRef}
-              style={[
-                styles.input,
-                focusedInput === "email" && styles.focusedInput,
-                errors.email && styles.errorInput,
-              ]}
-              placeholder="Email Address"
-              placeholderTextColor="#c7c7c7"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              selectionColor="#000"
-              autoCorrect={false}
-              value={email}
-              onChangeText={(text) => setEmail(text.trim())}
-              onFocus={() => setFocusedInput("email")}
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
-              onBlur={() => {
-                setFocusedInput(null),
-                  checkEmailExists({
-                    email: email,
-                    setEmailUnique: setEmailExist,
-                    setErrors: setErrors,
-                    login: true,
-                  });
-              }}
-            />
-            {errors.email ? (
-              <CustomText style={styles.error}>{errors.email}</CustomText>
-            ) : null}
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={[styles.label, { color: text }]}>
-              {t("loginsecurity.passwordTitle")}
-            </CustomText>
-            <View
-              style={[
-                styles.passwordInputContainer,
-                focusedInput === "password" && styles.focusedInput,
-              ]}
-            >
-              <TextInput
-                ref={passwordInputRef}
-                style={styles.passwordInput}
-                placeholder="Password"
-                placeholderTextColor="#c7c7c7"
-                selectionColor="#000"
-                secureTextEntry={!isPasswordVisible}
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                onFocus={() => setFocusedInput("password")}
-                onSubmitEditing={handleLogin}
-                onBlur={() => setFocusedInput(null)}
-              />
-              {/* Eye icon inside input */}
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!isPasswordVisible)}
+        <View style={{ justifyContent: "center", paddingBottom: 50 }}>
+          <AnimatePresence exitBeforeEnter>
+            {step === 1 && (
+              <MotiView
+                key="step1"
+                from={{ opacity: 0, translateY: 30 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                exit={{ opacity: 0, translateY: -20 }}
+                transition={{ type: "timing", duration: 300 }}
               >
-                <CustomText style={styles.btnText}>
-                  {!isPasswordVisible ? "Show" : "Hide"}
+                {/* Step 1 – Email input */}
+                <CustomText style={[styles.label, { color: text }]}>
+                  {t("userProfile.email")}
                 </CustomText>
-              </TouchableOpacity>
-            </View>
-            {errors.login ? (
-              <CustomText style={styles.error}>{errors.login}</CustomText>
-            ) : null}
-          </View>
+                <TextInput
+                  ref={emailInputRef}
+                  style={[
+                    styles.input,
+                    focusedInput === "email" && styles.focusedInput,
+                    errors.email && styles.errorInput,
+                  ]}
+                  placeholder={t("userProfile.email")}
+                  placeholderTextColor="#c7c7c7"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  selectionColor="#000"
+                  autoCorrect={false}
+                  value={email}
+                  onChangeText={(text) => setEmail(text.trim())}
+                  onFocus={() => setFocusedInput("email")}
+                  onBlur={async () => {
+                    setFocusedInput(null);
+                    await checkEmailExists(email, {
+                      login: true,
+                      setEmailUnique: setEmailExist,
+                      setErrors,
+                    });
+                  }}
+                />
+                {errors.email && (
+                  <CustomText style={styles.error}>{errors.email}</CustomText>
+                )}
 
-          {/* Log in Button */}
-          <TouchableOpacity
-            style={[
-              styles.nextButton,
-              isButtonDisabled && styles.disabledButton,
-            ]}
-            disabled={isButtonDisabled}
-            onPress={handleLogin}
-          >
-            <CustomText style={styles.buttonText}>
-              {t("login.button")}
-            </CustomText>
-          </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.nextButton,
+                    (!email || !emailExist) && styles.disabledButton,
+                    { marginVertical: 30 },
+                  ]}
+                  disabled={!email || !emailExist}
+                  onPress={async () => {
+                    const exists = await checkEmailExists(email, {
+                      login: true,
+                      setEmailUnique: setEmailExist,
+                      setErrors,
+                    });
+                    if (exists) {
+                      setStep(2);
+                    }
+                  }}
+                >
+                  <CustomText style={styles.buttonText}>
+                    {t("btnTexts.continue")}
+                  </CustomText>
+                </TouchableOpacity>
+              </MotiView>
+            )}
+
+            {step === 2 && (
+              <MotiView
+                key="step2"
+                from={{ opacity: 0, translateY: 30 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                exit={{ opacity: 0, translateY: -20 }}
+                transition={{ type: "timing", duration: 300 }}
+              >
+                {/* Back Button */}
+                <TouchableOpacity
+                  onPress={() => setStep(1)}
+                  style={{ marginBottom: 12, alignSelf: "flex-start" }}
+                >
+                  <CustomText style={{ color: textTertiery }}>
+                    <Ionicons
+                      name="arrow-back-outline"
+                      size={24}
+                      color={text}
+                    />
+                  </CustomText>
+                </TouchableOpacity>
+
+                {/* Image + Heading */}
+                <View style={{ alignItems: "center", marginBottom: 20 }}>
+                  <Image
+                    source={require("../../../assets/images/icon.png")}
+                    style={{ width: 100, height: 100, marginBottom: 30 }}
+                  />
+                  <CustomText
+                    style={[h2, { textAlign: "center", color: text }]}
+                  >
+                    {t("introScreen.welcomeHeading", { appName: AppName })}
+                  </CustomText>
+                </View>
+
+                {/* Password Field */}
+                <CustomText style={[styles.label, { color: text }]}>
+                  {t("loginsecurity.passwordTitle")}
+                </CustomText>
+                <View
+                  style={[
+                    styles.passwordInputContainer,
+                    focusedInput === "password" && styles.focusedInput,
+                  ]}
+                >
+                  <TextInput
+                    ref={passwordInputRef}
+                    style={styles.passwordInput}
+                    placeholder={t("loginsecurity.passwordTitle")}
+                    placeholderTextColor="#c7c7c7"
+                    selectionColor="#000"
+                    secureTextEntry={!isPasswordVisible}
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    onFocus={() => setFocusedInput("password")}
+                    onBlur={() => setFocusedInput(null)}
+                    onSubmitEditing={handleLogin}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setPasswordVisible(!isPasswordVisible)}
+                  >
+                    <CustomText style={styles.btnText}>
+                      {!isPasswordVisible ? "Show" : "Hide"}
+                    </CustomText>
+                  </TouchableOpacity>
+                </View>
+                {errors.login && (
+                  <CustomText style={styles.error}>{errors.login}</CustomText>
+                )}
+
+                {/* Login Button */}
+                <TouchableOpacity
+                  style={[
+                    styles.nextButton,
+                    isButtonDisabled && styles.disabledButton,
+                    { marginVertical: 30 },
+                  ]}
+                  disabled={isButtonDisabled}
+                  onPress={handleLogin}
+                >
+                  <CustomText style={styles.buttonText}>
+                    {t("login.button")}
+                  </CustomText>
+                </TouchableOpacity>
+              </MotiView>
+            )}
+          </AnimatePresence>
 
           <CustomDivider text="OR" />
 
@@ -313,6 +385,7 @@ export const GetLoggedInModal: FC<GetLoggedInModalProps> = ({
             }}
           />
 
+          {/* Go to Signup */}
           <TouchableOpacity
             style={[styles.nextButton, { backgroundColor: textTertiery }]}
             onPress={() => func("Signup")}

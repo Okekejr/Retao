@@ -4,15 +4,20 @@ import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
 import { BASE_URL, h3 } from "@/constants/random";
 import { useUserData } from "@/context/userContext";
+import { useGetUserData } from "@/hooks/useGetUserData";
 import { t } from "@/localization/t";
 import {
   checkEmailExists,
+  showToast,
   themeColor,
   validateEmail,
   validatePassword,
 } from "@/utils";
+import { Ionicons } from "@expo/vector-icons";
+import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { AnimatePresence, MotiView } from "moti";
 import { FC, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -33,6 +38,7 @@ export const GetSiggnedUp: FC<GetSiggnedUpModalProps> = ({
   func,
 }) => {
   const { updateUserForm } = useUserData();
+  const { refreshData } = useGetUserData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -43,6 +49,7 @@ export const GetSiggnedUp: FC<GetSiggnedUpModalProps> = ({
 
   const router = useRouter();
   const emailInputRef = useRef<TextInput>(null);
+  const [step, setStep] = useState<1 | 2>(1);
   const passwordInputRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
   const [isEmailUnique, setEmailUnique] = useState(true);
@@ -124,130 +131,261 @@ export const GetSiggnedUp: FC<GetSiggnedUpModalProps> = ({
       </View>
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ justifyContent: "center", paddingBottom: 38 }}>
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={[styles.label, { color: text }]}>
-              {t("userProfile.email")}
-            </CustomText>
-            <TextInput
-              ref={emailInputRef}
-              style={[
-                styles.input,
-                focusedInput === "email" && styles.focusedInput,
-                errors.email && styles.errorInput,
-              ]}
-              placeholder="Email Address"
-              placeholderTextColor="#c7c7c7"
-              selectionColor="#000"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              onFocus={() => setFocusedInput("email")}
-              onBlur={() => {
-                setFocusedInput(null),
-                  checkEmailExists({
-                    email: email,
-                    setEmailUnique: setEmailUnique,
-                    setErrors: setErrors,
-                    login: false,
-                  });
-              }}
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
-            />
-            {errors.email ? (
-              <CustomText style={styles.error}>{errors.email}</CustomText>
-            ) : null}
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={[styles.label, { color: text }]}>
-              {t("loginsecurity.passwordTitle")}
-            </CustomText>
-            <TextInput
-              ref={passwordInputRef}
-              style={[
-                styles.input,
-                focusedInput === "password" && styles.focusedInput,
-              ]}
-              placeholder="Password"
-              placeholderTextColor="#c7c7c7"
-              selectionColor="#000"
-              secureTextEntry={!isPasswordVisible}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              onFocus={() => setFocusedInput("password")}
-              onSubmitEditing={handleSignup}
-              onBlur={() => setFocusedInput(null)}
-            />
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={[styles.label, { color: text }]}>
-              {t("signUp.confirmPass")}
-            </CustomText>
-            <View
-              style={[
-                styles.passwordInputContainer,
-                focusedInput === "confirmPassword" && styles.focusedInput,
-              ]}
-            >
-              <TextInput
-                ref={confirmPasswordRef}
-                style={styles.passwordInput}
-                placeholder="Confirm Password"
-                placeholderTextColor="#c7c7c7"
-                selectionColor="#000"
-                secureTextEntry={!isPasswordVisible}
-                value={confirmPassword}
-                onChangeText={(text) => setConfirmPassword(text)}
-                onFocus={() => setFocusedInput("confirmPassword")}
-                onSubmitEditing={handleSignup}
-                onBlur={() => setFocusedInput(null)}
-              />
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!isPasswordVisible)}
+        <View style={{ justifyContent: "center", paddingBottom: 45 }}>
+          <AnimatePresence exitBeforeEnter>
+            {step === 1 && (
+              <MotiView
+                key="step1"
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                exit={{ opacity: 0, translateY: -20 }}
+                transition={{ type: "timing", duration: 300 }}
               >
-                <CustomText style={styles.btnText}>
-                  {!isPasswordVisible ? "Show" : "Hide"}
+                <CustomText style={[styles.label, { color: text }]}>
+                  {t("userProfile.email")}
                 </CustomText>
-              </TouchableOpacity>
-            </View>
-            {errors.password ? (
-              <CustomText style={styles.error}>{errors.password}</CustomText>
-            ) : (
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <CustomText style={styles.helperText}>
-                  {t("helperText.heading")}
-                </CustomText>
+                <TextInput
+                  ref={emailInputRef}
+                  style={[
+                    styles.input,
+                    focusedInput === "email" && styles.focusedInput,
+                    errors.email && styles.errorInput,
+                  ]}
+                  placeholder={t("userProfile.email")}
+                  placeholderTextColor="#c7c7c7"
+                  selectionColor="#000"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onFocus={() => setFocusedInput("email")}
+                  onBlur={async () => {
+                    setFocusedInput(null);
+                    await checkEmailExists(email, {
+                      login: false,
+                      setEmailUnique,
+                      setErrors,
+                    });
+                  }}
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailUnique(false); // reset check if email changes
+                  }}
+                />
 
-                {Array.isArray(rules) &&
-                  rules.map((rule, index) => (
-                    <CustomText style={styles.helperText} key={index}>
-                      • {rule}
-                    </CustomText>
-                  ))}
-              </View>
+                {errors.email && (
+                  <CustomText style={styles.error}>{errors.email}</CustomText>
+                )}
+
+                <TouchableOpacity
+                  style={[
+                    styles.nextButton,
+                    (!email || !isEmailUnique) && styles.disabledButton,
+                    { marginVertical: 30 },
+                  ]}
+                  disabled={!email || !isEmailUnique}
+                  onPress={() => setStep(2)}
+                >
+                  <CustomText style={styles.buttonText}>
+                    {t("btnTexts.continue")}
+                  </CustomText>
+                </TouchableOpacity>
+              </MotiView>
             )}
-          </View>
 
-          {/* sign in Button */}
-          <TouchableOpacity
-            style={[
-              styles.nextButton,
-              isButtonDisabled && styles.disabledButton,
-            ]}
-            disabled={isButtonDisabled}
-            onPress={handleSignup}
-          >
-            <CustomText style={styles.buttonText}>
-              {t("signUp.button")}
-            </CustomText>
-          </TouchableOpacity>
+            {step === 2 && (
+              <MotiView
+                key="step2"
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                exit={{ opacity: 0, translateY: -20 }}
+                transition={{ type: "timing", duration: 300 }}
+              >
+                {/* Back Button */}
+                <TouchableOpacity
+                  onPress={() => setStep(1)}
+                  style={{ marginBottom: 20, alignSelf: "flex-start" }}
+                >
+                  <CustomText style={{ color: textTertiery, width: "auto" }}>
+                    <Ionicons
+                      name="arrow-back-outline"
+                      size={24}
+                      color={text}
+                    />
+                  </CustomText>
+                </TouchableOpacity>
+
+                {/* Password */}
+                <CustomText style={[styles.label, { color: text }]}>
+                  {t("loginsecurity.passwordTitle")}
+                </CustomText>
+                <TextInput
+                  ref={passwordInputRef}
+                  style={[
+                    styles.input,
+                    focusedInput === "password" && styles.focusedInput,
+                  ]}
+                  placeholder={t("loginsecurity.passwordTitle")}
+                  placeholderTextColor="#c7c7c7"
+                  secureTextEntry={!isPasswordVisible}
+                  value={password}
+                  onChangeText={setPassword}
+                  onFocus={() => setFocusedInput("password")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+
+                {/* Confirm Password */}
+                <CustomText
+                  style={[styles.label, { color: text, marginTop: 16 }]}
+                >
+                  {t("signUp.confirmPass")}
+                </CustomText>
+                <View
+                  style={[
+                    styles.passwordInputContainer,
+                    focusedInput === "confirmPassword" && styles.focusedInput,
+                  ]}
+                >
+                  <TextInput
+                    ref={confirmPasswordRef}
+                    style={styles.passwordInput}
+                    placeholder="Confirm Password"
+                    placeholderTextColor="#c7c7c7"
+                    secureTextEntry={!isPasswordVisible}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    onFocus={() => setFocusedInput("confirmPassword")}
+                    onBlur={() => setFocusedInput(null)}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setPasswordVisible(!isPasswordVisible)}
+                  >
+                    <CustomText style={styles.btnText}>
+                      {isPasswordVisible ? "Hide" : "Show"}
+                    </CustomText>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Error or rules */}
+                {errors.password ? (
+                  <CustomText style={styles.error}>
+                    {errors.password}
+                  </CustomText>
+                ) : (
+                  <View style={{ marginTop: 8 }}>
+                    <CustomText style={styles.helperText}>
+                      {t("helperText.heading")}
+                    </CustomText>
+
+                    {Array.isArray(rules) &&
+                      rules.map((rule, index) => (
+                        <CustomText style={styles.helperText} key={index}>
+                          • {rule}
+                        </CustomText>
+                      ))}
+                  </View>
+                )}
+
+                {/* Sign Up Button */}
+                <TouchableOpacity
+                  style={[
+                    styles.nextButton,
+                    isButtonDisabled && styles.disabledButton,
+                    { marginVertical: 30 },
+                  ]}
+                  disabled={isButtonDisabled}
+                  onPress={handleSignup}
+                >
+                  <CustomText style={styles.buttonText}>
+                    {t("signUp.button")}
+                  </CustomText>
+                </TouchableOpacity>
+              </MotiView>
+            )}
+          </AnimatePresence>
 
           <CustomDivider text="OR" />
 
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={12}
+            style={{
+              width: "100%",
+              height: 53,
+              marginVertical: 20,
+            }}
+            onPress={async () => {
+              try {
+                const credential = await AppleAuthentication.signInAsync({
+                  requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                  ],
+                });
+
+                console.log("Apple credential:", credential);
+
+                const fullName = `${credential.fullName?.givenName ?? ""} ${
+                  credential.fullName?.familyName ?? ""
+                }`.trim();
+
+                if (!credential.identityToken) {
+                  alert("Apple login failed: No token received");
+                  return;
+                }
+
+                const res = await fetch(`${BASE_URL}users/auth/apple`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    identityToken: credential.identityToken,
+                    fullName,
+                  }),
+                });
+
+                if (!res.ok) {
+                  const text = await res.text(); // fallback error body
+                  console.error("Raw backend response:", text);
+                  alert("Login failed.");
+                  return;
+                }
+
+                const data = await res.json();
+
+                await SecureStore.setItemAsync("token", data.token);
+                await SecureStore.setItemAsync("id", data.userId);
+                await refreshData(); // reuse your existing logic
+
+                if (data.isNew) {
+                  updateUserForm("id", data.userId);
+                  updateUserForm("email", credential.email ?? "");
+                  updateUserForm("name", data.name);
+                  updateUserForm("handle", data.handle);
+                  router.replace("/signup/signupAvatar"); // Start onboarding flow
+                } else {
+                  closeModal();
+                }
+              } catch (error: any) {
+                if (error.code === "ERR_CANCELED") {
+                  console.log("Apple login canceled");
+                } else {
+                  console.error("Apple login failed", error);
+                  showToast({
+                    type: "error",
+                    text1: "Apple login failed",
+                    message: "Apple login failed",
+                  });
+                }
+              }
+            }}
+          />
+
+          {/* Switch to Login */}
           <TouchableOpacity
             style={[styles.nextButton, { backgroundColor: textTertiery }]}
             onPress={() => func("Login")}
