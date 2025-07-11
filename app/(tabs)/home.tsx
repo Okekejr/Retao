@@ -13,7 +13,6 @@ import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetFeaturedListings, useGetListings } from "@/hooks/useGetListings";
 import { useGetLocation } from "@/hooks/useGetLocation";
 import { themeColor } from "@/utils";
-import LottieView from "lottie-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
@@ -22,9 +21,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
 } from "react-native";
-import * as Animatable from "react-native-animatable";
 import { t } from "../../localization/t";
 
 export default function HomeScreen() {
@@ -83,23 +80,7 @@ export default function HomeScreen() {
   return (
     <>
       <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
-        {isAnyLoading && (
-          <View
-            style={[
-              { flex: 1, justifyContent: "center", alignItems: "center" },
-              { backgroundColor: bg },
-            ]}
-          >
-            <Animatable.View animation="bounceIn">
-              <LottieView
-                source={require("../../assets/loading.json")}
-                autoPlay
-                loop={false}
-                style={styles.lottie}
-              />
-            </Animatable.View>
-          </View>
-        )}
+        {isAnyLoading && <></>}
         <InnerContainer style={{ gap: 12, marginTop: 20 }}>
           <Header headerTitle={t("home.title")} />
 

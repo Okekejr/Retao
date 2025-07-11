@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import CustomText from "@/components/ui/customText";
 import { InnerContainer } from "@/components/ui/innerContainer";
 import { Colors } from "@/constants/Colors";
@@ -24,6 +22,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import type { Subscription } from "react-native-iap";
 import {
   getAvailablePurchases,
   PurchaseError,
@@ -34,6 +33,13 @@ import {
 interface SelectPlansProps {
   closeModal: () => void;
 }
+
+type SubscriptionIosPeriod = "DAY" | "WEEK" | "MONTH" | "YEAR" | "";
+
+type ExtendedSubscription = Subscription & {
+  localizedPrice?: string;
+  subscriptionPeriodUnitIOS?: SubscriptionIosPeriod;
+};
 
 const subscriptionSkus =
   Platform.select({
@@ -48,8 +54,6 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
     currentPurchase,
     finishTransaction,
   } = useIAP();
-
-  console.log(currentPurchase);
 
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const { userData } = useUserData();
@@ -180,7 +184,7 @@ export const SelectPlans = ({ closeModal }: SelectPlansProps) => {
         </View>
       ) : (
         <View style={{ marginVertical: 20, gap: 16 }}>
-          {subscriptions.map((item) => {
+          {subscriptions.map((item: ExtendedSubscription) => {
             const planKey = extractPlanKey(item.productId);
             const isCurrent = userData.subscription_plan === planKey;
 
