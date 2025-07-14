@@ -1,6 +1,7 @@
 import CustomText from "@/components/ui/customText";
 import { categoriesIcon } from "@/constants/random";
 import { themeColor } from "@/utils";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -18,6 +19,7 @@ export const CategoryCard = ({ id, icon, title }: CategoryCardProps) => {
   const iconObj = categoriesIcon.find((i) => i.id === icon);
 
   const handlePress = () => {
+    Haptics.selectionAsync();
     router.push({
       pathname: `/category/[id]`,
       params: { id: id },

@@ -45,6 +45,9 @@ const es: TranslationKeys = {
     back: "Volver",
     login: "Iniciar sesión",
     continue: "Continuar",
+    close: "Cerrar",
+    apply: "Aplicar",
+    reset: "Restablecer",
   },
   wishList: {
     title: "Lista de deseos",
@@ -382,6 +385,10 @@ const es: TranslationKeys = {
     restorePurchases: "Restaurar compras",
     currentPlan: "Plan actual",
     subscribe: "Suscribirse",
+  },
+  Filter: {
+    title: "Filtrar Articulos",
+    filterPlans: "Planes de Suscripción",
   },
 };
 

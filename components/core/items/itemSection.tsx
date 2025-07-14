@@ -32,7 +32,7 @@ export const ItemSection: FC<ItemSectionProps> = ({
       setFinalList(data.slice(0, 5));
     } else {
       const filtered = data
-        .filter((item) => item.owner.id !== userData.id)
+        .filter((item) => !userData.id || item.owner.id !== userData.id)
         .slice(0, 5);
       setFinalList(filtered);
     }

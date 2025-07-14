@@ -42,6 +42,9 @@ export type TranslationKeys = {
     save: string;
     login: string;
     continue: string;
+    reset: string;
+    apply: string;
+    close: string;
   };
   wishList: {
     title: string;
@@ -360,5 +363,9 @@ export type TranslationKeys = {
     restorePurchases: string;
     currentPlan: string;
     subscribe: string;
+  };
+  Filter: {
+    title: string;
+    filterPlans: string;
   };
 };

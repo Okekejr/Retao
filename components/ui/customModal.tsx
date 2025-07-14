@@ -14,6 +14,7 @@ interface CustomModalProps {
   modalVisible: boolean;
   closeModal: () => void;
   style?: StyleProp<ViewStyle>;
+  bg?: string;
 }
 
 const { width } = Dimensions.get("window");
@@ -23,8 +24,9 @@ export const CustomModal = ({
   modalVisible,
   closeModal,
   style,
+  bg,
 }: CustomModalProps) => {
-  const bg = themeColor("background");
+  const bgcolor = bg || themeColor("background");
 
   return (
     <Modal
@@ -39,7 +41,7 @@ export const CustomModal = ({
         onPress={closeModal}
       >
         <View
-          style={[styles.modalContent, style, { backgroundColor: bg }]}
+          style={[styles.modalContent, style, { backgroundColor: bgcolor }]}
           onStartShouldSetResponder={() => true}
         >
           {children}

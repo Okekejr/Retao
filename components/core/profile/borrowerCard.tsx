@@ -7,6 +7,8 @@ import { Pressable, StyleSheet } from "react-native";
 const avatars: avatarsT = [
   { id: "avatar1", src: require("../../../assets/img/avatar.png") },
   { id: "avatar2", src: require("../../../assets/img/avatar2.png") },
+  { id: "avatar3", src: require("../../../assets/img/avatar3.png") },
+  { id: "avatar4", src: require("../../../assets/img/avatar4.png") },
 ];
 
 interface BorrowersCardProps {

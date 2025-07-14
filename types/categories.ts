@@ -11,3 +11,8 @@ export type Category = {
   title: string;
   description: string;
 };
+
+export interface Filters {
+  location?: string;
+  subscriptionPlans: string[];
+}

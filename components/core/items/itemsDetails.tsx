@@ -50,20 +50,25 @@ export const RenderTimeline = ({
   if (status === "borrowed") {
     return (
       <View style={styles.timelineContainer}>
-        <CustomText style={styles.timelineText}>
-          {status.toUpperCase()} {t("itemDetails.on")}{" "}
-          {releasedOn &&
-            `${formatDate(releasedOn)} ${t("itemDetails.at")} ${formatTime(
-              releasedOn
-            )}`}
-        </CustomText>
-        <CustomText style={styles.timelineText}>
-          {t("itemDetails.dueBy")}{" "}
-          {dueDate &&
-            `${formatDate(dueDate)} ${t("itemDetails.at")} ${formatTime(
-              dueDate
-            )}`}
-        </CustomText>
+        {releasedOn && (
+          <CustomText style={styles.timelineText}>
+            {status.toUpperCase()} {t("itemDetails.on")}{" "}
+            {releasedOn &&
+              `${formatDate(releasedOn)} ${t("itemDetails.at")} ${formatTime(
+                releasedOn
+              )}`}
+          </CustomText>
+        )}
+
+        {dueDate && (
+          <CustomText style={styles.timelineText}>
+            {t("itemDetails.dueBy")}{" "}
+            {dueDate &&
+              `${formatDate(dueDate)} ${t("itemDetails.at")} ${formatTime(
+                dueDate
+              )}`}
+          </CustomText>
+        )}
       </View>
     );
   }
