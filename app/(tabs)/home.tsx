@@ -27,12 +27,12 @@ import { t } from "../../localization/t";
 
 export default function HomeScreen() {
   const { userData } = useUserData();
+  const { data: location } = useGetLocation();
   const {
     data: Listings,
     isLoading,
     refetch: refetchListings,
-  } = useGetListings(true);
-  const { data: location } = useGetLocation();
+  } = useGetListings(true, userData.location ? userData.location : undefined);
   const {
     data: featuredListings,
     isLoading: featuredLoading,
@@ -42,7 +42,7 @@ export default function HomeScreen() {
     data: ListingByLoc,
     isLoading: loadingLoc,
     refetch: refetchByLoc,
-  } = useGetListings(true, location);
+  } = useGetListings(true, location ? location : userData.location);
   const { data: Categories, isLoading: catLoading } = useGetCategories();
 
   const bg = themeColor("background");

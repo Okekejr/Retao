@@ -31,7 +31,7 @@ export const ListingButtons = ({
 
   return (
     <View style={styles.btnContainer}>
-      <TouchableOpacity onPress={handleBack}>
+      <TouchableOpacity onPress={handleBack} disabled={disabled}>
         <CustomText style={[styles.backText, { color: text }, styleBackText]}>
           {backBtnTitle}
         </CustomText>

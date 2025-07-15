@@ -89,18 +89,18 @@ export default function ListingReview() {
           });
         }
 
-        setLoading(false);
         resetFormData();
         router.push("/listings");
         return;
       }
 
-      setLoading(false);
       console.log("Listing created:", data.listingId);
 
       router.push("/listings/listingSuccess");
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,6 +166,7 @@ export default function ListingReview() {
           </View>
 
           <ListingButtons
+            disabled={loading}
             handleBack={handleBack}
             handleNext={handleNext}
             nextBtnTitle={

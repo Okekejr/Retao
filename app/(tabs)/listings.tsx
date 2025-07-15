@@ -62,13 +62,9 @@ export default function ListingsScreen() {
   const isAnyLoading =
     requestLoading || listingsLoading || pendingRequestsLoading;
 
-  const listedItems =
-    listings?.filter((item) => item.owner?.id === userData.id).slice(0, 5) ??
-    [];
+  const listedItems = userData.listings;
 
-  const borrowedItems =
-    listings.filter((item) => item.borrower?.id === userData.id).slice(0, 5) ??
-    [];
+  const borrowedItems = userData.borrowedItems;
 
   const filterRequests = requests?.filter((item) => item.status === "pending");
 

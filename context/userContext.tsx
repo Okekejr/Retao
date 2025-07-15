@@ -24,6 +24,13 @@ export interface userProfile {
     distance: any;
     image: any;
     favorited: boolean;
+    owner?: {
+      id?: string;
+      name?: string;
+      avatar?: any;
+      contact?: string;
+      subscription_plan: string;
+    };
   }[];
   borrowedItems: {
     id: any;
@@ -32,6 +39,13 @@ export interface userProfile {
     distance: any;
     image: any;
     favorited: boolean;
+    owner?: {
+      id?: string;
+      name?: string;
+      avatar?: any;
+      contact?: string;
+      subscription_plan: string;
+    };
   }[];
   total_steps: number;
   current_step: number;

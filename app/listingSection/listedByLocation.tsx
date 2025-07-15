@@ -27,7 +27,7 @@ export default function SectionListedScreen() {
   const { data: ListingByLoc, isLoading: locLoading } = useGetListings(
     true,
     location as string,
-    userData.id,
+    undefined,
     undefined
   );
 

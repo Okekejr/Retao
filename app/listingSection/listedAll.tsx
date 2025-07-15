@@ -15,12 +15,11 @@ export default function ListedAllScreen() {
   const bg = themeColor("background");
   const { userData } = useUserData();
   const { heading } = useLocalSearchParams();
-  const { data: Listings, isLoading: listingLoading } = useGetListings(
-    undefined,
-    userData.id,
-    undefined
-  );
   const { data: location, isLoading: locLoading } = useGetLocation();
+  const { data: Listings, isLoading: listingLoading } = useGetListings(
+    true,
+    userData.location ? userData.location : undefined
+  );
   const { data: featuredListings, isLoading: featuredLoading } =
     useGetFeaturedListings(location);
   const [finalList, setFinalList] = useState<ListingsT>([]);
@@ -28,15 +27,26 @@ export default function ListedAllScreen() {
   const anyLoading = listingLoading || locLoading || featuredLoading;
 
   useEffect(() => {
-    if (heading === "Featured") {
+    const normalizedHeading =
+      typeof heading === "string"
+        ? heading.toLowerCase()
+        : Array.isArray(heading) && heading.length > 0
+        ? heading[0].toLowerCase()
+        : undefined;
+    if (
+      normalizedHeading === "featured" ||
+      normalizedHeading === "destacados"
+    ) {
       setFinalList(featuredListings ? featuredListings.slice(0, 5) : []);
     } else {
       const filterUser = Listings
-        ? Listings.filter((item) => item.owner.id !== userData.id)
+        ? Listings.filter(
+            (item) => !userData.id || item.owner.id !== userData.id
+          )
         : [];
       setFinalList(filterUser);
     }
-  }, [heading, Listings, featuredListings, userData.id]);
+  }, [heading, Listings, featuredListings, userData.id, userData.location]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
