@@ -1,50 +1,46 @@
-# Welcome to your Expo app 👋
+# Retao
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile peer-to-peer lending marketplace — list items you own, and discover and borrow items from people near you. Built with Expo and React Native.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Onboarding & auth** — multi-step sign-up (profile, avatar, bio, location) with email/password and Apple sign-in
+- **Listings** — create listings with photos, categories, and location through a guided multi-step flow; edit and manage your own listings
+- **Discovery** — browse items by category and by location, with map-based search
+- **Borrow requests** — request items and track request status
+- **Wishlist** — save items you're interested in
+- **Messaging** — real-time chat between lenders and borrowers
+- **Ratings & history** — rate exchanges and review your borrowing history
+- **Subscriptions** — paid plans via in-app purchases (RevenueCat)
+- **Internationalization** — multi-language support
 
-   ```bash
-   npm install
-   ```
+## Tech stack
 
-2. Start the app
+- **Framework:** Expo SDK 53, React Native 0.79, Expo Router 5, TypeScript
+- **Data:** TanStack React Query
+- **Forms:** React Hook Form + Zod
+- **Maps & location:** react-native-maps, expo-location
+- **Payments:** react-native-iap, RevenueCat (react-native-purchases)
+- **UI/UX:** Moti, Reanimated, Lottie, Gorhom Bottom Sheet
+- **Auth & storage:** expo-secure-store, expo-apple-authentication
+- **i18n:** i18n-js
 
-   ```bash
-   npx expo start
-   ```
+The REST + WebSocket API for this app lives in [Retao_backend](https://github.com/Okekejr/Retao_backend).
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Open the app in an iOS simulator, Android emulator, or a development build. Create a `.env` file with your API base URL before running.
 
-## Learn more
+### Scripts
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Command | Description |
+| ------- | ----------- |
+| `npm start` | Start the Expo dev server |
+| `npm run ios` | Build and run on iOS |
+| `npm run android` | Build and run on Android |
+| `npm run web` | Run in the browser |
